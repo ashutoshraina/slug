@@ -24,23 +24,18 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
         architecture.layers.forEach(:: println)
 
         if (architecture.layers.count() == 1) {
-            val component = architecture.layers.first().component
-            val froms = addComponent(component, architecture.layers.first().spatialRedundancy)
+            // this isn't a real microservice
+            return
         }
 
         val zippedLayers = layerZipper(architecture.layers)
         zippedLayers.forEach { (first, second) -> createLinkLayers(first.component, first.spatialRedundancy, second.component, second.spatialRedundancy) }
     }
 
-    //we need to account for spatial redundancy
     private fun createLinkLayers(firstLayerComponent: Component, firstLayerRedundancy: Int, secondLayerComponent: Component, secondLayerRedundancy: Int) {
 
-//        println(firstLayerComponent)
-//        println(secondLayerComponent)
         val froms = addComponent(firstLayerComponent, firstLayerRedundancy)
         val tos = addComponent(secondLayerComponent, secondLayerRedundancy)
-        froms.forEach(:: println)
-        tos.forEach(:: println)
         when (firstLayerComponent) {
             is SimpleComponent -> {
                 val outDegree = secondLayerComponent.connection.outDegree
