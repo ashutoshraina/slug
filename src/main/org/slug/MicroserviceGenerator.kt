@@ -1,12 +1,9 @@
 package org.slug
 
 import org.graphstream.algorithm.generator.Generator
-import org.graphstream.graph.implementations.SingleGraph
 import org.graphstream.stream.SourceBase
-import org.slug.InfrastructureType.*
-import org.slug.LayerConnection.*
-import org.slug.Component.*
-import java.util.*
+import org.slug.Component.DiscoverableComponent
+import org.slug.Component.SimpleComponent
 
 class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Generator {
     override fun end() {
@@ -38,11 +35,8 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
         val tos = addComponent(secondLayerComponent, secondLayerRedundancy)
         when (firstLayerComponent) {
             is SimpleComponent -> {
-                val outDegree = secondLayerComponent.connection.outDegree
-                println("Outdegree " + outDegree)
-                val paths = if (outDegree == 1) 1 else Random().nextInt(outDegree - 1) + 1
-                println(paths)
-
+                //val outDegree = secondLayerComponent.connection.outDegree
+                //val paths = if (outDegree == 1) 1 else Random().nextInt(outDegree - 1) + 1
                 for (from in froms) {
                     // pending : probably uses FY Shuffle
                     for (to in tos.take(secondLayerRedundancy)) {
@@ -111,57 +105,4 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
         fun layerZipper(sequence: Sequence<Layer>): Sequence<Pair<Layer, Layer>> =
                 if (sequence.count() == 2) sequenceOf(Pair(sequence.first(), sequence.last())) else sequence.zip(sequence.drop(1))
     }
-}
-
-fun customGenerator() {
-    val proxy = Proxy("NGINX")
-    val webApplication = WebApplication("MyWebApplication")
-    val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
-    val simpleComponent = SimpleComponent(proxy, proxy2Web)
-    val proxyLayer = Layer("1", 2, simpleComponent)
-
-    val database = Database("Redis")
-    val serviceDiscovery = ServiceDiscovery("DNS_SERVER")
-    val layerConnection = ServiceDiscoveryIndirection(webApplication, serviceDiscovery, database)
-    val discoverableComponent = DiscoverableComponent(webApplication, layerConnection)
-    val webLayer = Layer("2", 7, discoverableComponent)
-
-    val microservice = Microservice(sequenceOf(proxyLayer, webLayer))
-    val gen = MicroserviceGenerator(microservice)
-    val graph = SingleGraph("First")
-
-    System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer")
-
-    graph.addAttribute("ui.stylesheet",
-            """
-            graph {
-	            fill-color: grey;
-            }
-            node {
-                size: 25px, 35px;
-                shape: circle;
-                fill-color: white;
-                stroke-mode: plain;
-                stroke-color: white;
-                text-style:italic;
-                text-alignment:above;
-                    }
-            edge{
-                text-background-color:yellow;
-                text-style:italic;
-                text-alignment:along;
-            }
-            """)
-
-    gen.addSink(graph)
-
-    gen.begin()
-    gen.end()
-
-    println(graph.nodeCount)
-
-    graph.addAttribute("ui.antialias")
-    graph.addAttribute("ui.quality")
-
-    graph.display()
 }

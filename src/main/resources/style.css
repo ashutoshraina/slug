@@ -1,0 +1,17 @@
+graph {
+    fill-color: grey;
+}
+node {
+    size: 25px, 35px;
+    shape: circle;
+    fill-color: white;
+    stroke-mode: plain;
+    stroke-color: white;
+    text-style:italic;
+    text-alignment:above;
+}
+edge{
+    text-background-color:yellow;
+    text-style:italic;
+    text-alignment:along;
+}
