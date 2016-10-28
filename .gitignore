@@ -1,0 +1,16 @@
+
+*.iml
+lib/
+
+## Directory-based project format:
+.idea/
+
+# Gradle:
+.gradle/
+ .idea/gradle.xml
+ .idea/libraries
+
+# IntelliJ
+out/
+
+build/
