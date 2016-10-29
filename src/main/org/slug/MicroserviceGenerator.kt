@@ -18,15 +18,16 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
     }
 
     private fun addLayer() {
-        architecture.layers.forEach(:: println)
 
         if (architecture.layers.count() == 1) {
             // this isn't a real microservice
             return
         }
 
-        val zippedLayers = layerZipper(architecture.layers)
-        zippedLayers.forEach { (first, second) -> createLinkLayers(first.component, first.spatialRedundancy, second.component, second.spatialRedundancy) }
+        for ((first, second) in Companion.layerZipper(architecture.layers)) {
+            createLinkLayers(first.component, first.spatialRedundancy, second.component, second.spatialRedundancy)
+
+        }
     }
 
     private fun createLinkLayers(firstLayerComponent: Component, firstLayerRedundancy: Int, secondLayerComponent: Component, secondLayerRedundancy: Int) {
@@ -45,7 +46,9 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
                 }
             }
             is DiscoverableComponent -> {
-                froms.zip(tos).forEach { (from, to) -> Companion.createEdge(this, from, to) }
+                for ((from, to) in froms.zip(tos)) {
+                    Companion.createEdge(this, from, to)
+                }
             }
         }
     }
@@ -56,22 +59,21 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
         when (component) {
             is SimpleComponent -> {
                 for (r in 1..redundancy) {
-                    val nodeIdentifier = component.type.identifier + "_" + r
+                    val nodeIdentifier = createIdentifier(component.type.identifier,r)
                     nodes = nodes.plus(nodeIdentifier)
-                    Companion.createNode(this,nodeIdentifier)
+                    Companion.createNode(this, nodeIdentifier)
                 }
             }
             is DiscoverableComponent -> {
                 val nodeIdentifier = component.connection.via.identifier
-                //nodes = nodes.plus(nodeIdentifier)
-                createNode(this,nodeIdentifier)
+                createNode(this, nodeIdentifier)
                 for (r in 1..redundancy) {
-                    val nodeIdentifier = component.type.identifier + "_" + r
+                    val nodeIdentifier = createIdentifier(component.type.identifier,r)
                     nodes = nodes.plus(nodeIdentifier)
-                    Companion.createNode(this,nodeIdentifier)
-                    Companion.createEdge(this,component, nodeIdentifier)
+                    Companion.createNode(this, nodeIdentifier)
+                    Companion.createEdge(this, component, nodeIdentifier)
                 }
-                createNode(this,component.connection.to.identifier)
+                createNode(this, component.connection.to.identifier)
                 Companion.createEdge(this, component)
             }
         }
@@ -101,6 +103,8 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
             microserviceGenerator.sendEdgeAdded(microserviceGenerator.sourceId, edgeId, component.connection.via.identifier, component.connection.to.identifier, true)
 //            microserviceGenerator.sendEdgeAttributeAdded(microserviceGenerator.sourceId, edgeId, "ui.label", edgeId)
         }
+
+        fun createIdentifier(identifier : String, append : Int) = identifier + "_" + append
 
         fun layerZipper(sequence: Sequence<Layer>): Sequence<Pair<Layer, Layer>> =
                 if (sequence.count() == 2) sequenceOf(Pair(sequence.first(), sequence.last())) else sequence.zip(sequence.drop(1))
