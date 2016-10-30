@@ -10,8 +10,9 @@ node {
     text-style:italic;
     text-alignment:above;
 }
-edge{
-    text-background-color:yellow;
-    text-style:italic;
-    text-alignment:along;
+edge {
+    shape: line;
+    fill-mode: dyn-plain;
+    fill-color: #222, #555, green, yellow;
+    arrow-size: 3px, 2px;
 }
