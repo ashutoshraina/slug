@@ -89,10 +89,10 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
     }
 
     private companion object {
-        var createdNodes : Sequence<String> = emptySequence()
+        var createdNodes: Sequence<String> = emptySequence()
 
         fun createNode(microserviceGenerator: MicroserviceGenerator, nodeIdentifier: String) {
-            if(!createdNodes.contains(nodeIdentifier)) {
+            if (!createdNodes.contains(nodeIdentifier)) {
                 microserviceGenerator.sendNodeAdded(microserviceGenerator.sourceId, nodeIdentifier)
                 microserviceGenerator.sendNodeAttributeAdded(microserviceGenerator.sourceId, nodeIdentifier, "ui.label", nodeIdentifier)
             }

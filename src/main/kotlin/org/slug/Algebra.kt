@@ -15,7 +15,7 @@ sealed class InfrastructureType {
     class WebApplication(override val identifier: String) : DiscoverableInfrastructureType()
     class Database(override val identifier: String) : DiscoverableInfrastructureType()
 
-        override fun toString(): String {
+    override fun toString(): String {
         return "InfrastructureType(identifier='$identifier')"
     }
 }
@@ -52,7 +52,7 @@ sealed class LayerConnection {
     class ServiceDiscoveryIndirection(override val from: InfrastructureType.DiscoverableInfrastructureType,
                                       val via: InfrastructureType.ServiceDiscovery,
                                       override val to: InfrastructureType.DiscoverableInfrastructureType,
-                                      override val outDegree: Int = 1) : LayerConnection(){
+                                      override val outDegree: Int = 1) : LayerConnection() {
         override fun toString(): String {
             return "ServiceDiscoveryIndirection(from=$from, via=$via, to=$to, outDegree=$outDegree)"
         }
@@ -68,14 +68,14 @@ sealed class Component {
     abstract val connection: LayerConnection
 
     class SimpleComponent(override val type: InfrastructureType,
-                          override val connection: LayerConnection) : Component(){
+                          override val connection: LayerConnection) : Component() {
         override fun toString(): String {
             return "SimpleComponent(type=$type, connection=$connection)"
         }
     }
 
     class DiscoverableComponent(override val type: InfrastructureType.DiscoverableInfrastructureType,
-                                override val connection: LayerConnection.ServiceDiscoveryIndirection) : Component(){
+                                override val connection: LayerConnection.ServiceDiscoveryIndirection) : Component() {
         override fun toString(): String {
             return "DiscoverableComponent(type=$type, connection=$connection)"
         }
@@ -85,8 +85,8 @@ sealed class Component {
 interface Architecture
 class Microservice(val layers: Sequence<Layer>) : Architecture
 
-class Layer(val layerId: String,
-            val spatialRedundancy: Int,
-            val component: Component) {
+data class Layer(val layerId: String,
+                 val spatialRedundancy: Int,
+                 val component: Component) {
     fun getComponentCount(): Int = spatialRedundancy
 }

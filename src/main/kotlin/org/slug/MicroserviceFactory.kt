@@ -4,7 +4,7 @@ import org.slug.InfrastructureType.*
 import org.slug.LayerConnection.*
 import org.slug.Component.*
 
- fun architectureFactory(): MicroserviceGenerator {
+fun architectureFactory(): MicroserviceGenerator {
     val proxy = Proxy("NGINX")
     val webApplication = WebApplication("MyWebApplication")
     val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
@@ -22,12 +22,12 @@ import org.slug.Component.*
     return gen
 }
 
- fun architectureFactoryWith3Layers(): MicroserviceGenerator {
+fun architectureFactoryWith3Layers(): MicroserviceGenerator {
     val cdn = CDN("Akamai")
     val firewall = Firewall("Juniper")
-    val cdn2Proxy = CDN2Firewall(cdn, firewall,2)
+    val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
     val cdnComponent = SimpleComponent(cdn, cdn2Proxy)
-    val cdnLayer = Layer("1",1,cdnComponent)
+    val cdnLayer = Layer("1", 1, cdnComponent)
 
     val proxy = Proxy("NGINX")
     val webApplication = WebApplication("MyWebApplication")
@@ -41,7 +41,7 @@ import org.slug.Component.*
     val discoverableComponent = DiscoverableComponent(webApplication, layerConnection)
     val webLayer = Layer("3", 5, discoverableComponent)
 
-    val microservice = Microservice(sequenceOf(cdnLayer,proxyLayer, webLayer))
+    val microservice = Microservice(sequenceOf(cdnLayer, proxyLayer, webLayer))
     val gen = MicroserviceGenerator(microservice)
     return gen
 }

@@ -2,9 +2,11 @@ package org.slug
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.slug.Component.DiscoverableComponent
+import org.slug.Component.SimpleComponent
 import org.slug.InfrastructureType.*
-import org.slug.LayerConnection.*
-import org.slug.Component.*
+import org.slug.LayerConnection.Proxy2WebApplication
+import org.slug.LayerConnection.ServiceDiscoveryIndirection
 
 class TestAlgebra {
 
@@ -53,18 +55,17 @@ class TestAlgebra {
         assertEquals(1, twoElementZip.first().first)
         assertEquals(2, twoElementZip.first().second)
 
-        val sequence3 = sequenceOf(1,2,3)
+        val sequence3 = sequenceOf(1, 2, 3)
         val threeElementZip = zipper(sequence3)
         assertEquals(2, threeElementZip.count())
         assertEquals(2, threeElementZip.last().first)
     }
 
-    fun <T> zipper(sequence: Sequence<T>) : Sequence<Pair<T,T>>{
+    fun <T> zipper(sequence: Sequence<T>): Sequence<Pair<T, T>> {
 
-        if(sequence.count() == 1){
+        if (sequence.count() == 1) {
             return sequenceOf(Pair(sequence.first(), sequence.first()))
-        }
-        else if(sequence.count() == 2){
+        } else if (sequence.count() == 2) {
             return sequenceOf(Pair(sequence.first(), sequence.last()))
         }
 
