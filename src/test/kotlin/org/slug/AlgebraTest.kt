@@ -2,11 +2,9 @@ package org.slug
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.slug.Component.DiscoverableComponent
-import org.slug.Component.SimpleComponent
+import org.slug.Component.*
 import org.slug.InfrastructureType.*
-import org.slug.LayerConnection.Proxy2WebApplication
-import org.slug.LayerConnection.ServiceDiscoveryIndirection
+import org.slug.LayerConnection.*
 
 class AlgebraTest {
 

@@ -8,6 +8,10 @@ import org.slug.Component.SimpleComponent
 
 class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Generator {
     var logger = LoggerFactory.getLogger(javaClass)
+    val separator: String = "->"
+    val node_separator: String = "_"
+    var createdNodes: Sequence<String> = emptySequence()
+
     override fun end() {
     }
 
@@ -117,14 +121,10 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
 //            microserviceGenerator.sendEdgeAttributeAdded(microserviceGenerator.sourceId, edgeId, "ui.label", edgeId)
     }
 
-    val separator: String = "->"
-    val node_separator: String = "_"
-
     fun createIdentifier(identifier: String, append: Int) = identifier + node_separator + append
 
     fun layerZipper(sequence: Sequence<Layer>) =
             if (sequence.count() == 2) sequenceOf(Pair(sequence.first(), sequence.last()))
             else sequence.zip(sequence.drop(1))
 
-    var createdNodes: Sequence<String> = emptySequence()
 }
