@@ -1,11 +1,11 @@
 package org.slug
 
-import org.graphstream.graph.implementations.SingleGraph
+import org.slug.Component.DiscoverableComponent
+import org.slug.Component.SimpleComponent
 import org.slug.InfrastructureType.*
 import org.slug.LayerConnection.*
-import org.slug.Component.*
 
-fun architectureFactory(): MicroserviceGenerator {
+fun simpleArchitecture(): MicroserviceGenerator {
     val proxy = Proxy("NGINX")
     val webApplication = WebApplication("MyWebApplication")
     val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
@@ -23,7 +23,7 @@ fun architectureFactory(): MicroserviceGenerator {
     return gen
 }
 
-fun architectureFactoryWith3Layers(): MicroserviceGenerator {
+fun simple3Tier(): MicroserviceGenerator {
     val cdn = CDN("Akamai")
     val firewall = Firewall("Juniper")
     val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
@@ -47,7 +47,7 @@ fun architectureFactoryWith3Layers(): MicroserviceGenerator {
     return gen
 }
 
-fun architectureWithMultipleApplicationsInALayer() : MicroserviceGenerator{
+fun multipleLinksFromALayer() : MicroserviceGenerator{
     val cdn = CDN("Akamai")
     val firewall = Firewall("Juniper")
     val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)

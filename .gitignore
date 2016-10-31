@@ -17,3 +17,4 @@ build/
 
 /src/*.swp
 local.properties
+samples/*.png

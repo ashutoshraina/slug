@@ -7,11 +7,13 @@ class Main {
         @JvmStatic fun main(args: Array<String>) {
             val css = CSSLoader().loadCSS()
 
-            customGenerator(css, architectureWithMultipleApplicationsInALayer())
+            customGenerator(css, simpleArchitecture(),"simple")
+            customGenerator(css, simple3Tier(),"simple3Tier")
+            customGenerator(css, multipleLinksFromALayer(),"multipleLinksFromALayer")
         }
 
-        fun customGenerator(css: String, generator: MicroserviceGenerator) {
-            val graph = SingleGraph("First")
+        fun customGenerator(css: String, generator: MicroserviceGenerator, name : String) {
+            val graph = SingleGraph(name)
 
             System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer")
 
@@ -26,7 +28,7 @@ class Main {
             graph.addAttribute("ui.quality")
 
             graph.display()
-            graph.addAttribute("ui.screenshot", "samples/screenshot.png")
+            graph.addAttribute("ui.screenshot", "samples/" + name+"_screenshot.png")
         }
     }
 }
