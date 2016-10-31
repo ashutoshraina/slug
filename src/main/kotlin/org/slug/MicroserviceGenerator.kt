@@ -2,10 +2,12 @@ package org.slug
 
 import org.graphstream.algorithm.generator.Generator
 import org.graphstream.stream.SourceBase
+import org.slf4j.LoggerFactory
 import org.slug.Component.DiscoverableComponent
 import org.slug.Component.SimpleComponent
 
 class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Generator {
+    var logger = LoggerFactory.getLogger(javaClass)
     override fun end() {
     }
 
@@ -86,7 +88,7 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
 
     fun createNode(microserviceGenerator: MicroserviceGenerator, nodeIdentifier: String) {
         if (!createdNodes.contains(nodeIdentifier)) {
-            println("creating node " + nodeIdentifier)
+            logger.debug("creating node " + nodeIdentifier)
             microserviceGenerator.sendNodeAdded(microserviceGenerator.sourceId, nodeIdentifier)
             microserviceGenerator.sendNodeAttributeAdded(microserviceGenerator.sourceId, nodeIdentifier, "ui.label", nodeIdentifier)
         }
@@ -94,21 +96,21 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
 
     fun createEdge(microserviceGenerator: MicroserviceGenerator, from: String, to: String) {
         val edgeId = from + separator + to
-        println("creating edge " + edgeId)
+        logger.debug("creating edge " + edgeId)
         microserviceGenerator.sendEdgeAdded(microserviceGenerator.sourceId, edgeId, from, to, true)
 //            microserviceGenerator.sendEdgeAttributeAdded(microserviceGenerator.sourceId, edgeId, "ui.label", edgeId)
     }
 
     fun createEdge(microserviceGenerator: MicroserviceGenerator, component: DiscoverableComponent, nodeIdentifier: String) {
         val edgeId = nodeIdentifier + separator + component.connection.via.identifier
-        println("creating edge " + edgeId)
+        logger.debug("creating edge " + edgeId)
         microserviceGenerator.sendEdgeAdded(microserviceGenerator.sourceId, edgeId, nodeIdentifier, component.connection.via.identifier, true)
 //            microserviceGenerator.sendEdgeAttributeAdded(microserviceGenerator.sourceId, edgeId, "ui.label", edgeId)
     }
 
     fun createEdge(microserviceGenerator: MicroserviceGenerator, component: DiscoverableComponent) {
         val edgeId =  component.connection.via.identifier + separator + component.connection.to.identifier
-        println("creating edge " + edgeId)
+        logger.debug("creating edge " + edgeId)
         microserviceGenerator.sendEdgeAdded(microserviceGenerator.sourceId, edgeId, component.connection.via.identifier, component.connection.to.identifier, true)
 //            microserviceGenerator.sendEdgeAttributeAdded(microserviceGenerator.sourceId, edgeId, "ui.label", edgeId)
     }
