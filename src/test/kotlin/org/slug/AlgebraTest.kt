@@ -8,7 +8,7 @@ import org.slug.InfrastructureType.*
 import org.slug.LayerConnection.Proxy2WebApplication
 import org.slug.LayerConnection.ServiceDiscoveryIndirection
 
-class TestAlgebra {
+class AlgebraTest {
 
     @Test
     fun createAnArchitectureWith2Layers() {

@@ -30,7 +30,7 @@ fun architectureFactoryWith3Layers(): MicroserviceGenerator {
     val cdnLayer = Layer("1", 1, cdnComponent)
 
     val proxy = Proxy("NGINX")
-    val webApplication = WebApplication("MyWebApplication")
+    val webApplication = WebApplication("Web_App")
     val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
     val proxyComponent = SimpleComponent(proxy, proxy2Web)
     val proxyLayer = Layer("2", 2, proxyComponent)
