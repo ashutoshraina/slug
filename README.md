@@ -7,5 +7,10 @@
 How to run
 
 ```
+clone the repo
+
+```
+
+```
 ./gradlew clean built test run
 ```
