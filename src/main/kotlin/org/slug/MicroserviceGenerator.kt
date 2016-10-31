@@ -57,7 +57,6 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
             is DiscoverableComponent -> {
                 val nodeIdentifier = component.connection.via.identifier
                 createNode(sourceId, nodeIdentifier)
-                nodes = nodes.plus(nodeIdentifier)
                 for (r in 1..redundancy) {
                     val nodeIdentifier = createIdentifier(component.type.identifier, r)
                     nodes = nodes.plus(nodeIdentifier)
@@ -75,10 +74,7 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
     private fun createLink(firstLayerComponent: Component, froms: Sequence<String>, secondLayerRedundancy: Int, tos: Sequence<String>) {
         when (firstLayerComponent) {
             is SimpleComponent -> {
-                //val outDegree = secondLayerComponent.connection.outDegree
-                //val paths = if (outDegree == 1) 1 else Random().nextInt(outDegree - 1) + 1
                 for (from in froms) {
-                    // pending : probably use FY Shuffle
                     for (to in tos.take(secondLayerRedundancy)) {
                         createEdge(sourceId, from, to)
                     }
