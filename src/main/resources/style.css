@@ -14,5 +14,5 @@ edge {
     shape: line;
     fill-mode: dyn-plain;
     fill-color: #222, #555, green, yellow;
-    arrow-size: 3px, 2px;
+    arrow-size: 5px, 2px;
 }

@@ -2,6 +2,7 @@ package org.slug
 
 import org.graphstream.graph.implementations.SingleGraph
 import org.junit.Assert.assertEquals
+import org.junit.Ignore
 import org.junit.Test
 import org.slug.InfrastructureType.*
 import org.slug.LayerConnection.*
@@ -11,6 +12,7 @@ import org.slug.Component.*
 class MicroserviceGeneratorTest {
 
     @Test
+    @Ignore
     fun generatorShouldAddAllTheComponentsInTheArchitecture() {
         val proxy = Proxy("NGINX")
         val webApplication = WebApplication("MyWebApplication")
@@ -50,21 +52,27 @@ class MicroserviceGeneratorTest {
         val proxyComponent = SimpleComponent(proxy, proxy2Web)
         val proxyLayer = Layer("2", 2, proxyComponent)
 
-        val database = Database("Redis")
-        val serviceDiscovery = ServiceDiscovery("DNS_SERVER")
-        val layerConnection = ServiceDiscoveryIndirection(webApplication, serviceDiscovery, database)
-        val discoverableComponent = DiscoverableComponent(webApplication, layerConnection)
-        val webLayer = Layer("3", 5, discoverableComponent)
+        val redis = Database("Redis")
+        val dns_server = ServiceDiscovery("DNS_SERVER")
+        val web2redis = ServiceDiscoveryIndirection(webApplication, dns_server, redis)
+        val recommendationComponent = DiscoverableComponent(webApplication, web2redis)
+        val recommendationLayer = Layer("3", 5, recommendationComponent)
 
-        val microservice = Microservice(sequenceOf(cdnLayer, proxyLayer, webLayer))
+        val cassandra = Database("Cassandra")
+        val other_dns = ServiceDiscovery("DNS_SERVER_OTHER")
+        val web2cassandra = ServiceDiscoveryIndirection(webApplication, other_dns, cassandra)
+        val userComponent = DiscoverableComponent(webApplication, web2cassandra)
+        val userLayer = Layer("4", 5, userComponent)
+
+        val microservice = Microservice(sequenceOf(cdnLayer, proxyLayer, recommendationLayer, userLayer))
         val generator = MicroserviceGenerator(microservice)
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
         generator.end()
 
-        assertEquals(10,graph.nodeCount)
-        assertEquals(18,graph.edgeCount)
+        assertEquals(12,graph.nodeCount)
+        assertEquals(24,graph.edgeCount)
     }
 
 }

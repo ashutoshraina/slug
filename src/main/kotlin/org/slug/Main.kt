@@ -7,7 +7,7 @@ class Main {
         @JvmStatic fun main(args: Array<String>) {
             val css = CSSLoader().loadCSS()
 
-            customGenerator(css, architectureFactoryWith3Layers())
+            customGenerator(css, architectureWithMultipleApplicationsInALayer())
         }
 
         fun customGenerator(css: String, generator: MicroserviceGenerator) {

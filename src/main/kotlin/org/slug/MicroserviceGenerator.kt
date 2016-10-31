@@ -26,8 +26,13 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
             return
         }
 
-        for ((first, second) in layerZipper(architecture.layers)) {
-            createLinkLayers(first.component, first.spatialRedundancy, second.component, second.spatialRedundancy)
+        for ((first, second) in
+        layerZipper(architecture.layers)) {
+            if (first.component.type.identifier == second.component.type.identifier) {
+                addComponent(second.component, second.spatialRedundancy)
+            } else {
+                createLinkLayers(first.component, first.spatialRedundancy, second.component, second.spatialRedundancy)
+            }
         }
     }
 
@@ -46,20 +51,21 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
                 for (r in 1..redundancy) {
                     val nodeIdentifier = createIdentifier(component.type.identifier, r)
                     nodes = nodes.plus(nodeIdentifier)
-                    createNode(this, nodeIdentifier)
+                    createNode(sourceId, nodeIdentifier)
                 }
             }
             is DiscoverableComponent -> {
                 val nodeIdentifier = component.connection.via.identifier
-                createNode(this, nodeIdentifier)
+                createNode(sourceId, nodeIdentifier)
+                nodes = nodes.plus(nodeIdentifier)
                 for (r in 1..redundancy) {
                     val nodeIdentifier = createIdentifier(component.type.identifier, r)
                     nodes = nodes.plus(nodeIdentifier)
-                    createNode(this, nodeIdentifier)
-                    createEdge(this, component, nodeIdentifier)
+                    createNode(sourceId, nodeIdentifier)
+                    createEdge(sourceId, component, nodeIdentifier)
                 }
-                createNode(this, component.connection.to.identifier)
-                createEdge(this, component)
+                createNode(sourceId, component.connection.to.identifier)
+                createEdge(sourceId, component)
             }
         }
         createdNodes = createdNodes.plus(nodes)
@@ -72,51 +78,51 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
                 //val outDegree = secondLayerComponent.connection.outDegree
                 //val paths = if (outDegree == 1) 1 else Random().nextInt(outDegree - 1) + 1
                 for (from in froms) {
-                    // pending : probably uses FY Shuffle
+                    // pending : probably use FY Shuffle
                     for (to in tos.take(secondLayerRedundancy)) {
-                        createEdge(this, from, to)
+                        createEdge(sourceId, from, to)
                     }
                 }
             }
             is DiscoverableComponent -> {
                 for ((from, to) in froms.zip(tos)) {
-                    createEdge(this, from, to)
+                    createEdge(sourceId, from, to)
                 }
             }
         }
     }
 
-    fun createNode(microserviceGenerator: MicroserviceGenerator, nodeIdentifier: String) {
+    fun createNode(sourceId: String, nodeIdentifier: String) {
         if (!createdNodes.contains(nodeIdentifier)) {
             logger.debug("creating node " + nodeIdentifier)
-            microserviceGenerator.sendNodeAdded(microserviceGenerator.sourceId, nodeIdentifier)
-            microserviceGenerator.sendNodeAttributeAdded(microserviceGenerator.sourceId, nodeIdentifier, "ui.label", nodeIdentifier)
+            sendNodeAdded(sourceId, nodeIdentifier)
+            sendNodeAttributeAdded(sourceId, nodeIdentifier, "ui.label", nodeIdentifier)
         }
     }
 
-    fun createEdge(microserviceGenerator: MicroserviceGenerator, from: String, to: String) {
+    fun createEdge(sourceId: String, from: String, to: String) {
         val edgeId = from + separator + to
         logger.debug("creating edge " + edgeId)
-        microserviceGenerator.sendEdgeAdded(microserviceGenerator.sourceId, edgeId, from, to, true)
+        sendEdgeAdded(sourceId, edgeId, from, to, true)
 //            microserviceGenerator.sendEdgeAttributeAdded(microserviceGenerator.sourceId, edgeId, "ui.label", edgeId)
     }
 
-    fun createEdge(microserviceGenerator: MicroserviceGenerator, component: DiscoverableComponent, nodeIdentifier: String) {
+    fun createEdge(sourceId: String, component: DiscoverableComponent, nodeIdentifier: String) {
         val edgeId = nodeIdentifier + separator + component.connection.via.identifier
         logger.debug("creating edge " + edgeId)
-        microserviceGenerator.sendEdgeAdded(microserviceGenerator.sourceId, edgeId, nodeIdentifier, component.connection.via.identifier, true)
+        sendEdgeAdded(sourceId, edgeId, nodeIdentifier, component.connection.via.identifier, true)
 //            microserviceGenerator.sendEdgeAttributeAdded(microserviceGenerator.sourceId, edgeId, "ui.label", edgeId)
     }
 
-    fun createEdge(microserviceGenerator: MicroserviceGenerator, component: DiscoverableComponent) {
-        val edgeId =  component.connection.via.identifier + separator + component.connection.to.identifier
+    fun createEdge(sourceId : String, component: DiscoverableComponent) {
+        val edgeId = component.connection.via.identifier + separator + component.connection.to.identifier
         logger.debug("creating edge " + edgeId)
-        microserviceGenerator.sendEdgeAdded(microserviceGenerator.sourceId, edgeId, component.connection.via.identifier, component.connection.to.identifier, true)
+        sendEdgeAdded(sourceId, edgeId, component.connection.via.identifier, component.connection.to.identifier, true)
 //            microserviceGenerator.sendEdgeAttributeAdded(microserviceGenerator.sourceId, edgeId, "ui.label", edgeId)
     }
 
     val separator: String = "->"
-    val node_separator : String = "_"
+    val node_separator: String = "_"
 
     fun createIdentifier(identifier: String, append: Int) = identifier + node_separator + append
 
