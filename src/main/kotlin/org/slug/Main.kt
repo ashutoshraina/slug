@@ -29,6 +29,9 @@ class Main {
             graph.addAttribute("ui.quality")
 
             graph.display()
+
+            Thread.sleep(1000)
+
             graph.addAttribute("ui.screenshot", "samples/" + name+"_screenshot.png")
         }
     }
