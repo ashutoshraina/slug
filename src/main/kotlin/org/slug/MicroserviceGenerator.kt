@@ -62,10 +62,10 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
                 val nodeIdentifier = component.connection.via.identifier
                 createNode(sourceId, nodeIdentifier)
                 for (r in 1..redundancy) {
-                    val nodeIdentifier = createIdentifier(component.type.identifier, r)
-                    nodes = nodes.plus(nodeIdentifier)
-                    createNode(sourceId, nodeIdentifier)
-                    createEdge(sourceId, component, nodeIdentifier)
+                    val from = createIdentifier(component.type.identifier, r)
+                    nodes = nodes.plus(from)
+                    createNode(sourceId, from)
+                    createEdge(sourceId, component, from)
                 }
                 createNode(sourceId, component.connection.to.identifier)
                 createEdge(sourceId, component)
