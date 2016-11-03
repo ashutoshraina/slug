@@ -2,7 +2,7 @@ graph {
     fill-color: grey;
 }
 node {
-    size: 25px, 35px;
+    size: 30px, 45px;
     shape: circle;
     fill-color: white;
     stroke-mode: plain;
