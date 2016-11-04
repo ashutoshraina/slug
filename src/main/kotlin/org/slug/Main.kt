@@ -33,6 +33,8 @@ class Main {
             Thread.sleep(1000)
 
             graph.addAttribute("ui.screenshot", "samples/" + name+"_screenshot.png")
+
+            generateDotFile(graph)
         }
     }
 }

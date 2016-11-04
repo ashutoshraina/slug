@@ -18,3 +18,4 @@ build/
 /src/*.swp
 local.properties
 samples/*.png
+samples/*.dot
