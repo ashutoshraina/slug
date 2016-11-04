@@ -1,5 +1,7 @@
 # slug
 
+Slug is a microservice architecture generator, primarily used for generating architecutres that enable fast simulation for Lineage Driven Fault Injection.
+
 # Build Status
 
 [![CircleCI](https://circleci.com/gh/ashutoshraina/slug/tree/master.svg?style=svg)](https://circleci.com/gh/ashutoshraina/slug/tree/master)
