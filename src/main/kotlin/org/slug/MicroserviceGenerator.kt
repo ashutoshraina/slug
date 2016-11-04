@@ -11,6 +11,7 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
     val separator: String = "->"
     val node_separator: String = "_"
     var createdNodes: Sequence<String> = emptySequence()
+    var createdEdges: Sequence<String> = emptySequence()
 
     override fun end() {
     }
@@ -71,7 +72,6 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
                 createEdge(sourceId, component)
             }
         }
-        createdNodes = createdNodes.plus(nodes)
         return nodes
     }
 
@@ -97,25 +97,26 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
             logger.debug("creating node " + nodeIdentifier)
             sendNodeAdded(sourceId, nodeIdentifier)
             sendNodeAttributeAdded(sourceId, nodeIdentifier, "ui.label", nodeIdentifier)
+            createdNodes = createdNodes.plus(nodeIdentifier)
         }
     }
 
     fun createEdge(sourceId: String, from: String, to: String) {
         val edgeId = from + separator + to
-        logger.debug("creating edge " + edgeId)
-        sendEdgeAdded(sourceId, edgeId, from, to, true)
+        val reverseEdgeId = to + separator + from
+        if (!(createdEdges.contains(edgeId) || createdEdges.contains(reverseEdgeId))) {
+            logger.debug("creating edge " + edgeId)
+            sendEdgeAdded(sourceId, edgeId, from, to, true)
+            createdEdges = createdEdges.plus(edgeId)
+        }
     }
 
     fun createEdge(sourceId: String, component: DiscoverableComponent, nodeIdentifier: String) {
-        val edgeId = nodeIdentifier + separator + component.connection.via.identifier
-        logger.debug("creating edge " + edgeId)
-        sendEdgeAdded(sourceId, edgeId, nodeIdentifier, component.connection.via.identifier, true)
+        createEdge(sourceId, nodeIdentifier, component.connection.via.identifier)
     }
 
-    fun createEdge(sourceId : String, component: DiscoverableComponent) {
-        val edgeId = component.connection.via.identifier + separator + component.connection.to.identifier
-        logger.debug("creating edge " + edgeId)
-        sendEdgeAdded(sourceId, edgeId, component.connection.via.identifier, component.connection.to.identifier, true)
+    fun createEdge(sourceId: String, component: DiscoverableComponent) {
+        createEdge(sourceId, component.connection.via.identifier, component.connection.to.identifier)
     }
 
     fun createIdentifier(identifier: String, append: Int) = identifier + node_separator + append

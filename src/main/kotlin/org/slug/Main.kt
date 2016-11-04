@@ -9,8 +9,9 @@ class Main {
 
             customGenerator(css, simpleArchitecture(),"simple")
             customGenerator(css, simple3Tier(),"simple3Tier")
-            customGenerator(css, multipleLinksFromALayer(),"multipleLinksFromALayer")
+            customGenerator(css, multipleLinks(),"multipleLinks")
             customGenerator(css, e2e(),"e2e")
+            customGenerator(css, e2eMultipleApps(),"e2eMultipleApps")
         }
 
         fun customGenerator(css: String, generator: MicroserviceGenerator, name : String) {

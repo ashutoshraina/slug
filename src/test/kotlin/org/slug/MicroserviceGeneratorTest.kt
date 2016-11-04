@@ -12,53 +12,22 @@ import org.slug.LayerConnection.*
 class MicroserviceGeneratorTest {
 
     @Test
-    fun generatorShouldAddAllTheComponentsInTheArchitecture() {
-        val proxy = Proxy("NGINX")
-        val webApplication = WebApplication("MyWebApplication")
-        val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
-        val simpleComponent = SimpleComponent(proxy, proxy2Web)
-        val proxyLayer = Layer("1", 2, simpleComponent)
+    fun shouldAddAllTheComponents() {
 
-        val database = Database("Redis")
-        val serviceDiscovery = ServiceDiscovery("DNS_SERVER")
-        val layerConnection = ServiceDiscoveryIndirection(webApplication, serviceDiscovery, database)
-        val discoverableComponent = DiscoverableComponent(webApplication, layerConnection)
-        val webLayer = Layer("2", 5, discoverableComponent)
-
-        val microservice = Microservice(sequenceOf(proxyLayer, webLayer))
-        val generator = MicroserviceGenerator(microservice)
+        val generator = simpleArchitecture()
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
         generator.end()
 
-        assertEquals(9, graph.nodeCount)
-        assertEquals(16, graph.edgeCount)
+        assertEquals(11, graph.nodeCount)
+        assertEquals(22, graph.edgeCount)
 
     }
 
     @Test
-    fun generatorShouldCreateLinksBetweenTheSpecifiedLayers() {
-        val cdn = CDN("Akamai")
-        val firewall = Firewall("Juniper")
-        val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
-        val cdnComponent = SimpleComponent(cdn, cdn2Proxy)
-        val cdnLayer = Layer("1", 1, cdnComponent)
-
-        val proxy = Proxy("NGINX")
-        val webApplication = WebApplication("MyWebApplication")
-        val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
-        val proxyComponent = SimpleComponent(proxy, proxy2Web)
-        val proxyLayer = Layer("2", 2, proxyComponent)
-
-        val redis = Database("Redis")
-        val dns_server = ServiceDiscovery("DNS_SERVER")
-        val web2redis = ServiceDiscoveryIndirection(webApplication, dns_server, redis)
-        val recommendationComponent = DiscoverableComponent(webApplication, web2redis)
-        val recommendationLayer = Layer("3", 5, recommendationComponent)
-
-        val microservice = Microservice(sequenceOf(cdnLayer, proxyLayer, recommendationLayer))
-        val generator = MicroserviceGenerator(microservice)
+    fun shouldCreateLinksBetweenComponents() {
+        val generator = simple3Tier()
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
@@ -69,81 +38,37 @@ class MicroserviceGeneratorTest {
     }
 
     @Test
-    fun multipleLayerLinksFromAComponent() {
-        val cdn = CDN("Akamai")
-        val firewall = Firewall("Juniper")
-        val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
-        val cdnComponent = SimpleComponent(cdn, cdn2Proxy)
-        val cdnLayer = Layer("1", 1, cdnComponent)
+    fun canCreateMultipleLayerLinksFromAComponent() {
 
-        val proxy = Proxy("NGINX")
-        val webApplication = WebApplication("MyWebApplication")
-        val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
-        val proxyComponent = SimpleComponent(proxy, proxy2Web)
-        val proxyLayer = Layer("2", 2, proxyComponent)
-
-        val redis = Database("Redis")
-        val dns_server = ServiceDiscovery("DNS_SERVER")
-        val web2redis = ServiceDiscoveryIndirection(webApplication, dns_server, redis)
-        val recommendationComponent = DiscoverableComponent(webApplication, web2redis)
-        val recommendationLayer = Layer("3", 5, recommendationComponent)
-
-        val cassandra = Database("Cassandra")
-        val other_dns = ServiceDiscovery("DNS_SERVER_OTHER")
-        val web2cassandra = ServiceDiscoveryIndirection(webApplication, other_dns, cassandra)
-        val userComponent = DiscoverableComponent(webApplication, web2cassandra)
-        val userLayer = Layer("4", 5, userComponent)
-
-        val microservice = Microservice(sequenceOf(cdnLayer, proxyLayer, recommendationLayer, userLayer))
-        val generator = MicroserviceGenerator(microservice)
+        val generator = multipleLinks()
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
         generator.end()
 
-        assertEquals(12, graph.nodeCount)
-        assertEquals(24, graph.edgeCount)
+        assertEquals(13, graph.nodeCount)
+        assertEquals(28, graph.edgeCount)
 
     }
 
     @Test
     fun e2eArchitecture() {
 
-        val cdn = CDN("Akamai")
-        val firewall = Firewall("Juniper")
-        val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
-        val cdnComponent = SimpleComponent(cdn, cdn2Proxy)
-        val cdnLayer = Layer("1", 1, cdnComponent)
+        val generator = e2e()
+        val graph = SingleGraph("First")
+        generator.addSink(graph)
+        generator.begin()
+        generator.end()
 
-        val loadBalancer = LoadBalancer("F5")
-        val firewall2LoadBalancer = Firewall2LoadBalancer(firewall, loadBalancer, 1)
-        val firewallComponent = SimpleComponent(firewall, firewall2LoadBalancer)
-        val firewallLayer = Layer("2", 1, firewallComponent)
+        assertEquals(14, graph.nodeCount)
+        assertEquals(26, graph.edgeCount)
 
-        val proxy = Proxy("NGINX")
-        val loadBalancer2Proxy = LoadBalancer2Proxy(loadBalancer, proxy, 1)
-        val loadBalancerComponent = SimpleComponent(loadBalancer, loadBalancer2Proxy)
-        val loadBalancerLayer = Layer("3", 1, loadBalancerComponent)
+    }
 
-        val webApplication = WebApplication("MyWebApplication")
-        val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
-        val proxyComponent = SimpleComponent(proxy, proxy2Web)
-        val proxyLayer = Layer("3", 2, proxyComponent)
+    @Test
+    fun e2eArchitectureWithMultipleApps() {
 
-        val redis = Database("Redis")
-        val dns_server = ServiceDiscovery("DNS_SERVER")
-        val web2redis = ServiceDiscoveryIndirection(webApplication, dns_server, redis)
-        val recommendationComponent = DiscoverableComponent(webApplication, web2redis)
-        val recommendationLayer = Layer("4", 5, recommendationComponent)
-
-        val cassandra = Database("Cassandra")
-        val other_dns = ServiceDiscovery("DNS_SERVER_OTHER")
-        val web2cassandra = ServiceDiscoveryIndirection(webApplication, other_dns, cassandra)
-        val userComponent = DiscoverableComponent(webApplication, web2cassandra)
-        val userLayer = Layer("5", 5, userComponent)
-
-        val microservice = Microservice(sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyLayer, recommendationLayer, userLayer))
-        val generator = MicroserviceGenerator(microservice)
+        val generator = e2e()
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
