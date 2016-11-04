@@ -61,7 +61,7 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
             is DiscoverableComponent -> {
                 val nodeIdentifier = component.connection.via.identifier
                 createNode(sourceId, nodeIdentifier)
-                for (r in 1..redundancy) {
+                (1..redundancy).forEach { r ->
                     val from = createIdentifier(component.type.identifier, r)
                     nodes = nodes.plus(from)
                     createNode(sourceId, from)
@@ -104,21 +104,18 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
         val edgeId = from + separator + to
         logger.debug("creating edge " + edgeId)
         sendEdgeAdded(sourceId, edgeId, from, to, true)
-//            microserviceGenerator.sendEdgeAttributeAdded(microserviceGenerator.sourceId, edgeId, "ui.label", edgeId)
     }
 
     fun createEdge(sourceId: String, component: DiscoverableComponent, nodeIdentifier: String) {
         val edgeId = nodeIdentifier + separator + component.connection.via.identifier
         logger.debug("creating edge " + edgeId)
         sendEdgeAdded(sourceId, edgeId, nodeIdentifier, component.connection.via.identifier, true)
-//            microserviceGenerator.sendEdgeAttributeAdded(microserviceGenerator.sourceId, edgeId, "ui.label", edgeId)
     }
 
     fun createEdge(sourceId : String, component: DiscoverableComponent) {
         val edgeId = component.connection.via.identifier + separator + component.connection.to.identifier
         logger.debug("creating edge " + edgeId)
         sendEdgeAdded(sourceId, edgeId, component.connection.via.identifier, component.connection.to.identifier, true)
-//            microserviceGenerator.sendEdgeAttributeAdded(microserviceGenerator.sourceId, edgeId, "ui.label", edgeId)
     }
 
     fun createIdentifier(identifier: String, append: Int) = identifier + node_separator + append
