@@ -8,5 +8,5 @@ data class Layer(val layerId: String,
                  val component: Component)
 
 fun Microservice.validateSize(): Boolean =
-        if (this.layers.count() < 3) false else true
+        if (this.layers.count() < 2) false else true
 
