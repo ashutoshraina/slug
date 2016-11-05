@@ -5,6 +5,7 @@ node {
     size: 30px, 45px;
     shape: circle;
     fill-color: white;
+    fill-mode:gradient-horizontal;
     stroke-mode: plain;
     stroke-color: white;
     text-style:italic;
@@ -15,4 +16,7 @@ edge {
     fill-mode: dyn-plain;
     fill-color: #222, #555, green, yellow;
     arrow-size: 5px, 2px;
+}
+node:clicked {
+    fill-color: red;
 }
