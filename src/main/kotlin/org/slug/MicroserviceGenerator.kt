@@ -26,7 +26,7 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
 
     private fun addLayer() {
 
-        if (architecture.layers.count() == 1) {
+        if (!architecture.validateSize()) {
             // this isn't a real architecture, it has just one layer.
             return
         }
@@ -107,6 +107,7 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
         if (!(createdEdges.contains(edgeId) || createdEdges.contains(reverseEdgeId))) {
             logger.debug("creating edge " + edgeId)
             sendEdgeAdded(sourceId, edgeId, from, to, true)
+            sendEdgeAttributeAdded(sourceId, edgeId, "ui.style", "shape:cubic-curve; fill-color: rgb(255,0,160), rgb(0,255,1);");
             createdEdges = createdEdges.plus(edgeId)
         }
     }

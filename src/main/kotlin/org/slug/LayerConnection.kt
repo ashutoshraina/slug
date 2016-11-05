@@ -4,7 +4,7 @@ sealed class LayerConnection {
     abstract val from: InfrastructureType
     abstract val to: InfrastructureType
     abstract val outDegree: Int
-    abstract val protocol : Protocol
+    abstract val protocol: Protocol
 
     class CDN2Firewall(override val from: InfrastructureType.CDN,
                        override val to: InfrastructureType.Firewall,

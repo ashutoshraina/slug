@@ -2,8 +2,6 @@ package org.slug
 
 sealed class InfrastructureType {
     abstract val identifier: String
-
-
     abstract class DiscoverableInfrastructureType : InfrastructureType()
 
     class CDN(override val identifier: String) : InfrastructureType()
