@@ -5,6 +5,7 @@ apply plugin: 'java'
 apply plugin: 'kotlin'
 apply plugin: 'idea'
 apply plugin: 'application'
+apply plugin: "jacoco"
 
 sourceSets {
     main.java.srcDirs = []
@@ -40,4 +41,27 @@ buildscript {
 }
 sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
+}
+
+jacoco {
+    toolVersion = "0.7.6.201602180812"
+    reportsDir = file("$buildDir/customJacocoReportDir")
+    applyTo run
+
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination "${buildDir}/jacocoHtml"
+    }
+}
+
+test {
+    jacoco {
+        append = false
+        destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+        classDumpFile = file("$buildDir/jacoco/classpathdumps")
+    }
 }
