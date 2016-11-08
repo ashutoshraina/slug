@@ -2,8 +2,12 @@ package org.slug
 
 import org.graphstream.graph.implementations.SingleGraph
 
+
 class Main {
+
     companion object {
+       val config = Config.fromConfig("default.properties")
+
         @JvmStatic fun main(args: Array<String>) {
             val css = CSSLoader().loadCSS()
 
@@ -14,7 +18,8 @@ class Main {
             customGenerator(css, e2eMultipleApps(),"e2eMultipleApps")
         }
 
-        fun customGenerator(css: String, generator: MicroserviceGenerator, name : String) {
+
+        fun customGenerator(css: String, generator: MicroserviceGenerator, name: String) {
             val graph = SingleGraph(name)
 
             System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer")
@@ -29,13 +34,13 @@ class Main {
             graph.addAttribute("ui.antialias")
             graph.addAttribute("ui.quality")
 
-            graph.display()
+            if (config.getBooleanProperty("display.swing")) {
+                graph.display()
+                Thread.sleep(1000)
+                graph.addAttribute("ui.screenshot", "samples/" + name + "_screenshot.png")
+            }
 
-            Thread.sleep(1000)
-
-            graph.addAttribute("ui.screenshot", "samples/" + name+"_screenshot.png")
-
-            generateDotFile(graph)
+            if (config.getBooleanProperty("display.dot")) generateDotFile(graph)
         }
     }
 }
