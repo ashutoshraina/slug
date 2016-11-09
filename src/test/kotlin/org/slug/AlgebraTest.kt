@@ -2,9 +2,11 @@ package org.slug
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.slug.Component.*
-import org.slug.InfrastructureType.*
-import org.slug.LayerConnection.*
+import org.slug.core.Component.*
+import org.slug.core.InfrastructureType.*
+import org.slug.core.LayerConnection.*
+import org.slug.core.Layer
+import org.slug.core.Microservice
 
 class AlgebraTest {
 

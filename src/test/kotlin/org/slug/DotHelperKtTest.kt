@@ -17,7 +17,7 @@ class DotHelperKtTest {
         graph.addNode<Node>("bar")
         graph.addEdge<Edge>("123","foo","bar")
         val byteArrayOutputStream = ByteArrayOutputStream()
-        org.slug.generateDotFile(graph, PrintStream(byteArrayOutputStream))
+        org.slug.output.generateDotFile(graph, PrintStream(byteArrayOutputStream))
         val result = byteArrayOutputStream.toString()
         assertEquals("""
         digraph test {

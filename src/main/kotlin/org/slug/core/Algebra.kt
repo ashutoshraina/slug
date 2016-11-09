@@ -1,4 +1,4 @@
-package org.slug
+package org.slug.core
 
 interface Architecture
 data class Microservice(val layers: Sequence<Layer>) : Architecture

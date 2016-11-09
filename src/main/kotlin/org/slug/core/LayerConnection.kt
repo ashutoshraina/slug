@@ -1,4 +1,4 @@
-package org.slug
+package org.slug.core
 
 sealed class LayerConnection {
     abstract val from: InfrastructureType

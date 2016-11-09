@@ -1,9 +1,11 @@
 package org.slug
 
-import org.slug.Component.DiscoverableComponent
-import org.slug.Component.SimpleComponent
-import org.slug.InfrastructureType.*
-import org.slug.LayerConnection.*
+import org.slug.core.Component.DiscoverableComponent
+import org.slug.core.Component.SimpleComponent
+import org.slug.core.InfrastructureType.*
+import org.slug.core.LayerConnection.*
+import org.slug.core.Layer
+import org.slug.core.Microservice
 
 fun simpleArchitecture(): MicroserviceGenerator {
     val proxy = Proxy("NGINX")

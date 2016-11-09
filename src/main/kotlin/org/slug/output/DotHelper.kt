@@ -1,4 +1,4 @@
-package org.slug
+package org.slug.output
 
 import org.graphstream.graph.Edge
 import org.graphstream.graph.Graph

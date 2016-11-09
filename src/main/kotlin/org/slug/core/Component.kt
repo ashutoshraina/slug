@@ -1,4 +1,4 @@
-package org.slug
+package org.slug.core
 
 sealed class Component {
     abstract val type: InfrastructureType

@@ -3,8 +3,12 @@ package org.slug
 import org.graphstream.algorithm.generator.Generator
 import org.graphstream.stream.SourceBase
 import org.slf4j.LoggerFactory
-import org.slug.Component.DiscoverableComponent
-import org.slug.Component.SimpleComponent
+import org.slug.core.Component
+import org.slug.core.Component.DiscoverableComponent
+import org.slug.core.Component.SimpleComponent
+import org.slug.core.Layer
+import org.slug.core.Microservice
+import org.slug.core.validateSize
 
 class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Generator {
     var logger = LoggerFactory.getLogger(javaClass)

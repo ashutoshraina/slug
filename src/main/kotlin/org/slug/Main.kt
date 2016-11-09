@@ -1,6 +1,8 @@
 package org.slug
 
 import org.graphstream.graph.implementations.SingleGraph
+import org.slug.output.DisplayHelper
+import org.slug.output.generateDotFile
 
 
 class Main {
@@ -9,7 +11,7 @@ class Main {
        val config = Config.fromConfig("default.properties")
 
         @JvmStatic fun main(args: Array<String>) {
-            val css = CSSLoader().loadCSS()
+            val css = DisplayHelper().loadCSS()
 
             customGenerator(css, simpleArchitecture(),"simple")
             customGenerator(css, simple3Tier(),"simple3Tier")

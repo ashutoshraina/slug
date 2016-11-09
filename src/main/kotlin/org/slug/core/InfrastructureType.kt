@@ -1,4 +1,4 @@
-package org.slug
+package org.slug.core
 
 sealed class InfrastructureType {
     abstract val identifier: String

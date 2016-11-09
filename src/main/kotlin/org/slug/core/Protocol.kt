@@ -1,4 +1,4 @@
-package org.slug
+package org.slug.core
 
 enum class Protocol {
     HTTP,

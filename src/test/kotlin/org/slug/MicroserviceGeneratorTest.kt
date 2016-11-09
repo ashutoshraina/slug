@@ -3,10 +3,10 @@ package org.slug
 import org.graphstream.graph.implementations.SingleGraph
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.slug.Component.DiscoverableComponent
-import org.slug.Component.SimpleComponent
-import org.slug.InfrastructureType.*
-import org.slug.LayerConnection.*
+import org.slug.core.Component.DiscoverableComponent
+import org.slug.core.Component.SimpleComponent
+import org.slug.core.InfrastructureType.*
+import org.slug.core.LayerConnection.*
 
 
 class MicroserviceGeneratorTest {
