@@ -21,15 +21,13 @@ class Main {
         }
 
 
-        fun customGenerator(css: String, generator: MicroserviceGenerator, name: String) {
+        fun customGenerator(css: String, generator: MicroserviceGenerator, name: String) : SingleGraph{
             val graph = SingleGraph(name)
 
             System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer")
 
             graph.addAttribute("ui.stylesheet", css)
-
             generator.addSink(graph)
-
             generator.begin()
             generator.end()
 
@@ -43,6 +41,8 @@ class Main {
             }
 
             if (config.getBooleanProperty("display.dot")) generateDotFile(graph)
+
+            return graph
         }
     }
 }

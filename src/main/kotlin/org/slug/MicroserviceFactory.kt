@@ -1,11 +1,10 @@
 package org.slug
 
+import org.slug.core.*
 import org.slug.core.Component.DiscoverableComponent
 import org.slug.core.Component.SimpleComponent
 import org.slug.core.InfrastructureType.*
 import org.slug.core.LayerConnection.*
-import org.slug.core.Layer
-import org.slug.core.Microservice
 
 fun simpleArchitecture(): MicroserviceGenerator {
     val proxy = Proxy("NGINX")
@@ -161,4 +160,12 @@ fun e2eMultipleApps(): MicroserviceGenerator {
     val microservice = Microservice(sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyRecommendationLayer, recommendationLayer, proxyUserCreationLayer, userLayer))
     val generator = MicroserviceGenerator(microservice)
     return generator
+}
+
+fun multiService(): Architecture {
+    val first = e2e().architecture
+    val second = e2eMultipleApps().architecture
+    val serviceDiscovery = ServiceRegistry("Eureka")
+    val crossTalk = Right(XCtalk(first, second, serviceDiscovery))
+    return Architecture(sequenceOf(crossTalk))
 }
