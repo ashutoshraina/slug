@@ -1,4 +1,4 @@
-package org.slug
+package org.slug.core
 
 import org.graphstream.algorithm.generator.Generator
 import org.graphstream.stream.SourceBase

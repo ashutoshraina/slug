@@ -5,6 +5,8 @@ import org.slug.core.Component.DiscoverableComponent
 import org.slug.core.Component.SimpleComponent
 import org.slug.core.InfrastructureType.*
 import org.slug.core.LayerConnection.*
+import org.slug.util.Left
+import org.slug.util.Right
 
 fun simpleArchitecture(): MicroserviceGenerator {
     val proxy = Proxy("NGINX")

@@ -1,6 +1,7 @@
 package org.slug.core
 
-import org.slug.MicroserviceGenerator
+import org.slug.core.MicroserviceGenerator
+import org.slug.util.*
 
 data class Architecture(private val something: Sequence<Either<Microservice, XTalk>>) {
     fun generators(): Sequence<MicroserviceGenerator> = something.filter { s -> s.isLeft() }.map { l -> MicroserviceGenerator(l.leftValue()) }

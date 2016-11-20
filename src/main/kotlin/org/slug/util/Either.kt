@@ -1,4 +1,4 @@
-package org.slug.core
+package org.slug.util
 
 interface Either<out L, out R>
 data class Left<out T>(val value: T) : Either<T, Nothing>

@@ -2,6 +2,8 @@ package org.slug
 
 import org.graphstream.graph.Graph
 import org.graphstream.graph.implementations.SingleGraph
+import org.slug.core.CrossTalkGenerator
+import org.slug.core.MicroserviceGenerator
 import org.slug.output.DisplayHelper
 import org.slug.output.generateDotFile
 
