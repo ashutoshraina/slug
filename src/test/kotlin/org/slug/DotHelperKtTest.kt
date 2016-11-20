@@ -21,11 +21,11 @@ class DotHelperKtTest {
         val result = byteArrayOutputStream.toString()
         assertEquals("""
         digraph test {
-                size="10"
+                size="15"
                 style=filled;
                 color=blue;
-                node [style=filled,color=cyan];
-            123
+                node [style=filled,color=lightblue];
+            foo->bar
 
         }""", result)
 

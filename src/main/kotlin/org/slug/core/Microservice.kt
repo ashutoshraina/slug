@@ -1,6 +1,6 @@
 package org.slug.core
 
-data class Microservice(val layers: Sequence<Layer>)
+data class Microservice(val identifier: String, val layers: Sequence<Layer>)
 
 data class Layer(val layerId: String,
                  val spatialRedundancy: Int,

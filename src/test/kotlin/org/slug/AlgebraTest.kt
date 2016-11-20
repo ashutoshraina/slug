@@ -25,7 +25,7 @@ class AlgebraTest {
         val simpleComponent = SimpleComponent(proxy, proxy2Web)
         val proxyLayer = Layer("1", 5, simpleComponent)
 
-        val microservice = Microservice(sequenceOf(proxyLayer, webLayer))
+        val microservice = Microservice("2Layer",sequenceOf(proxyLayer, webLayer))
 
         assertEquals(2, microservice.layers.count())
         assertEquals(5, microservice.layers.first().spatialRedundancy)

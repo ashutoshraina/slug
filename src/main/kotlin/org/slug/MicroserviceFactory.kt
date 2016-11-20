@@ -19,7 +19,7 @@ fun simpleArchitecture(): MicroserviceGenerator {
     val discoverableComponent = DiscoverableComponent(webApplication, layerConnection)
     val webLayer = Layer("2", 7, discoverableComponent)
 
-    val microservice = Microservice(sequenceOf(proxyLayer, webLayer))
+    val microservice = Microservice("simple", sequenceOf(proxyLayer, webLayer))
     val gen = MicroserviceGenerator(microservice)
     return gen
 }
@@ -43,7 +43,7 @@ fun simple3Tier(): MicroserviceGenerator {
     val discoverableComponent = DiscoverableComponent(webApplication, layerConnection)
     val webLayer = Layer("3", 5, discoverableComponent)
 
-    val microservice = Microservice(sequenceOf(cdnLayer, proxyLayer, webLayer))
+    val microservice = Microservice("simple", sequenceOf(cdnLayer, proxyLayer, webLayer))
     val gen = MicroserviceGenerator(microservice)
     return gen
 }
@@ -73,7 +73,7 @@ fun multipleLinks(): MicroserviceGenerator {
     val userComponent = DiscoverableComponent(webApplication, web2cassandra)
     val userLayer = Layer("4", 6, userComponent)
 
-    val microservice = Microservice(sequenceOf(cdnLayer, proxyLayer, recommendationLayer, userLayer))
+    val microservice = Microservice("multipleLinks", sequenceOf(cdnLayer, proxyLayer, recommendationLayer, userLayer))
     val generator = MicroserviceGenerator(microservice)
     return generator
 
@@ -113,7 +113,7 @@ fun e2e(): MicroserviceGenerator {
     val userComponent = DiscoverableComponent(webApplication, web2cassandra)
     val userLayer = Layer("6", 5, userComponent)
 
-    val microservice = Microservice(sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyLayer, recommendationLayer, userLayer))
+    val microservice = Microservice("e2e", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyLayer, recommendationLayer, userLayer))
     val generator = MicroserviceGenerator(microservice)
     return generator
 }
@@ -157,7 +157,7 @@ fun e2eMultipleApps(): MicroserviceGenerator {
     val userComponent = DiscoverableComponent(userCreation, web2cassandra)
     val userLayer = Layer("7", 3, userComponent)
 
-    val microservice = Microservice(sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyRecommendationLayer, recommendationLayer, proxyUserCreationLayer, userLayer))
+    val microservice = Microservice("e2eMultipleApps", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyRecommendationLayer, recommendationLayer, proxyUserCreationLayer, userLayer))
     val generator = MicroserviceGenerator(microservice)
     return generator
 }
@@ -166,6 +166,8 @@ fun multiService(): Architecture {
     val first = e2e().architecture
     val second = e2eMultipleApps().architecture
     val serviceDiscovery = ServiceRegistry("Eureka")
-    val crossTalk = Right(XCtalk(first, second, serviceDiscovery))
-    return Architecture(sequenceOf(crossTalk))
+    val crossTalk = Right(XTalk(first, WebApplication("MyWebApplication"), second, WebApplication("Recommendation"), serviceDiscovery))
+    val e2e = Left(first)
+    val e2eMultipleApps = Left(second)
+    return Architecture(sequenceOf(e2e, e2eMultipleApps, crossTalk))
 }

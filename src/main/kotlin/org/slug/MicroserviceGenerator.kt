@@ -2,6 +2,7 @@ package org.slug
 
 import org.graphstream.algorithm.generator.Generator
 import org.graphstream.stream.SourceBase
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.slug.core.Component
 import org.slug.core.Component.DiscoverableComponent
@@ -11,7 +12,7 @@ import org.slug.core.Microservice
 import org.slug.core.validateSize
 
 class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Generator {
-    var logger = LoggerFactory.getLogger(javaClass)
+    var logger: Logger? = LoggerFactory.getLogger(javaClass)
     val separator: String = "->"
     val node_separator: String = "_"
     var createdNodes: Sequence<String> = emptySequence()
@@ -60,20 +61,20 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
                 for (r in 1..redundancy) {
                     val nodeIdentifier = createIdentifier(component.type.identifier, r)
                     nodes = nodes.plus(nodeIdentifier)
-                    createNode(sourceId, nodeIdentifier)
+                    createNode(nodeIdentifier)
                 }
             }
             is DiscoverableComponent -> {
                 val nodeIdentifier = component.connection.via.identifier
-                createNode(sourceId, nodeIdentifier)
+                createNode(nodeIdentifier)
                 (1..redundancy).forEach { r ->
                     val from = createIdentifier(component.type.identifier, r)
                     nodes = nodes.plus(from)
-                    createNode(sourceId, from)
-                    createEdge(sourceId, component, from)
+                    createNode(from)
+                    createEdge(component, from)
                 }
-                createNode(sourceId, component.connection.to.identifier)
-                createEdge(sourceId, component)
+                createNode(component.connection.to.identifier)
+                createEdge(component)
             }
         }
         return nodes
@@ -84,44 +85,44 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
             is SimpleComponent -> {
                 for (from in froms) {
                     for (to in tos.take(secondLayerRedundancy)) {
-                        createEdge(sourceId, from, to)
+                        createEdge(from, to)
                     }
                 }
             }
             is DiscoverableComponent -> {
                 for ((from, to) in froms.zip(tos)) {
-                    createEdge(sourceId, from, to)
+                    createEdge(from, to)
                 }
             }
         }
     }
 
-    fun createNode(sourceId: String, nodeIdentifier: String) {
+    fun createNode(nodeIdentifier: String) {
         if (!createdNodes.contains(nodeIdentifier)) {
-            logger.debug("creating node " + nodeIdentifier)
+            logger?.debug("creating node " + nodeIdentifier)
             sendNodeAdded(sourceId, nodeIdentifier)
             sendNodeAttributeAdded(sourceId, nodeIdentifier, "ui.label", nodeIdentifier)
             createdNodes = createdNodes.plus(nodeIdentifier)
         }
     }
 
-    fun createEdge(sourceId: String, from: String, to: String) {
+    fun createEdge(from: String, to: String) {
         val edgeId = from + separator + to
         val reverseEdgeId = to + separator + from
         if (!(createdEdges.contains(edgeId) || createdEdges.contains(reverseEdgeId))) {
-            logger.debug("creating edge " + edgeId)
+            logger?.debug("creating edge " + edgeId)
             sendEdgeAdded(sourceId, edgeId, from, to, true)
-            sendEdgeAttributeAdded(sourceId, edgeId, "ui.style", "shape:cubic-curve; fill-color: rgb(255,0,160), rgb(0,255,1);");
+            sendEdgeAttributeAdded(sourceId, edgeId, "ui.style", "shape:cubic-curve; fill-color: rgb(255,0,160), rgb(0,255,1);")
             createdEdges = createdEdges.plus(edgeId)
         }
     }
 
-    fun createEdge(sourceId: String, component: DiscoverableComponent, nodeIdentifier: String) {
-        createEdge(sourceId, nodeIdentifier, component.connection.via.identifier)
+    fun createEdge(component: DiscoverableComponent, nodeIdentifier: String) {
+        createEdge(nodeIdentifier, component.connection.via.identifier)
     }
 
-    fun createEdge(sourceId: String, component: DiscoverableComponent) {
-        createEdge(sourceId, component.connection.via.identifier, component.connection.to.identifier)
+    fun createEdge(component: DiscoverableComponent) {
+        createEdge(component.connection.via.identifier, component.connection.to.identifier)
     }
 
     fun createIdentifier(identifier: String, append: Int) = identifier + node_separator + append
