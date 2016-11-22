@@ -142,7 +142,7 @@ fun e2eMultipleApps(): MicroserviceGenerator {
     val proxyRecommendationComponent = SimpleComponent(proxy, proxy2Recommendation)
     val proxyRecommendationLayer = Layer("4", 2, proxyRecommendationComponent)
 
-    val userCreation = WebApplication("UserCreation")
+    val userCreation = WebApplication("User")
     val proxy2UserCreation = Proxy2WebApplication(proxy, userCreation, 1)
     val proxyUserCreationComponent = SimpleComponent(proxy, proxy2UserCreation)
     val proxyUserCreationLayer = Layer("5", 2, proxyUserCreationComponent)
@@ -167,9 +167,12 @@ fun e2eMultipleApps(): MicroserviceGenerator {
 fun multiService(): Architecture {
     val first = e2e().architecture
     val second = e2eMultipleApps().architecture
+    val third = multipleLinks().architecture
     val serviceDiscovery = ServiceRegistry("Eureka")
     val crossTalk = Right(XTalk(first, WebApplication("MyWebApplication"), second, WebApplication("Recommendation"), serviceDiscovery))
     val e2e = Left(first)
     val e2eMultipleApps = Left(second)
-    return Architecture(sequenceOf(e2e, e2eMultipleApps, crossTalk))
+    val multiLink = Left(third)
+    val crossTalk2 = Right(XTalk(third, WebApplication("MyWebApplication"), second, WebApplication("User"), serviceDiscovery))
+    return Architecture(sequenceOf(e2e, e2eMultipleApps, multiLink, crossTalk, crossTalk2))
 }

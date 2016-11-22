@@ -28,7 +28,7 @@ class Main {
             val XTalks = architecture.crossTalks()
             val crossTalks = CrossTalkGenerator().addCrossTalk(serviceGraphs, XTalks)
             serviceGraphs.plus(crossTalks)
-                    .forEach { graph ->  display(graph); printDotFile(graph) }
+                    .forEach { graph -> display(graph); printDotFile(graph) }
         }
 
         fun generator(css: String, generator: MicroserviceGenerator): SingleGraph {
