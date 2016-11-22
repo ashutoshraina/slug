@@ -10,6 +10,7 @@ How to run
 
 ```
 clone the repo
+git clone git@github.com:ashutoshraina/slug.git
 
 ```
 
