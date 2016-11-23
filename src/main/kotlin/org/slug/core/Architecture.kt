@@ -1,6 +1,5 @@
 package org.slug.core
 
-import org.slug.core.MicroserviceGenerator
 import org.slug.util.*
 
 data class Architecture(private val something: Sequence<Either<Microservice, XTalk>>) {

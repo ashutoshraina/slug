@@ -6,7 +6,10 @@ import org.graphstream.graph.Node
 import org.graphstream.graph.implementations.Graphs
 import org.graphstream.graph.implementations.SingleGraph
 import org.graphstream.graph.implementations.SingleNode
-import org.slug.core.XTalk
+import org.slug.output.DisplayConstants.LABEL
+import org.slug.output.DisplayConstants.STYLE
+import org.slug.output.GraphConstants.EDGE_STYLE
+import org.slug.output.GraphConstants.SEPARATOR
 
 class CrossTalkGenerator {
 
@@ -21,10 +24,10 @@ class CrossTalkGenerator {
         return graphs
     }
 
-    fun mergeWithNodePreservation(from: Graph, to: Graph, crossTalk: XTalk): SingleGraph {
-        val mergedGraph = SingleGraph(from.id + "_" + to.id, true, false)
+    private fun mergeWithNodePreservation(from: Graph, to: Graph, crossTalk: XTalk): SingleGraph {
+        val mergedGraph = SingleGraph(from.id + SEPARATOR + to.id, true, false)
         Graphs.mergeIn(mergedGraph, from)
-        to.getNodeSet<Node>().forEach { n -> mergedGraph.addNode<Node>(mergedIdentifier(n.id)).addAttribute("ui.label", mergedIdentifier(n.id)) }
+        to.getNodeSet<Node>().forEach { n -> mergedGraph.addNode<Node>(mergedIdentifier(n.id)).addAttribute(LABEL, mergedIdentifier(n.id)) }
 
         for (edge in to.getEdgeSet<Edge>()) {
             mergedGraph.addEdge<Edge>(mergedIdentifier(edge.id), mergedIdentifier(edge.getSourceNode<Node>().id),
@@ -33,19 +36,19 @@ class CrossTalkGenerator {
 
         val gatewayIdentifier = crossTalk.using.identifier
         val gatewayNode = mergedGraph.addNode<SingleNode>(gatewayIdentifier)
-        gatewayNode.addAttribute("ui.label", gatewayIdentifier)
-        gatewayNode.addAttribute("ui.style", "shape:rounded-box; fill-color: rgb(255,0,160), rgb(0,255,1);")
+        gatewayNode.addAttribute(LABEL, gatewayIdentifier)
+        gatewayNode.addAttribute(STYLE, EDGE_STYLE)
 
         val entryNodes = mergedGraph.getEachNode<Node>().filter { n -> n.id.startsWith(crossTalk.entryPoint.identifier) }
-        entryNodes.forEach { node -> mergedGraph.addEdge<Edge>(gatewayIdentifier + "_" + node.id, node.id, gatewayIdentifier, true) }
+        entryNodes.forEach { node -> mergedGraph.addEdge<Edge>(gatewayIdentifier + SEPARATOR + node.id, node.id, gatewayIdentifier, true) }
 
         val destinationNodes = mergedGraph.getEachNode<Node>().filter { n -> n.id.startsWith(crossTalk.destinationPoint.identifier) }
-        destinationNodes.forEach { node -> mergedGraph.addEdge<Edge>(gatewayIdentifier + "_" + node.id, gatewayIdentifier, node.id, true) }
+        destinationNodes.forEach { node -> mergedGraph.addEdge<Edge>(gatewayIdentifier + SEPARATOR + node.id, gatewayIdentifier, node.id, true) }
 
         return mergedGraph
     }
 
-    fun mergedIdentifier(original: String): String {
+    private fun mergedIdentifier(original: String): String {
         return original + "_m"
     }
 }

@@ -3,7 +3,6 @@ package org.slug.output
 import org.graphstream.graph.Graph
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.slug.Main
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -39,13 +38,7 @@ class DisplayHelper {
 }
 
 fun display(graph: Graph) {
-    if (Main.config.getBooleanProperty("display.swing")) {
         graph.display()
         Thread.sleep(1000)
         graph.addAttribute("ui.screenshot", "samples/" + graph.id + "_screenshot.png")
-    }
-}
-
-fun printDotFile(graph: Graph) {
-    if (Main.config.getBooleanProperty("display.dot")) generateDotFile(graph)
 }

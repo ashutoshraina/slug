@@ -4,17 +4,16 @@ import org.graphstream.algorithm.generator.Generator
 import org.graphstream.stream.SourceBase
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.slug.core.Component
 import org.slug.core.Component.DiscoverableComponent
 import org.slug.core.Component.SimpleComponent
-import org.slug.core.Layer
-import org.slug.core.Microservice
-import org.slug.core.validateSize
+import org.slug.output.DisplayConstants.LABEL
+import org.slug.output.DisplayConstants.STYLE
+import org.slug.output.GraphConstants.EDGE_SEPARATOR
+import org.slug.output.GraphConstants.EDGE_STYLE
+import org.slug.output.GraphConstants.SEPARATOR
 
 class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Generator {
     var logger: Logger? = LoggerFactory.getLogger(javaClass)
-    val separator: String = "->"
-    val node_separator: String = "_"
     var createdNodes: Sequence<String> = emptySequence()
     var createdEdges: Sequence<String> = emptySequence()
 
@@ -101,18 +100,18 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
         if (!createdNodes.contains(nodeIdentifier)) {
             logger?.debug("creating node " + nodeIdentifier)
             sendNodeAdded(sourceId, nodeIdentifier)
-            sendNodeAttributeAdded(sourceId, nodeIdentifier, "ui.label", nodeIdentifier)
+            sendNodeAttributeAdded(sourceId, nodeIdentifier, LABEL, nodeIdentifier)
             createdNodes = createdNodes.plus(nodeIdentifier)
         }
     }
 
     fun createEdge(from: String, to: String) {
-        val edgeId = from + separator + to
-        val reverseEdgeId = to + separator + from
+        val edgeId = from + EDGE_SEPARATOR + to
+        val reverseEdgeId = to + EDGE_SEPARATOR + from
         if (!(createdEdges.contains(edgeId) || createdEdges.contains(reverseEdgeId))) {
             logger?.debug("creating edge " + edgeId)
             sendEdgeAdded(sourceId, edgeId, from, to, true)
-            sendEdgeAttributeAdded(sourceId, edgeId, "ui.style", "shape:cubic-curve; fill-color: rgb(255,0,160), rgb(0,255,1);")
+            sendEdgeAttributeAdded(sourceId, edgeId, STYLE, EDGE_STYLE)
             createdEdges = createdEdges.plus(edgeId)
         }
     }
@@ -125,7 +124,7 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
         createEdge(component.connection.via.identifier, component.connection.to.identifier)
     }
 
-    fun createIdentifier(identifier: String, append: Int) = identifier + node_separator + append
+    fun createIdentifier(identifier: String, append: Int) = identifier + SEPARATOR + append
 
     fun layerZipper(sequence: Sequence<Layer>) =
             if (sequence.count() == 2) sequenceOf(Pair(sequence.first(), sequence.last()))
