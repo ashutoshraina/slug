@@ -1,11 +1,11 @@
 package org.slug
 
-import org.graphstream.graph.Graph
 import org.graphstream.graph.implementations.SingleGraph
 import org.slug.core.CrossTalkGenerator
 import org.slug.core.MicroserviceGenerator
 import org.slug.output.DisplayHelper
-import org.slug.output.generateDotFile
+import org.slug.output.display
+import org.slug.output.printDotFile
 
 
 class Main {
@@ -14,7 +14,7 @@ class Main {
         val config = Config.fromConfig("default.properties")
 
         @JvmStatic fun main(args: Array<String>) {
-            val css = DisplayHelper().loadCSS()
+            val css = DisplayHelper().loadCSS(config.getProperty("style"))
 
 //            generator(css, simpleArchitecture())
 //            generator(css, simple3Tier())
@@ -48,16 +48,6 @@ class Main {
             return graph
         }
 
-        fun display(graph: Graph) {
-            if (config.getBooleanProperty("display.swing")) {
-                graph.display()
-                Thread.sleep(1000)
-                graph.addAttribute("ui.screenshot", "samples/" + graph.id + "_screenshot.png")
-            }
-        }
 
-        fun printDotFile(graph: Graph) {
-            if (config.getBooleanProperty("display.dot")) generateDotFile(graph)
-        }
     }
 }
