@@ -37,10 +37,9 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
 
         for ((first, second) in
         layerZipper(architecture.layers)) {
-            if (first.component.type.identifier == second.component.type.identifier) {
-                addComponent(second.component, second.spatialRedundancy)
-            } else {
-                createLinkLayers(first.component, first.spatialRedundancy, second.component, second.spatialRedundancy)
+            when {
+                first.component.type.identifier == second.component.type.identifier -> addComponent(second.component, second.spatialRedundancy)
+                else -> createLinkLayers(first.component, first.spatialRedundancy, second.component, second.spatialRedundancy)
             }
         }
     }
@@ -57,7 +56,7 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
 
         when (component) {
             is SimpleComponent -> {
-                for (r in 1..redundancy) {
+                (1..redundancy).forEach { r ->
                     val nodeIdentifier = createIdentifier(component.type.identifier, r)
                     nodes = nodes.plus(nodeIdentifier)
                     createNode(nodeIdentifier)
@@ -79,19 +78,15 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
         return nodes
     }
 
-    private fun createLink(firstLayerComponent: Component, froms: Sequence<String>, secondLayerRedundancy: Int, tos: Sequence<String>) {
-        when (firstLayerComponent) {
-            is SimpleComponent -> {
-                for (from in froms) {
-                    for (to in tos.take(secondLayerRedundancy)) {
-                        createEdge(from, to)
-                    }
-                }
+    private fun createLink(firstLayerComponent: Component, froms: Sequence<String>, secondLayerRedundancy: Int, tos: Sequence<String>) = when (firstLayerComponent) {
+        is SimpleComponent -> {
+            froms.forEach { from ->
+                tos.take(secondLayerRedundancy).forEach { to -> createEdge(from, to) }
             }
-            is DiscoverableComponent -> {
-                for ((from, to) in froms.zip(tos)) {
-                    createEdge(from, to)
-                }
+        }
+        is DiscoverableComponent -> {
+            for ((from, to) in froms.zip(tos)) {
+                createEdge(from, to)
             }
         }
     }
