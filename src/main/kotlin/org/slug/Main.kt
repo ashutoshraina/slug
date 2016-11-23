@@ -1,11 +1,15 @@
 package org.slug
 
+import org.graphstream.algorithm.measure.ChartMeasure
+import org.graphstream.algorithm.measure.ChartSeries2DMeasure
 import org.graphstream.graph.implementations.SingleGraph
+import org.graphstream.util.cumulative.GraphSpells
 import org.slug.core.CrossTalkGenerator
 import org.slug.core.MicroserviceGenerator
 import org.slug.output.DisplayHelper
 import org.slug.output.display
 import org.slug.output.generateDotFile
+import java.util.*
 
 
 class Main {
@@ -20,11 +24,11 @@ class Main {
                 else -> DisplayHelper().loadDefaultCSS()
             }
 
-//            generator(css, simpleArchitecture())
-//            generator(css, simple3Tier())
-//            generator(css, multipleLinks())
-//            generator(css, e2e())
-//            generator(css, e2eMultipleApps())
+            generator(css, simpleArchitecture())
+            generator(css, simple3Tier())
+            generator(css, multipleLinks())
+            generator(css, e2e())
+            generator(css, e2eMultipleApps())
 
             val architecture = multiService()
             val serviceGraphs = architecture.generators().map { microservice -> generator(css, microservice) }

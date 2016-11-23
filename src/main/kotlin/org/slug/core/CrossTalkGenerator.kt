@@ -9,6 +9,7 @@ import org.graphstream.graph.implementations.SingleNode
 import org.slug.output.DisplayConstants.LABEL
 import org.slug.output.DisplayConstants.STYLE
 import org.slug.output.GraphConstants.EDGE_STYLE
+import org.slug.output.GraphConstants.NODE_STYLE
 import org.slug.output.GraphConstants.SEPARATOR
 
 class CrossTalkGenerator {
@@ -37,7 +38,7 @@ class CrossTalkGenerator {
         val gatewayIdentifier = crossTalk.using.identifier
         val gatewayNode = mergedGraph.addNode<SingleNode>(gatewayIdentifier)
         gatewayNode.addAttribute(LABEL, gatewayIdentifier)
-        gatewayNode.addAttribute(STYLE, EDGE_STYLE)
+        gatewayNode.addAttribute(STYLE, NODE_STYLE)
 
         val entryNodes = mergedGraph.getEachNode<Node>().filter { n -> n.id.startsWith(crossTalk.entryPoint.identifier) }
         entryNodes.forEach { node -> mergedGraph.addEdge<Edge>(gatewayIdentifier + SEPARATOR + node.id, node.id, gatewayIdentifier, true) }
