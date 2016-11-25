@@ -1,5 +1,6 @@
 package org.slug
 
+import org.graphstream.algorithm.Toolkit
 import org.graphstream.algorithm.Toolkit.*
 import org.graphstream.algorithm.measure.ChartMeasure
 import org.graphstream.algorithm.measure.ChartSeries2DMeasure
@@ -42,33 +43,25 @@ class Main {
                     }
 
             val graphs = simpleGraphs.plus(serviceGraphs)
-            val m1 = ChartSeries2DMeasure("Density measure")
+            measurements(graphs)
+        }
+
+        private fun measurements(graphs: Sequence<Graph>) {
+            plotDensity(graphs, "Density measure", "Density Scatter Plot", Toolkit::density)
+            plotDensity(graphs, "Average Degree measure", "Average Degree Scatter Plot", Toolkit::averageDegree)
+            plotDensity(graphs, "Average Degree Deviation", "Average Degree Deviation", Toolkit::degreeAverageDeviation)
+        }
+
+        private fun plotDensity(graphs: Sequence<Graph>, chartName: String, plotTitle: String, measurement: (graph: Graph) -> Double) {
+            val m1 = ChartSeries2DMeasure(chartName)
             (0..graphs.count() - 1).forEach { r ->
-                m1.addValue((r + 1).toDouble(), density(graphs.elementAt(r)))
+                m1.addValue((r + 1).toDouble(), measurement(graphs.elementAt(r)))
             }
 
             val params = ChartMeasure.PlotParameters()
-            params.title = "Density Scatter Plot"
+            params.title = plotTitle
             params.type = ChartMeasure.PlotType.LINE
             m1.plot(params)
-
-            val m2 = ChartSeries2DMeasure("Average Degree measure")
-            (0..graphs.count() - 1).forEach { r ->
-                m2.addValue((r + 1).toDouble(), averageDegree(graphs.elementAt(r)))
-            }
-
-            params.title = "Average Degree Scatter Plot"
-            params.type = ChartMeasure.PlotType.LINE
-            m2.plot(params)
-
-            val m3 = ChartSeries2DMeasure("Average Degree Deviation")
-            (0..graphs.count() - 1).forEach { r ->
-                m3.addValue((r + 1).toDouble(), degreeAverageDeviation(graphs.elementAt(r)))
-            }
-
-            params.title = "Average Degree Deviation"
-            params.type = ChartMeasure.PlotType.BAR
-            m3.plot(params)
         }
 
         fun generator(css: String, generator: MicroserviceGenerator): SingleGraph {
