@@ -165,14 +165,14 @@ fun e2eMultipleApps(): MicroserviceGenerator {
 }
 
 fun multiService(): Architecture {
-    val first = e2e().architecture
-    val second = e2eMultipleApps().architecture
-    val third = multipleLinks().architecture
+    val from = e2e().architecture
+    val to = e2eMultipleApps().architecture
+    val anotherFrom = multipleLinks().architecture
     val serviceDiscovery = ServiceRegistry("Eureka")
-    val crossTalk = Right(XTalk(first, WebApplication("MyWebApplication"), second, WebApplication("Recommendation"), serviceDiscovery))
-    val e2e = Left(first)
-    val e2eMultipleApps = Left(second)
-    val multiLink = Left(third)
-    val crossTalk2 = Right(XTalk(third, WebApplication("MyWebApplication"), second, WebApplication("User"), serviceDiscovery))
-    return Architecture(sequenceOf(e2e, e2eMultipleApps, multiLink, crossTalk, crossTalk2))
+    val crossTalk = Right(XTalk(from, WebApplication("MyWebApplication"), to, WebApplication("Recommendation"), serviceDiscovery))
+    val e2e = Left(from)
+    val e2eMultipleApps = Left(to)
+    val multiLink = Left(anotherFrom)
+    val moreCrossTalk = Right(XTalk(anotherFrom, WebApplication("MyWebApplication"), to, WebApplication("User"), serviceDiscovery))
+    return Architecture(sequenceOf(e2e, e2eMultipleApps, multiLink, crossTalk, moreCrossTalk))
 }
