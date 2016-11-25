@@ -47,21 +47,9 @@ class Main {
         }
 
         private fun measurements(graphs: Sequence<Graph>) {
-            plotDensity(graphs, "Density measure", "Density Scatter Plot", Toolkit::density)
-            plotDensity(graphs, "Average Degree measure", "Average Degree Scatter Plot", Toolkit::averageDegree)
-            plotDensity(graphs, "Average Degree Deviation", "Average Degree Deviation", Toolkit::degreeAverageDeviation)
-        }
-
-        private fun plotDensity(graphs: Sequence<Graph>, chartName: String, plotTitle: String, measurement: (graph: Graph) -> Double) {
-            val m1 = ChartSeries2DMeasure(chartName)
-            (0..graphs.count() - 1).forEach { r ->
-                m1.addValue((r + 1).toDouble(), measurement(graphs.elementAt(r)))
-            }
-
-            val params = ChartMeasure.PlotParameters()
-            params.title = plotTitle
-            params.type = ChartMeasure.PlotType.LINE
-            m1.plot(params)
+            plotMetric(graphs, "Density measure", "Density Scatter Plot", Toolkit::density)
+            plotMetric(graphs, "Average Degree measure", "Average Degree Scatter Plot", Toolkit::averageDegree)
+            plotMetric(graphs, "Average Degree Deviation", "Average Degree Deviation", Toolkit::degreeAverageDeviation)
         }
 
         fun generator(css: String, generator: MicroserviceGenerator): SingleGraph {
