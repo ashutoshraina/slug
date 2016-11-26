@@ -25,13 +25,14 @@ class Main {
                 else -> DisplayHelper().loadDefaultCSS()
             }
 
-            val simpleGraphs: Sequence<Graph> = emptySequence<SingleGraph>().plusElement(generator(css, simpleArchitecture()))
-                    .plusElement(generator(css, simple3Tier()))
-                    .plusElement(generator(css, multipleLinks()))
-                    .plusElement(generator(css, e2e()))
-                    .plusElement(generator(css, e2eMultipleApps()))
+            val factory = MicroserviceFactory(config.getProperty("density"))
+            val simpleGraphs: Sequence<Graph> = emptySequence<SingleGraph>().plusElement(generator(css, factory.simpleArchitecture()))
+                    .plusElement(generator(css, factory.simple3Tier()))
+                    .plusElement(generator(css, factory.multipleLinks()))
+                    .plusElement(generator(css, factory.e2e()))
+                    .plusElement(generator(css, factory.e2eMultipleApps()))
 
-            val architecture = multiService()
+            val architecture = factory.multiService()
             val serviceGraphs = architecture.generators().map { microservice -> generator(css, microservice) }
 
             val XTalks = architecture.crossTalks()

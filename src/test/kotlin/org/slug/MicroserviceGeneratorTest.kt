@@ -11,71 +11,72 @@ import org.slug.core.LayerConnection.*
 
 class MicroserviceGeneratorTest {
 
+    val factory = MicroserviceFactory("dense")
     @Test
     fun shouldAddAllTheComponents() {
 
-        val generator = simpleArchitecture()
+        val generator = factory.simpleArchitecture()
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
         generator.end()
 
-        assertEquals(11, graph.nodeCount)
-        assertEquals(22, graph.edgeCount)
+        assertEquals(14, graph.nodeCount)
+        assertEquals(31, graph.edgeCount)
 
     }
 
     @Test
     fun shouldCreateLinksBetweenComponents() {
-        val generator = simple3Tier()
+        val generator = factory.simple3Tier()
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
         generator.end()
 
-        assertEquals(10, graph.nodeCount)
-        assertEquals(18, graph.edgeCount)
+        assertEquals(15, graph.nodeCount)
+        assertEquals(33, graph.edgeCount)
     }
 
     @Test
     fun canCreateMultipleLayerLinksFromAComponent() {
 
-        val generator = multipleLinks()
+        val generator = factory.multipleLinks()
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
         generator.end()
 
-        assertEquals(13, graph.nodeCount)
-        assertEquals(28, graph.edgeCount)
+        assertEquals(17, graph.nodeCount)
+        assertEquals(44, graph.edgeCount)
 
     }
 
     @Test
     fun e2eArchitecture() {
 
-        val generator = e2e()
+        val generator = factory.e2e()
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
         generator.end()
 
-        assertEquals(14, graph.nodeCount)
-        assertEquals(26, graph.edgeCount)
+        assertEquals(19, graph.nodeCount)
+        assertEquals(46, graph.edgeCount)
 
     }
 
     @Test
     fun e2eArchitectureWithMultipleApps() {
 
-        val generator = e2e()
+        val generator = factory.e2e()
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
         generator.end()
 
-        assertEquals(14, graph.nodeCount)
-        assertEquals(26, graph.edgeCount)
+        assertEquals(19, graph.nodeCount)
+        assertEquals(46, graph.edgeCount)
 
     }
 }
