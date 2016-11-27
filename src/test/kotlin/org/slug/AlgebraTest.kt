@@ -14,7 +14,7 @@ class AlgebraTest {
     fun createAnArchitectureWith2Layers() {
 
         val webApplication = WebApplication("MyWebApplication")
-        val database = Database("Redis")
+        val database = Database("Redis", 5)
         val serviceDiscovery = ServiceDiscovery("DNS_SERVER")
         val layerConnection = ServiceDiscoveryIndirection(webApplication, serviceDiscovery, database, 1)
         val discoverableComponent = DiscoverableComponent(webApplication, layerConnection)

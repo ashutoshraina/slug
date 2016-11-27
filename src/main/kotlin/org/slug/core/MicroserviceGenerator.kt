@@ -71,8 +71,20 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
                     createNode(from)
                     createEdge(component, from)
                 }
-                createNode(component.connection.to.identifier)
-                createEdge(component)
+                when(component.connection.to){
+                    is InfrastructureType.Database -> {
+                        val database = component.connection.to
+                        (1..database.replicationFactor).forEach { d ->
+                            val to = createIdentifier(database.identifier, d)
+                            createNode(to)
+                            createEdge(component.connection.via.identifier, to)
+                        }
+                    }
+                    else -> {
+                        createNode(component.connection.to.identifier)
+                        createEdge(component)
+                    }
+                }
             }
         }
         return nodes

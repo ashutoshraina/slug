@@ -30,7 +30,7 @@ class Main {
                 else -> DisplayHelper().loadDefaultCSS()
             }
 
-            val factory = MicroserviceFactory(config.getProperty("density"))
+            val factory = MicroserviceFactory(config.getProperty("density"), config.getProperty("replication"))
             val simpleGraphs: Sequence<Graph> = emptySequence<SingleGraph>()
                     .plusElement(generator(css, factory.simpleArchitecture()))
                     .plusElement(generator(css, factory.simple3Tier()))

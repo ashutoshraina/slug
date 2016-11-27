@@ -11,7 +11,7 @@ import org.slug.core.LayerConnection.*
 
 class MicroserviceGeneratorTest {
 
-    val factory = MicroserviceFactory("dense")
+    val factory = MicroserviceFactory("dense","medium")
     @Test
     fun shouldAddAllTheComponents() {
 
@@ -21,8 +21,8 @@ class MicroserviceGeneratorTest {
         generator.begin()
         generator.end()
 
-        assertEquals(14, graph.nodeCount)
-        assertEquals(31, graph.edgeCount)
+        assertEquals(18, graph.nodeCount)
+        assertEquals(35, graph.edgeCount)
 
     }
 
@@ -34,8 +34,8 @@ class MicroserviceGeneratorTest {
         generator.begin()
         generator.end()
 
-        assertEquals(15, graph.nodeCount)
-        assertEquals(33, graph.edgeCount)
+        assertEquals(19, graph.nodeCount)
+        assertEquals(37, graph.edgeCount)
     }
 
     @Test
@@ -47,8 +47,8 @@ class MicroserviceGeneratorTest {
         generator.begin()
         generator.end()
 
-        assertEquals(17, graph.nodeCount)
-        assertEquals(44, graph.edgeCount)
+        assertEquals(25, graph.nodeCount)
+        assertEquals(52, graph.edgeCount)
 
     }
 
@@ -61,8 +61,8 @@ class MicroserviceGeneratorTest {
         generator.begin()
         generator.end()
 
-        assertEquals(19, graph.nodeCount)
-        assertEquals(46, graph.edgeCount)
+        assertEquals(27, graph.nodeCount)
+        assertEquals(54, graph.edgeCount)
 
     }
 
@@ -75,8 +75,8 @@ class MicroserviceGeneratorTest {
         generator.begin()
         generator.end()
 
-        assertEquals(19, graph.nodeCount)
-        assertEquals(46, graph.edgeCount)
+        assertEquals(27, graph.nodeCount)
+        assertEquals(54, graph.edgeCount)
 
     }
 }

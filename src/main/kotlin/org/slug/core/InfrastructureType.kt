@@ -11,7 +11,7 @@ sealed class InfrastructureType {
     class Cache(override val identifier: String) : InfrastructureType()
     class ServiceDiscovery(override val identifier: String) : InfrastructureType()
     class WebApplication(override val identifier: String) : DiscoverableInfrastructureType()
-    class Database(override val identifier: String) : DiscoverableInfrastructureType()
+    class Database(override val identifier: String, val replicationFactor : Int) : DiscoverableInfrastructureType()
 
     override fun toString(): String {
         return "InfrastructureType(identifier='$identifier')"
