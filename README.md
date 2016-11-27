@@ -50,6 +50,6 @@ density=dense # service density
 #options for density sparse,dense,hyperdense
 
 replication= medium # replication factor
-#options for persistence_replication minimal, medium, high
+#options for replication minimal, medium, high
 
 ```
