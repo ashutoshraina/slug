@@ -8,8 +8,9 @@ Slug is a microservice architecture generator, primarily used for generating arc
 
 How to run
 
+Clone the repo
+
 ```
-clone the repo
 git clone git@github.com:ashutoshraina/slug.git
 
 ```
@@ -26,7 +27,7 @@ In the samples directory :
 * There will dot files which can be used to render the architectures in grpahviz.
 * If you have installed graphviz, then you can do 
 
-```
+``` bash
 dot -Tpng samples/input.dot > output.png
 
 ```
@@ -36,12 +37,18 @@ Configuration
 Modify the properties file in resources for various configuration options.
  
 
-```
+``` yml
 display.swing=true # enables or disables the force directed visualisation (Swing based)
+
 display.dot=true # enables or disables the generation of dot files that can be fed into GraphViz
+
 style=style.css # style file force directed visualisation
+```
+
+``` yml
 density=dense # service density
 #options for density sparse,dense,hyperdense
+
 replication= medium # replication factor
 #options for persistence_replication minimal, medium, high
 
