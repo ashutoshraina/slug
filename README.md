@@ -28,4 +28,21 @@ In the samples directory :
 
 ```
 dot -Tpng samples/input.dot > output.png
-``` 
+
+```
+
+Configuration
+
+Modify the properties file in resources for various configuration options.
+ 
+
+```
+display.swing=true # enables or disables the force directed visualisation (Swing based)
+display.dot=true # enables or disables the generation of dot files that can be fed into GraphViz
+style=style.css # style file force directed visualisation
+density=dense # service density
+#options for density sparse,dense,hyperdense
+replication= medium # replication factor
+#options for persistence_replication minimal, medium, high
+
+```
