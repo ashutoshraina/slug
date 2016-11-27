@@ -11,6 +11,9 @@ import org.slug.core.MicroserviceGenerator
 import org.slug.output.DisplayHelper
 import org.slug.output.display
 import org.slug.output.generateDotFile
+import java.io.File
+
+
 
 
 class Main {
@@ -19,6 +22,8 @@ class Main {
         val config = Config.fromConfig("default.properties")
 
         @JvmStatic fun main(args: Array<String>) {
+            val file = File("samples")
+            if(!file.exists()) file.mkdirs()
             val styleFile = config.getProperty("style")
             val css = when {
                 !styleFile.isNullOrEmpty() -> DisplayHelper().loadCSS(styleFile)
@@ -26,7 +31,8 @@ class Main {
             }
 
             val factory = MicroserviceFactory(config.getProperty("density"))
-            val simpleGraphs: Sequence<Graph> = emptySequence<SingleGraph>().plusElement(generator(css, factory.simpleArchitecture()))
+            val simpleGraphs: Sequence<Graph> = emptySequence<SingleGraph>()
+                    .plusElement(generator(css, factory.simpleArchitecture()))
                     .plusElement(generator(css, factory.simple3Tier()))
                     .plusElement(generator(css, factory.multipleLinks()))
                     .plusElement(generator(css, factory.e2e()))
