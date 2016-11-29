@@ -53,7 +53,7 @@ class Main {
         private fun measurements(graphs: Sequence<Graph>) {
             plotMetric(graphs, "Density measure", "Density Scatter Plot", Toolkit::density, "Density")
             plotMetric(graphs, "Average Degree measure", "Average Degree Scatter Plot", Toolkit::averageDegree, "Average Degree")
-            plotMetric(graphs, "Average Degree Deviation", "Average Degree Deviation", Toolkit::degreeAverageDeviation, "Average Degree Deciation")
+            plotMetric(graphs, "Average Degree Deviation", "Average Degree Deviation", Toolkit::degreeAverageDeviation, "Average Degree Deviation")
         }
 
         fun generator(css: String, generator: MicroserviceGenerator): SingleGraph {
