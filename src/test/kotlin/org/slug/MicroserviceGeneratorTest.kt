@@ -69,14 +69,14 @@ class MicroserviceGeneratorTest {
     @Test
     fun e2eArchitectureWithMultipleApps() {
 
-        val generator = factory.e2e()
+        val generator = factory.e2eMultipleApps()
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
         generator.end()
 
-        assertEquals(27, graph.nodeCount)
-        assertEquals(54, graph.edgeCount)
+        assertEquals(37, graph.nodeCount)
+        assertEquals(74, graph.edgeCount)
 
     }
 }
