@@ -3,12 +3,13 @@ package org.slug.output
 import org.graphstream.graph.Edge
 import org.graphstream.graph.Graph
 import org.graphstream.graph.Node
+import java.io.File
 import java.io.FileOutputStream
 import java.io.PrintStream
 
 fun generateDotFile(graph: Graph) {
 
-    val printStream = PrintStream(FileOutputStream("samples/${graph.id}.dot"))
+    val printStream = PrintStream(FileOutputStream("samples"+ File.separator +"${graph.id}.dot"))
     generateDotFile(graph, printStream)
 }
 
