@@ -7,11 +7,13 @@ import org.slug.core.Component.DiscoverableComponent
 import org.slug.core.Component.SimpleComponent
 import org.slug.core.InfrastructureType.*
 import org.slug.core.LayerConnection.*
+import org.slug.factories.Infrastructure
+import org.slug.factories.MicroserviceFactory
 
 
 class MicroserviceGeneratorTest {
 
-    val factory = MicroserviceFactory("dense","medium")
+    val factory = MicroserviceFactory("dense", "medium", Infrastructure.loadInfrastructureConfig("infrastructure.json"))
     @Test
     fun shouldAddAllTheComponents() {
 

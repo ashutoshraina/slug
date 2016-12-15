@@ -17,3 +17,7 @@ sealed class InfrastructureType {
         return "InfrastructureType(identifier='$identifier')"
     }
 }
+
+fun InfrastructureType.Database.withReplication(replicationFactor: Int) : InfrastructureType.Database{
+    return InfrastructureType.Database(this.identifier, replicationFactor)
+}

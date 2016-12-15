@@ -1,0 +1,29 @@
+{
+    "database" :[
+        "cassandra",
+        "foo"
+    ],
+    "cache" : [
+        "memcached"
+    ],
+    "firewall" : [
+        "symantec"
+    ],
+    "cdn" : [
+        "Akamai"
+    ],
+    "proxy" : [
+        "Nginx"
+    ],
+    "loadBalancer" : [
+        "F5"
+    ],
+    "serviceDiscovery" : [
+        "DNS",
+        "DNS_2"
+    ],
+
+    "webApplication" : [
+            "User", "Recommendation", "Authentication", "Account", "Videos", "Music"
+    ]
+}

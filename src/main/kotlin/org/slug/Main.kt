@@ -1,33 +1,29 @@
 package org.slug
 
 import org.graphstream.algorithm.Toolkit
-import org.graphstream.algorithm.Toolkit.*
-import org.graphstream.algorithm.measure.ChartMeasure
-import org.graphstream.algorithm.measure.ChartSeries2DMeasure
 import org.graphstream.graph.Graph
 import org.graphstream.graph.implementations.SingleGraph
 import org.slug.core.CrossTalkGenerator
 import org.slug.core.MicroserviceGenerator
+import org.slug.factories.Infrastructure.Companion.loadInfrastructureConfig
+import org.slug.factories.MicroserviceFactory
 import org.slug.output.DisplayHelper
 import org.slug.output.display
 import org.slug.output.generateDotFile
 import java.io.File
+import java.util.concurrent.ThreadLocalRandom
 
 class Main {
 
     companion object {
         val config = Config.fromConfig("default.properties")
+        val random = ThreadLocalRandom.current()
 
         @JvmStatic fun main(args: Array<String>) {
-            val file = File("samples")
-            if(!file.exists()) file.mkdirs()
-            val styleFile = config.getProperty("style")
-            val css = when {
-                !styleFile.isNullOrEmpty() -> DisplayHelper().loadCSS(styleFile)
-                else -> DisplayHelper().loadDefaultCSS()
-            }
+            val css = loadCSSConfig()
+            val infrastructure = loadInfrastructureConfig()
 
-            val factory = MicroserviceFactory(config.getProperty("density"), config.getProperty("replication"))
+            val factory = MicroserviceFactory(config.getProperty("density"), config.getProperty("replication"), infrastructure)
             val simpleGraphs: Sequence<Graph> = emptySequence<SingleGraph>()
                     .plusElement(generator(css, factory.simpleArchitecture()))
                     .plusElement(generator(css, factory.simple3Tier()))
@@ -48,6 +44,18 @@ class Main {
 
             val graphs = simpleGraphs.plus(serviceGraphs)
             measurements(graphs)
+        }
+
+
+        private fun loadCSSConfig(): String {
+            val file = File("samples")
+            if (!file.exists()) file.mkdirs()
+            val styleFile = config.getProperty("style")
+            val css = when {
+                !styleFile.isNullOrEmpty() -> DisplayHelper().loadCSS(styleFile)
+                else -> DisplayHelper().loadDefaultCSS()
+            }
+            return css
         }
 
         private fun measurements(graphs: Sequence<Graph>) {
