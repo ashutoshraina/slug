@@ -46,8 +46,8 @@ style=style.css # style file force directed visualisation
 ```
 
 ``` yml
-density=dense # service density
-#options for density sparse,dense,hyperdense
+densityFromDistribution=dense # service densityFromDistribution
+#options for densityFromDistribution sparse,dense,hyperdense
 
 replication= medium # replication factor
 #options for replication minimal, medium, high

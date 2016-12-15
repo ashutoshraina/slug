@@ -11,19 +11,17 @@ import org.slug.output.DisplayHelper
 import org.slug.output.display
 import org.slug.output.generateDotFile
 import java.io.File
-import java.util.concurrent.ThreadLocalRandom
 
 class Main {
 
     companion object {
         val config = Config.fromConfig("default.properties")
-        val random = ThreadLocalRandom.current()
 
         @JvmStatic fun main(args: Array<String>) {
             val css = loadCSSConfig()
             val infrastructure = loadInfrastructureConfig()
 
-            val factory = MicroserviceFactory(config.getProperty("density"), config.getProperty("replication"), infrastructure)
+            val factory = MicroserviceFactory(config.getProperty("density"), config.getProperty("replication"), infrastructure ,config.getBooleanProperty("powerlaw"))
             val simpleGraphs: Sequence<Graph> = emptySequence<SingleGraph>()
                     .plusElement(generator(css, factory.simpleArchitecture()))
                     .plusElement(generator(css, factory.simple3Tier()))

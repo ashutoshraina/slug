@@ -9,7 +9,7 @@ import org.slug.factories.InfrastructureFactory.Companion.create
 import org.slug.util.Left
 import org.slug.util.Right
 
-class MicroserviceFactory(serviceDensity: String, replicationFactor: String, val infrastructure: Infrastructure) {
+class MicroserviceFactory(serviceDensity: String, replicationFactor : String, val infrastructure: Infrastructure, private val powerLawDistribution : Boolean = false) {
     val defaultDensity = 5
     val defaultReplication = 3
     val densityMap = mapOf("sparse" to 4, "dense" to 10, "hyperdense" to 15)
@@ -27,6 +27,10 @@ class MicroserviceFactory(serviceDensity: String, replicationFactor: String, val
     val aDNS = create<ServiceDiscovery>(infrastructure)
     val anotherDNS = create<ServiceDiscovery>(infrastructure)
 
+    private val densityFromDistribution: Int
+        get() = if (powerLawDistribution) { PowerLaw().zipf(density) } else density
+
+
     fun simpleArchitecture(): MicroserviceGenerator {
         val proxy = Proxy("NGINX")
         val webApplication = WebApplication("WebApp")
@@ -38,7 +42,7 @@ class MicroserviceFactory(serviceDensity: String, replicationFactor: String, val
         val serviceDiscovery = ServiceDiscovery("DNS_SERVER")
         val layerConnection = ServiceDiscoveryIndirection(webApplication, serviceDiscovery, database)
         val discoverableComponent = DiscoverableComponent(webApplication, layerConnection)
-        val webLayer = Layer("2", density, discoverableComponent)
+        val webLayer = Layer("2", densityFromDistribution, discoverableComponent)
 
         val microservice = Microservice("simple", sequenceOf(proxyLayer, webLayer))
         val gen = MicroserviceGenerator(microservice)
@@ -56,7 +60,7 @@ class MicroserviceFactory(serviceDensity: String, replicationFactor: String, val
 
         val layerConnection = ServiceDiscoveryIndirection(webApplication, aDNS, aDatabase)
         val discoverableComponent = DiscoverableComponent(webApplication, layerConnection)
-        val webLayer = Layer("3", density, discoverableComponent)
+        val webLayer = Layer("3", densityFromDistribution, discoverableComponent)
 
         val microservice = Microservice("simple", sequenceOf(cdnLayer, proxyLayer, webLayer))
         return MicroserviceGenerator(microservice)
@@ -74,11 +78,11 @@ class MicroserviceFactory(serviceDensity: String, replicationFactor: String, val
 
         val web2redis = ServiceDiscoveryIndirection(webApplication, aDNS, aDatabase)
         val recommendationComponent = DiscoverableComponent(webApplication, web2redis)
-        val recommendationLayer = Layer("3", density, recommendationComponent)
+        val recommendationLayer = Layer("3", densityFromDistribution, recommendationComponent)
 
         val web2cassandra = ServiceDiscoveryIndirection(webApplication, anotherDNS, anotherDatabase)
         val userComponent = DiscoverableComponent(webApplication, web2cassandra)
-        val userLayer = Layer("4", density, userComponent)
+        val userLayer = Layer("4", densityFromDistribution, userComponent)
 
         val microservice = Microservice("multipleLinks", sequenceOf(cdnLayer, proxyLayer, recommendationLayer, userLayer))
         return MicroserviceGenerator(microservice)
@@ -105,11 +109,11 @@ class MicroserviceFactory(serviceDensity: String, replicationFactor: String, val
 
         val web2redis = ServiceDiscoveryIndirection(webApplication, aDNS, aDatabase, replication)
         val recommendationComponent = DiscoverableComponent(webApplication, web2redis)
-        val recommendationLayer = Layer("5", density, recommendationComponent)
+        val recommendationLayer = Layer("5", densityFromDistribution, recommendationComponent)
 
         val web2cassandra = ServiceDiscoveryIndirection(webApplication, anotherDNS, anotherDatabase)
         val userComponent = DiscoverableComponent(webApplication, web2cassandra)
-        val userLayer = Layer("6", density, userComponent)
+        val userLayer = Layer("6", densityFromDistribution, userComponent)
 
         val microservice = Microservice("e2e", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyLayer, recommendationLayer, userLayer))
         return MicroserviceGenerator(microservice)
@@ -141,9 +145,10 @@ class MicroserviceFactory(serviceDensity: String, replicationFactor: String, val
         val recommendationComponent = DiscoverableComponent(webApplication, web2redis)
         val recommendationLayer = Layer("6", density, recommendationComponent)
 
+
         val web2cassandra = ServiceDiscoveryIndirection(userCreation, anotherDNS, anotherDatabase)
         val userComponent = DiscoverableComponent(userCreation, web2cassandra)
-        val userLayer = Layer("7", density, userComponent)
+        val userLayer = Layer("7", densityFromDistribution, userComponent)
 
         val microservice = Microservice("e2eMultipleApps", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyRecommendationLayer, recommendationLayer, proxyUserCreationLayer, userLayer))
         return MicroserviceGenerator(microservice)
