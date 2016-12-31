@@ -21,7 +21,7 @@ class Main {
             val css = loadCSSConfig()
             val infrastructure = loadInfrastructureConfig()
 
-            val factory = MicroserviceFactory(config.getProperty("density"), config.getProperty("replication"), infrastructure ,config.getBooleanProperty("powerlaw"))
+            val factory = MicroserviceFactory(config.getProperty("densityFromDistribution"), config.getProperty("replication"), infrastructure ,config.getBooleanProperty("powerlaw"))
             val simpleGraphs: Sequence<Graph> = emptySequence<SingleGraph>()
                     .plusElement(generator(css, factory.simpleArchitecture()))
                     .plusElement(generator(css, factory.simple3Tier()))
