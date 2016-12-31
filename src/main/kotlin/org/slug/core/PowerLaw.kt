@@ -54,12 +54,10 @@ class PowerLaw {
     }
 
     fun zipf(size: Int): Int {
-        // make array of numbers
         val nums = DoubleArray(size)
         for (i in nums.indices) {
             nums[i] = (i + 1).toDouble()
         }
-        // get index using special case of power law
         return select(nums, -1.0)
     }
 

@@ -2,6 +2,7 @@ package org.slug.output
 
 import org.graphstream.graph.Graph
 import org.slug.util.FileHelper
+import java.io.File
 
 class DisplayHelper {
 
@@ -17,5 +18,5 @@ class DisplayHelper {
 fun display(graph: Graph) {
         graph.display()
         Thread.sleep(1000)
-        graph.addAttribute("ui.screenshot", "samples/" + graph.id + "_screenshot.png")
+        graph.addAttribute("ui.screenshot", "samples"+ File.separator + graph.id + "_screenshot.png")
 }
