@@ -18,10 +18,13 @@ class Main {
         val config = Config.fromConfig("default.properties")
 
         @JvmStatic fun main(args: Array<String>) {
+            val file = File("samples")
+            if (!file.exists()) file.mkdirs()
+
             val css = loadCSSConfig()
             val infrastructure = loadInfrastructureConfig()
 
-            val factory = MicroserviceFactory(config.getProperty("densityFromDistribution"), config.getProperty("replication"), infrastructure ,config.getBooleanProperty("powerlaw"))
+            val factory = MicroserviceFactory(config.getProperty("densityFromDistribution"), config.getProperty("replication"), infrastructure, config.getBooleanProperty("powerlaw"))
             val simpleGraphs: Sequence<Graph> = emptySequence<SingleGraph>()
                     .plusElement(generator(css, factory.simpleArchitecture()))
                     .plusElement(generator(css, factory.simple3Tier()))
@@ -34,20 +37,17 @@ class Main {
 
             val XTalks = architecture.crossTalks()
             val crossTalks = CrossTalkGenerator().addCrossTalk(serviceGraphs, XTalks)
-            serviceGraphs.plus(crossTalks)
+            simpleGraphs.plus(crossTalks)
                     .forEach { graph ->
                         if (config.getBooleanProperty("display.swing")) display(graph)
                         if (config.getBooleanProperty("display.dot")) generateDotFile(graph)
                     }
 
             val graphs = simpleGraphs.plus(serviceGraphs)
-            measurements(graphs)
+            if (config.getBooleanProperty("plots")) measurements(graphs)
         }
 
-
         private fun loadCSSConfig(): String {
-            val file = File("samples")
-            if (!file.exists()) file.mkdirs()
             val styleFile = config.getProperty("style")
             val css = when {
                 !styleFile.isNullOrEmpty() -> DisplayHelper().loadCSS(styleFile)

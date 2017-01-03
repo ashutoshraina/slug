@@ -3,7 +3,7 @@ package org.slug.factories
 import org.slug.core.InfrastructureType
 import org.slug.core.InfrastructureType.*
 
-abstract class InfrastructureFactory<out T : InfrastructureType>() {
+abstract class InfrastructureFactory<out T : InfrastructureType> {
     abstract fun create() : T
 
     companion object {

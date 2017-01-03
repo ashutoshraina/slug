@@ -26,14 +26,12 @@ class MicroserviceFactory(serviceDensity: String, replicationFactor : String, va
     val anotherDatabase = create<Database>(infrastructure).withReplication(replication)
     val aDNS = create<ServiceDiscovery>(infrastructure)
     val anotherDNS = create<ServiceDiscovery>(infrastructure)
+    val serviceDiscovery = ServiceRegistry("Eureka")
 
     private val densityFromDistribution: Int
         get() = if (powerLawDistribution) { PowerLaw().zipf(density) } else density
 
-
     fun simpleArchitecture(): MicroserviceGenerator {
-        val proxy = Proxy("NGINX")
-        val webApplication = WebApplication("WebApp")
         val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
         val simpleComponent = SimpleComponent(proxy, proxy2Web)
         val proxyLayer = Layer("1", 2, simpleComponent)
@@ -50,6 +48,7 @@ class MicroserviceFactory(serviceDensity: String, replicationFactor : String, va
     }
 
     fun simple3Tier(): MicroserviceGenerator {
+        val density = densityFromDistribution
         val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
         val cdnComponent = SimpleComponent(cdn, cdn2Proxy)
         val cdnLayer = Layer("1", 1, cdnComponent)
@@ -60,14 +59,15 @@ class MicroserviceFactory(serviceDensity: String, replicationFactor : String, va
 
         val layerConnection = ServiceDiscoveryIndirection(webApplication, aDNS, aDatabase)
         val discoverableComponent = DiscoverableComponent(webApplication, layerConnection)
-        val webLayer = Layer("3", densityFromDistribution, discoverableComponent)
+        val webLayer = Layer("3", density, discoverableComponent)
 
-        val microservice = Microservice("simple", sequenceOf(cdnLayer, proxyLayer, webLayer))
+        val microservice = Microservice("simple3Tier", sequenceOf(cdnLayer, proxyLayer, webLayer))
         return MicroserviceGenerator(microservice)
     }
 
     fun multipleLinks(): MicroserviceGenerator {
 
+        val density = densityFromDistribution
         val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
         val cdnComponent = SimpleComponent(cdn, cdn2Proxy)
         val cdnLayer = Layer("1", 1, cdnComponent)
@@ -76,21 +76,22 @@ class MicroserviceFactory(serviceDensity: String, replicationFactor : String, va
         val proxyComponent = SimpleComponent(proxy, proxy2Web)
         val proxyLayer = Layer("2", 2, proxyComponent)
 
-        val web2redis = ServiceDiscoveryIndirection(webApplication, aDNS, aDatabase)
-        val recommendationComponent = DiscoverableComponent(webApplication, web2redis)
-        val recommendationLayer = Layer("3", densityFromDistribution, recommendationComponent)
+        val indirection = ServiceDiscoveryIndirection(webApplication, aDNS, aDatabase)
+        val aComponent = DiscoverableComponent(webApplication, indirection)
+        val aWebLayer = Layer("3", density, aComponent)
 
-        val web2cassandra = ServiceDiscoveryIndirection(webApplication, anotherDNS, anotherDatabase)
-        val userComponent = DiscoverableComponent(webApplication, web2cassandra)
-        val userLayer = Layer("4", densityFromDistribution, userComponent)
+        val anotherIndirection = ServiceDiscoveryIndirection(webApplication, anotherDNS, anotherDatabase)
+        val anotherComponent = DiscoverableComponent(webApplication, anotherIndirection)
+        val anotherWebLayer = Layer("4", density, anotherComponent)
 
-        val microservice = Microservice("multipleLinks", sequenceOf(cdnLayer, proxyLayer, recommendationLayer, userLayer))
+        val microservice = Microservice("multipleLinks", sequenceOf(cdnLayer, proxyLayer, aWebLayer, anotherWebLayer))
         return MicroserviceGenerator(microservice)
 
     }
 
     fun e2e(): MicroserviceGenerator {
 
+        val density = densityFromDistribution
         val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
         val cdnComponent = SimpleComponent(cdn, cdn2Proxy)
         val cdnLayer = Layer("1", 1, cdnComponent)
@@ -109,17 +110,19 @@ class MicroserviceFactory(serviceDensity: String, replicationFactor : String, va
 
         val web2redis = ServiceDiscoveryIndirection(webApplication, aDNS, aDatabase, replication)
         val recommendationComponent = DiscoverableComponent(webApplication, web2redis)
-        val recommendationLayer = Layer("5", densityFromDistribution, recommendationComponent)
+        val recommendationLayer = Layer("5", density, recommendationComponent)
 
         val web2cassandra = ServiceDiscoveryIndirection(webApplication, anotherDNS, anotherDatabase)
         val userComponent = DiscoverableComponent(webApplication, web2cassandra)
-        val userLayer = Layer("6", densityFromDistribution, userComponent)
+        val userLayer = Layer("6", density, userComponent)
 
         val microservice = Microservice("e2e", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyLayer, recommendationLayer, userLayer))
         return MicroserviceGenerator(microservice)
     }
 
     fun e2eMultipleApps(): MicroserviceGenerator {
+        val density = densityFromDistribution
+
         val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
         val cdnComponent = SimpleComponent(cdn, cdn2Proxy)
         val cdnLayer = Layer("1", 1, cdnComponent)
@@ -145,10 +148,9 @@ class MicroserviceFactory(serviceDensity: String, replicationFactor : String, va
         val recommendationComponent = DiscoverableComponent(webApplication, web2redis)
         val recommendationLayer = Layer("6", density, recommendationComponent)
 
-
         val web2cassandra = ServiceDiscoveryIndirection(userCreation, anotherDNS, anotherDatabase)
         val userComponent = DiscoverableComponent(userCreation, web2cassandra)
-        val userLayer = Layer("7", densityFromDistribution, userComponent)
+        val userLayer = Layer("7", density, userComponent)
 
         val microservice = Microservice("e2eMultipleApps", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyRecommendationLayer, recommendationLayer, proxyUserCreationLayer, userLayer))
         return MicroserviceGenerator(microservice)
@@ -158,12 +160,21 @@ class MicroserviceFactory(serviceDensity: String, replicationFactor : String, va
         val from = e2e().architecture
         val to = e2eMultipleApps().architecture
         val anotherFrom = multipleLinks().architecture
-        val serviceDiscovery = ServiceRegistry("Eureka")
-        val crossTalk = Right(XTalk(from, WebApplication("MyWebApplication"), to, WebApplication("Recommendation"), serviceDiscovery))
+
+        val entry = from.layers.first { l ->  l.component.type is InfrastructureType.WebApplication}.component.type
+        val exit = to.layers.last { l ->  l.component.type is InfrastructureType.WebApplication}.component.type
+
+        val crossTalk = Right(XTalk(from, entry, to, exit, serviceDiscovery))
+
         val e2e = Left(from)
         val e2eMultipleApps = Left(to)
         val multiLink = Left(anotherFrom)
-        val moreCrossTalk = Right(XTalk(anotherFrom, WebApplication("MyWebApplication"), to, WebApplication("User"), serviceDiscovery))
+
+        val anotherEntry = anotherFrom.layers.first { l ->  l.component.type is InfrastructureType.WebApplication}.component.type
+        val anotherExit = to.layers.last { l ->  l.component.type is InfrastructureType.WebApplication}.component.type
+
+        val moreCrossTalk = Right(XTalk(anotherFrom, anotherEntry, to, anotherExit, serviceDiscovery))
+
         return Architecture(sequenceOf(e2e, e2eMultipleApps, multiLink, crossTalk, moreCrossTalk))
     }
 }

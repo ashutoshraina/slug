@@ -22,29 +22,25 @@ class PowerLaw {
         return rand!!.nextInt(N)
     }
 
-    fun select(nums: DoubleArray, p: Double): Int {
+    fun select(doubles: DoubleArray, p: Double): Int {
         // make array of probabilities
-        val probs = DoubleArray(nums.size)
-        for (i in probs.indices) {
-            if (nums[i] == 0.0)
-                probs[i] = 0.0
+        val probabilities = DoubleArray(doubles.size)
+        for (i in probabilities.indices) {
+            if (doubles[i] == 0.0)
+                probabilities[i] = 0.0
             else
-                probs[i] = Math.pow(nums[i], p)
+                probabilities[i] = Math.pow(doubles[i], p)
         }
 
         // sum probabilities
-        var sum = 0.0
-        for (i in probs.indices) {
-            sum += probs[i]
-        }
+        val sum = probabilities.indices.sumByDouble { probabilities[it] }
 
         // obtain random number in range [0, sum]
         var r = sum * getRand()
 
-        var i: Int
-        i = 0
-        while (i < probs.size) {
-            r -= probs[i]
+        var i: Int = 0
+        while (i < probabilities.size) {
+            r -= probabilities[i]
             if (r < 0) {
                 break
             }
@@ -54,11 +50,11 @@ class PowerLaw {
     }
 
     fun zipf(size: Int): Int {
-        val nums = DoubleArray(size)
-        for (i in nums.indices) {
-            nums[i] = (i + 1).toDouble()
+        val numbers = DoubleArray(size)
+        for (i in numbers.indices) {
+            numbers[i] = (i + 1).toDouble()
         }
-        return select(nums, -1.0)
+        return select(numbers, -1.0) + 1
     }
 
 }

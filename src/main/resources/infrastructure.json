@@ -10,19 +10,19 @@
         "symantec"
     ],
     "cdn" : [
-        "Akamai"
+        "akamai"
     ],
     "proxy" : [
-        "Nginx"
+        "nginx"
     ],
     "loadBalancer" : [
         "F5"
     ],
     "serviceDiscovery" : [
-        "DNS"
+        "dns", "anotherDNS"
     ],
 
     "webApplication" : [
-            "User", "Recommendation", "Authentication", "Account", "Videos", "Music"
+            "user", "recommendation", "authentication", "account", "videos", "music", "playlist"
     ]
 }

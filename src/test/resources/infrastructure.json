@@ -1,7 +1,7 @@
 {
     "database" :[
         "cassandra",
-        "foo"
+        "redis"
     ],
     "cache" : [
         "memcached"
@@ -10,20 +10,19 @@
         "symantec"
     ],
     "cdn" : [
-        "Akamai"
+        "akamai"
     ],
     "proxy" : [
-        "Nginx"
+        "nginx"
     ],
     "loadBalancer" : [
         "F5"
     ],
     "serviceDiscovery" : [
-        "DNS",
-        "DNS_2"
+        "dns", "anotherDNS"
     ],
 
     "webApplication" : [
-            "User", "Recommendation", "Authentication", "Account", "Videos", "Music"
+        "user", "recommendation", "authentication", "account", "videos", "music", "playlist"
     ]
 }

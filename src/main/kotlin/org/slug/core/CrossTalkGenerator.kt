@@ -8,7 +8,6 @@ import org.graphstream.graph.implementations.SingleGraph
 import org.graphstream.graph.implementations.SingleNode
 import org.slug.output.DisplayConstants.LABEL
 import org.slug.output.DisplayConstants.STYLE
-import org.slug.output.GraphConstants.EDGE_STYLE
 import org.slug.output.GraphConstants.NODE_STYLE
 import org.slug.output.GraphConstants.SEPARATOR
 
@@ -49,7 +48,5 @@ class CrossTalkGenerator {
         return mergedGraph
     }
 
-    private fun mergedIdentifier(original: String): String {
-        return original + "_m"
-    }
+    private fun mergedIdentifier(original: String): String = original + "_m"
 }

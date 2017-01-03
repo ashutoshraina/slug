@@ -38,11 +38,13 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
         for ((first, second) in
         layerZipper(architecture.layers)) {
             when {
-                first.component.type.identifier == second.component.type.identifier -> addComponent(second.component, second.spatialRedundancy)
+                areEqual(first, second) -> addComponent(second.component, second.spatialRedundancy)
                 else -> createLinkLayers(first.component, first.spatialRedundancy, second.component, second.spatialRedundancy)
             }
         }
     }
+
+    private fun areEqual(first: Layer, second: Layer) = first.component.type.identifier == second.component.type.identifier
 
     private fun createLinkLayers(firstLayerComponent: Component, firstLayerRedundancy: Int, secondLayerComponent: Component, secondLayerRedundancy: Int) {
 
@@ -52,6 +54,7 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
     }
 
     private fun addComponent(component: Component, redundancy: Int): Sequence<String> {
+        logger?.debug("adding component " + component)
         var nodes = emptySequence<String>()
 
         when (component) {
@@ -92,11 +95,13 @@ class MicroserviceGenerator(val architecture: Microservice) : SourceBase(), Gene
 
     private fun createLink(firstLayerComponent: Component, froms: Sequence<String>, secondLayerRedundancy: Int, tos: Sequence<String>) = when (firstLayerComponent) {
         is SimpleComponent -> {
+            logger?.debug("creating link for simple component "+ firstLayerComponent)
             froms.forEach { from ->
                 tos.take(secondLayerRedundancy).forEach { to -> createEdge(from, to) }
             }
         }
         is DiscoverableComponent -> {
+            logger?.debug("creating link for discoverable component "+ firstLayerComponent)
             for ((from, to) in froms.zip(tos)) {
                 createEdge(from, to)
             }
