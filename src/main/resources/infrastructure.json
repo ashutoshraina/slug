@@ -23,6 +23,6 @@
     ],
 
     "webApplication" : [
-            "user", "recommendation", "authentication", "account", "videos", "music", "playlist"
+            "user", "recommendation", "auth", "account", "videos", "music", "playlist"
     ]
 }

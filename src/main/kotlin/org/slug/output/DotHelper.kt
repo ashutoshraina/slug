@@ -13,6 +13,14 @@ fun generateDotFile(graph: Graph) {
     generateDotFile(graph, printStream)
 }
 
+fun generateDotFile(graph: Graph, outputDirectory : String, dotDirectory : String) {
+
+    val outputPath = File(outputDirectory + File.separator + dotDirectory)
+    if(!outputPath.exists()) outputPath.mkdirs()
+    val printStream = PrintStream(FileOutputStream(outputPath.path + File.separator + "${graph.id}.dot"))
+    generateDotFile(graph, printStream)
+}
+
 fun generateDotFile(graph: Graph, printStream: PrintStream) {
     val graphName: String = graph.id
     val builder: StringBuilder = StringBuilder()

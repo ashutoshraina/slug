@@ -5,6 +5,7 @@ import org.graphstream.graph.Graph
 import org.graphstream.graph.implementations.SingleGraph
 import org.slug.core.CrossTalkGenerator
 import org.slug.core.MicroserviceGenerator
+import org.slug.factories.Infrastructure
 import org.slug.factories.Infrastructure.Companion.loadInfrastructureConfig
 import org.slug.factories.MicroserviceFactory
 import org.slug.output.DisplayHelper
@@ -18,13 +19,27 @@ class Main {
         val config = Config.fromConfig("default.properties")
 
         @JvmStatic fun main(args: Array<String>) {
-            val file = File("samples")
+            val outputFromConfig = config.getProperty("outputDirectory")
+            val outputDirectory = if(outputFromConfig.isNullOrEmpty()) "samples" else outputFromConfig
+
+            val file = File(outputDirectory)
             if (!file.exists()) file.mkdirs()
 
             val css = loadCSSConfig()
             val infrastructure = loadInfrastructureConfig()
 
-            val factory = MicroserviceFactory(config.getProperty("densityFromDistribution"), config.getProperty("replication"), infrastructure, config.getBooleanProperty("powerlaw"))
+            val serviceDensity = config.getProperty("densityFromDistribution")
+            val replicationFactor = config.getProperty("replication")
+            val powerLawDistribution = config.getBooleanProperty("powerlaw")
+            val iterations = config.getIntegerProperty("iterations")
+            (1..iterations).forEach{ iteration ->
+                val dotDirectory = File.separator + "i_" + iteration
+                generateArchitectures(css, infrastructure, powerLawDistribution, replicationFactor, serviceDensity, outputDirectory, dotDirectory)
+            }
+        }
+
+        private fun generateArchitectures(css: String, infrastructure: Infrastructure, powerLawDistribution: Boolean, replicationFactor: String, serviceDensity: String, outputDirectory : String , dotDirectory : String) {
+            val factory = MicroserviceFactory(serviceDensity, replicationFactor, infrastructure, powerLawDistribution)
             val simpleGraphs: Sequence<Graph> = emptySequence<SingleGraph>()
                     .plusElement(generator(css, factory.simpleArchitecture()))
                     .plusElement(generator(css, factory.simple3Tier()))
@@ -40,7 +55,7 @@ class Main {
             simpleGraphs.plus(crossTalks)
                     .forEach { graph ->
                         if (config.getBooleanProperty("display.swing")) display(graph)
-                        if (config.getBooleanProperty("display.dot")) generateDotFile(graph)
+                        if (config.getBooleanProperty("display.dot")) generateDotFile(graph, outputDirectory, dotDirectory)
                     }
 
             val graphs = simpleGraphs.plus(serviceGraphs)
