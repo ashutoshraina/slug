@@ -12,6 +12,7 @@ import org.slug.output.DisplayHelper
 import org.slug.output.display
 import org.slug.output.generateDotFile
 import java.io.File
+import java.util.concurrent.CompletableFuture
 
 class Main {
 
@@ -31,12 +32,19 @@ class Main {
             val serviceDensity = config.getProperty("densityFromDistribution")
             val replicationFactor = config.getProperty("replication")
             val powerLawDistribution = config.getBooleanProperty("powerlaw")
+            val shouldPlot = config.getBooleanProperty("plots")
             val iterations = config.getIntegerProperty("iterations")
+            var futures = emptyArray<CompletableFuture<Void>>()
+
             (1..iterations).forEach { iteration ->
+
                 val dotDirectory = File.separator + "i_" + iteration
                 val graphs = generateArchitectures(css, infrastructure, powerLawDistribution, replicationFactor, serviceDensity, outputDirectory, dotDirectory)
-                if (config.getBooleanProperty("plots")) measurements(graphs, outputDirectory ,dotDirectory)
+                futures = futures.plus(CompletableFuture.runAsync {
+                    if (shouldPlot) measurements(graphs, outputDirectory, dotDirectory)
+                })
             }
+            CompletableFuture.allOf(*futures).get()
         }
 
         private fun generateArchitectures(css: String, infrastructure: Infrastructure, powerLawDistribution: Boolean, replicationFactor: String, serviceDensity: String, outputDirectory: String, dotDirectory: String): Sequence<Graph> {
