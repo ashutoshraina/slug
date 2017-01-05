@@ -20,7 +20,7 @@ class Main {
 
         @JvmStatic fun main(args: Array<String>) {
             val outputFromConfig = config.getProperty("outputDirectory")
-            val outputDirectory = if(outputFromConfig.isNullOrEmpty()) "samples" else outputFromConfig
+            val outputDirectory = if (outputFromConfig.isNullOrEmpty()) "samples" else outputFromConfig
 
             val file = File(outputDirectory)
             if (!file.exists()) file.mkdirs()
@@ -32,13 +32,14 @@ class Main {
             val replicationFactor = config.getProperty("replication")
             val powerLawDistribution = config.getBooleanProperty("powerlaw")
             val iterations = config.getIntegerProperty("iterations")
-            (1..iterations).forEach{ iteration ->
+            (1..iterations).forEach { iteration ->
                 val dotDirectory = File.separator + "i_" + iteration
-                generateArchitectures(css, infrastructure, powerLawDistribution, replicationFactor, serviceDensity, outputDirectory, dotDirectory)
+                val graphs = generateArchitectures(css, infrastructure, powerLawDistribution, replicationFactor, serviceDensity, outputDirectory, dotDirectory)
+                if (config.getBooleanProperty("plots")) measurements(graphs, outputDirectory ,dotDirectory)
             }
         }
 
-        private fun generateArchitectures(css: String, infrastructure: Infrastructure, powerLawDistribution: Boolean, replicationFactor: String, serviceDensity: String, outputDirectory : String , dotDirectory : String) {
+        private fun generateArchitectures(css: String, infrastructure: Infrastructure, powerLawDistribution: Boolean, replicationFactor: String, serviceDensity: String, outputDirectory: String, dotDirectory: String): Sequence<Graph> {
             val factory = MicroserviceFactory(serviceDensity, replicationFactor, infrastructure, powerLawDistribution)
             val simpleGraphs: Sequence<Graph> = emptySequence<SingleGraph>()
                     .plusElement(generator(css, factory.simpleArchitecture()))
@@ -58,8 +59,7 @@ class Main {
                         if (config.getBooleanProperty("display.dot")) generateDotFile(graph, outputDirectory, dotDirectory)
                     }
 
-            val graphs = simpleGraphs.plus(serviceGraphs)
-            if (config.getBooleanProperty("plots")) measurements(graphs)
+            return simpleGraphs.plus(serviceGraphs)
         }
 
         private fun loadCSSConfig(): String {
@@ -71,10 +71,13 @@ class Main {
             return css
         }
 
-        private fun measurements(graphs: Sequence<Graph>) {
-            plotMetric(graphs, "Density measure", "Density Scatter Plot", Toolkit::density, "Density")
-            plotMetric(graphs, "Average Degree measure", "Average Degree Scatter Plot", Toolkit::averageDegree, "Average Degree")
-            plotMetric(graphs, "Average Degree Deviation", "Average Degree Deviation", Toolkit::degreeAverageDeviation, "Average Degree Deviation")
+        private fun measurements(graphs: Sequence<Graph>, outputDirectory: String, metricDirectory: String) {
+            writeMetrics(graphs, "Density measure", "Density Scatter Plot",
+                    Toolkit::density, "Density", outputDirectory, metricDirectory)
+            writeMetrics(graphs, "Average Degree measure", "Average Degree Scatter Plot",
+                    Toolkit::averageDegree, "Average Degree", outputDirectory, metricDirectory)
+            writeMetrics(graphs, "Average Degree Deviation", "Average Degree Deviation",
+                    Toolkit::degreeAverageDeviation, "Average Degree Deviation", outputDirectory, metricDirectory)
         }
 
         fun generator(css: String, generator: MicroserviceGenerator): SingleGraph {
