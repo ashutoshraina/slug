@@ -156,7 +156,7 @@ class MicroserviceFactory(serviceDensity: String, replicationFactor : String, va
         return MicroserviceGenerator(microservice)
     }
 
-    fun multiService(): Architecture {
+    fun architecture(): Architecture {
         val from = e2e().architecture
         val to = e2eMultipleApps().architecture
         val anotherFrom = multipleLinks().architecture

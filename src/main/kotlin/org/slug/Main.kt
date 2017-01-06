@@ -56,7 +56,7 @@ class Main {
                     .plusElement(generator(css, factory.e2e()))
                     .plusElement(generator(css, factory.e2eMultipleApps()))
 
-            val architecture = factory.multiService()
+            val architecture = factory.architecture()
             val serviceGraphs = architecture.generators().map { microservice -> generator(css, microservice) }
 
             val XTalks = architecture.crossTalks()

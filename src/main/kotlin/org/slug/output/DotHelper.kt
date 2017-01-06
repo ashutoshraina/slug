@@ -7,12 +7,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.PrintStream
 
-fun generateDotFile(graph: Graph) {
-
-    val printStream = PrintStream(FileOutputStream("samples"+ File.separator +"${graph.id}.dot"))
-    generateDotFile(graph, printStream)
-}
-
 fun generateDotFile(graph: Graph, outputDirectory : String, dotDirectory : String) {
 
     val outputPath = File(outputDirectory + File.separator + dotDirectory)
