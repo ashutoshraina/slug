@@ -80,12 +80,16 @@ class Main {
         }
 
         private fun measurements(graphs: Sequence<Graph>, outputDirectory: String, metricDirectory: String) {
-            writeMetrics(graphs, "Density measure", "Density Scatter Plot",
-                    Toolkit::density, "Density", outputDirectory, metricDirectory)
-            writeMetrics(graphs, "Average Degree measure", "Average Degree Scatter Plot",
-                    Toolkit::averageDegree, "Average Degree", outputDirectory, metricDirectory)
-            writeMetrics(graphs, "Average Degree Deviation", "Average Degree Deviation",
-                    Toolkit::degreeAverageDeviation, "Average Degree Deviation", outputDirectory, metricDirectory)
+            val densityMeasure = Measurement("Density Measure", "Density", Toolkit::density, "Graph Id", "Density")
+            val averageDegreeMeasure = Measurement("Average Degree Measure", "Average Degree", Toolkit::averageDegree, "Graph Id", "Average Degree")
+            val averageDegreeDeviation = Measurement("Average Degree Deviation Measure", "Average Degree Deviation", Toolkit::degreeAverageDeviation, "Graph Id", "Average Degree Deviation")
+            val nodeCount = Measurement("Node Count", "Node Spread", Toolkit::density, "Graph Id", "Nodes")
+            val edgeCount = Measurement("Edge Count", "Edge Spread", Toolkit::density, "Graph Id", "Edges")
+
+            val measurements = sequenceOf(densityMeasure, averageDegreeMeasure, nodeCount, edgeCount)
+
+            writeMetrics(graphs, measurements,outputDirectory,metricDirectory)
+
         }
 
         fun generator(css: String, generator: MicroserviceGenerator): SingleGraph {

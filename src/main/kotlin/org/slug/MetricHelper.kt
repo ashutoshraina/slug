@@ -8,10 +8,11 @@ import java.math.BigDecimal
 import java.math.RoundingMode.HALF_UP
 
 
-class Metric<T>(val xValues: Array<Int>, val yValues: Array<T>, val xLabel: String, val yLabel: String, val legend: String, val title: String) {
+class Metric(val xValues: Array<Int>, val yValues: Array<Double>, val xLabel: String, val yLabel: String, val legend: String, val title: String, val rows: Int, val cols: Int = 3, val position: Int) {
     override fun toString(): String {
         val buffer = StringBuilder()
 
+        buffer.appendln("@subplot($rows,$cols,$position)")
         buffer.appendln(xValues.joinToString(",", "x = [", "];"))
         buffer.appendln(yValues.joinToString(",", "y = [", "];"))
         buffer.appendln("plot (x,y);")
@@ -24,27 +25,34 @@ class Metric<T>(val xValues: Array<Int>, val yValues: Array<T>, val xLabel: Stri
     }
 }
 
-fun writeMetrics(graphs: Sequence<Graph>, chartName: String, plotTitle: String, measurement: (Graph) -> Double, yAxisLabel: String, outputDirectory: String, metricsDirectory: String) {
+class Measurement(val chartName: String, val plotTitle: String, val function: (Graph) -> Double, val xAxisLabel: String, val yAxisLabel: String)
 
-    var xValues = emptyArray<Int>()
-    var yValues = emptyArray<Double>()
-    (0..graphs.count() - 1).forEach { r ->
-        xValues = xValues.plus(r + 1)
-        val element = BigDecimal(measurement(graphs.elementAt(r))).setScale(2, HALF_UP).toDouble()
-        yValues = yValues.plus(element)
+fun writeMetrics(graphs: Sequence<Graph>, measurements: Sequence<Measurement>, outputDirectory: String, metricsDirectory: String) {
+
+    var metrics = emptySequence<Metric>()
+    val measurementCount = measurements.count()
+
+    (0..measurementCount - 1).forEach { m ->
+        val measurement = measurements.elementAt(m)
+        var xValues = emptyArray<Int>()
+        var yValues = emptyArray<Double>()
+        (0..graphs.count() - 1).forEach { r ->
+            val graph = graphs.elementAt(r)
+            xValues = xValues.plus(r + 1)
+            val element = BigDecimal(measurement.function(graph)).setScale(2, HALF_UP).toDouble()
+            yValues = yValues.plus(element)
+        }
+        metrics = metrics.plus(Metric(xValues, yValues, measurement.xAxisLabel, measurement.yAxisLabel, measurement.plotTitle, measurement.chartName, measurementCount / 2, measurementCount / 2 + 1, m + 1))
     }
-    val metric = Metric(xValues, yValues, "Graph Id", yAxisLabel, plotTitle, chartName)
-    printMetrics(outputDirectory, metricsDirectory, metric)
+    printMetrics(outputDirectory, metricsDirectory, metrics)
+
 }
 
-fun writeMetrics(graphs: Sequence<Graph>, chartName: String, plotTitle: String, measurement: (Graph) -> Double, yAxisLabel: String) {
-    writeMetrics(graphs, chartName, plotTitle, measurement, yAxisLabel, "samples", "metrics")
-}
-
-fun printMetrics(outputDirectory: String, metricsDirectory: String, metric: Metric<Double>) {
+fun printMetrics(outputDirectory: String, metricsDirectory: String, metrics: Sequence<Metric>) {
 
     val outputPath = File(outputDirectory + File.separator + metricsDirectory)
     if (!outputPath.exists()) outputPath.mkdirs()
-    val printStream = PrintStream(FileOutputStream(outputPath.path + File.separator + "${metric.legend}.m"))
-    printStream.use({ out -> out.print(metric.toString()) })
+    val printStream = PrintStream(FileOutputStream(outputPath.path + File.separator + "metrics.m"))
+//    metrics.joinToString("\n","\n","\n")
+    printStream.use({ out -> out.print(metrics.joinToString("\n", "\n", "\n")) })
 }
