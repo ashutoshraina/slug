@@ -53,6 +53,5 @@ fun printMetrics(outputDirectory: String, metricsDirectory: String, metrics: Seq
     val outputPath = File(outputDirectory + File.separator + metricsDirectory)
     if (!outputPath.exists()) outputPath.mkdirs()
     val printStream = PrintStream(FileOutputStream(outputPath.path + File.separator + "metrics.m"))
-//    metrics.joinToString("\n","\n","\n")
     printStream.use({ out -> out.print(metrics.joinToString("\n", "\n", "\n")) })
 }

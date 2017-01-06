@@ -86,7 +86,7 @@ class Main {
             val nodeCount = Measurement("Node Count", "Node Spread", Toolkit::density, "Graph Id", "Nodes")
             val edgeCount = Measurement("Edge Count", "Edge Spread", Toolkit::density, "Graph Id", "Edges")
 
-            val measurements = sequenceOf(densityMeasure, averageDegreeMeasure, nodeCount, edgeCount)
+            val measurements = sequenceOf(densityMeasure, averageDegreeMeasure, averageDegreeDeviation, nodeCount, edgeCount)
 
             writeMetrics(graphs, measurements,outputDirectory,metricDirectory)
 
