@@ -53,3 +53,12 @@ replication= medium # replication factor
 #options for replication minimal, medium, high
 
 ```
+
+```yml
+iterations controls the number of iterations for which the generator will run. 
+For each iteration we generate the artifacts 
+in the output folder specifed by the outputDirectory property.
+
+The metrics for the generated artifacts are also put inside the same iteration directory, 
+these are .m files which can be directly rendered in Octave or Matlab.
+```
