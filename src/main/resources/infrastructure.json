@@ -1,7 +1,8 @@
 {
     "database" :[
         "cassandra",
-        "redis"
+        "redis",
+        "mongo"
     ],
     "cache" : [
         "memcached"
@@ -13,13 +14,13 @@
         "akamai"
     ],
     "proxy" : [
-        "nginx"
+        "nginx", "apache"
     ],
     "loadBalancer" : [
         "F5"
     ],
     "serviceDiscovery" : [
-        "dns", "anotherDNS"
+        "dns", "anotherDNS", "consul"
     ],
 
     "webApplication" : [
