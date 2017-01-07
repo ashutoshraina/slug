@@ -19,6 +19,7 @@ class CrossTalkGeneratorTest {
         val XTalks = architecture.crossTalks()
         val crossTalks = CrossTalkGenerator().addCrossTalk(serviceGraphs, XTalks)
 
+        assertEquals(2, crossTalks.count())
         assertEquals(39, crossTalks.first().nodeCount)
         assertEquals(72, crossTalks.first().edgeCount)
 
