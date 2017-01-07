@@ -7,19 +7,22 @@ import java.io.PrintStream
 import java.math.BigDecimal
 import java.math.RoundingMode.HALF_UP
 
+data class SubPlot(val rows : Int, val cols : Int, val position: Int)
+data class ChartParams(val xLabel : String, val yLabel : String, val legend : String, val title : String)
+data class ChartData(val xValues: Array<Int>, val yValues: Array<Double>)
 
-class Metric(val xValues: Array<Int>, val yValues: Array<Double>, val xLabel: String, val yLabel: String, val legend: String, val title: String, val rows: Int, val cols: Int = 3, val position: Int) {
+class Metric(val chartData : ChartData, val chartParams : ChartParams, val subPlot : SubPlot) {
     override fun toString(): String {
         val buffer = StringBuilder()
 
-        buffer.appendln("@subplot($rows,$cols,$position)")
-        buffer.appendln(xValues.joinToString(",", "x = [", "];"))
-        buffer.appendln(yValues.joinToString(",", "y = [", "];"))
+        buffer.appendln("@subplot($subPlot.rows,$subPlot.cols,$subPlot.position)")
+        buffer.appendln(chartData.xValues.joinToString(",", "x = [", "];"))
+        buffer.appendln(chartData.yValues.joinToString(",", "y = [", "];"))
         buffer.appendln("plot (x,y);")
-        buffer.appendln("xlabel (\"$xLabel\");")
-        buffer.appendln("ylabel (\"$yLabel\");")
-        buffer.appendln("legend (\"$legend\", \"position\", \"north\");")
-        buffer.appendln("title (\"$title\");")
+        buffer.appendln("xlabel (\"$chartParams.xLabel\");")
+        buffer.appendln("ylabel (\"$chartParams.yLabel\");")
+        buffer.appendln("legend (\"$chartParams.legend\", \"position\", \"north\");")
+        buffer.appendln("title (\"$chartParams.title\");")
 
         return buffer.toString()
     }
@@ -42,7 +45,8 @@ fun writeMetrics(graphs: Sequence<Graph>, measurements: Sequence<Measurement>, o
             val element = BigDecimal(measurement.function(graph)).setScale(2, HALF_UP).toDouble()
             yValues = yValues.plus(element)
         }
-        metrics = metrics.plus(Metric(xValues, yValues, measurement.xAxisLabel, measurement.yAxisLabel, measurement.plotTitle, measurement.chartName, measurementCount / 2, measurementCount / 2 + 1, m + 1))
+        val subPlot = SubPlot(measurementCount/2, measurementCount/2 + 1, m +1)
+        metrics = metrics.plus(Metric(ChartData(xValues, yValues), ChartParams(measurement.xAxisLabel, measurement.yAxisLabel, measurement.chartName, measurement.plotTitle), subPlot))
     }
     printMetrics(outputDirectory, metricsDirectory, metrics)
 

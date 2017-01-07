@@ -9,7 +9,7 @@ import org.slug.factories.InfrastructureFactory.Companion.create
 import org.slug.util.Left
 import org.slug.util.Right
 
-class MicroserviceFactory(serviceDensity: String, replicationFactor : String, val infrastructure: Infrastructure, private val powerLawDistribution : Boolean = false) {
+class MicroserviceFactory(serviceDensity: String, replicationFactor : String, val infrastructure: Infrastructure, private val powerLaw : Boolean = false) {
     val defaultDensity = 5
     val defaultReplication = 3
     val densityMap = mapOf("sparse" to 4, "dense" to 10, "hyperdense" to 15)
@@ -29,7 +29,7 @@ class MicroserviceFactory(serviceDensity: String, replicationFactor : String, va
     val serviceDiscovery = ServiceRegistry("Eureka")
 
     private val densityFromDistribution: Int
-        get() = if (powerLawDistribution) { PowerLaw().zipf(density) } else density
+        get() = if (powerLaw) { PowerLaw().zipf(density) } else density
 
     fun simpleArchitecture(): MicroserviceGenerator {
         val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
