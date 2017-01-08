@@ -67,7 +67,7 @@ class Main {
                         if (config.getBooleanProperty("display.dot")) generateDotFile(graph, outputDirectory, dotDirectory)
                     }
 
-            return simpleGraphs.plus(serviceGraphs)
+            return simpleGraphs.plus(crossTalks)
         }
 
         private fun loadCSSConfig(): String {
