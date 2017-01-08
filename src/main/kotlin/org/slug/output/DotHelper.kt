@@ -21,12 +21,12 @@ fun generateDotFile(graph: Graph, printStream: PrintStream) {
     graph.getEachEdge<Edge>().forEach { edge -> builder.append(edge.getSourceNode<Node>().id + "->" + edge.getTargetNode<Node>().id).appendln() }
     val dotContent: String =
             """
-        digraph $graphName {
-                size="15"
-                style=filled;
-                color=blue;
-                node [style=filled,color=lightblue];
-            $builder
+digraph $graphName {
+        size="15"
+        style=filled;
+        color=blue;
+        node [style=filled,color=lightblue];
+    $builder
         }"""
 
     printStream.use({ out -> out.print(dotContent) })

@@ -87,9 +87,9 @@ class Main {
         }
 
         private fun measurements(graphs: Sequence<Graph>, outputDirectory: String, metricDirectory: String) {
-            val densityMeasure = Measurement("Density Measure", "Density", Toolkit::density, "Graph Id", "Density")
-            val averageDegreeMeasure = Measurement("Average Degree Measure", "Average Degree", Toolkit::averageDegree, "Graph Id", "Average Degree")
-            val averageDegreeDeviation = Measurement("Average Degree Deviation Measure", "Average Degree Deviation", Toolkit::degreeAverageDeviation, "Graph Id", "Average Degree Deviation")
+            val densityMeasure = Measurement("Density", "Density", Toolkit::density, "Graph Id", "Density")
+            val averageDegreeMeasure = Measurement("Average Degree", "Average Degree", Toolkit::averageDegree, "Graph Id", "Average Degree")
+            val averageDegreeDeviation = Measurement("Average Degree Deviation", "Average Degree Deviation", Toolkit::degreeAverageDeviation, "Graph Id", "Average Degree Deviation")
             val nodeCount = Measurement("Node Count", "Node Spread", { graph: Graph -> nodeCount(graph) }, "Graph Id", "Nodes")
             val edgeCount = Measurement("Edge Count", "Edge Spread", { graph: Graph -> edgeCount(graph) }, "Graph Id", "Edges")
 
