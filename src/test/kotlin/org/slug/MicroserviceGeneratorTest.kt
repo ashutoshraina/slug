@@ -7,13 +7,14 @@ import org.slug.core.Component.DiscoverableComponent
 import org.slug.core.Component.SimpleComponent
 import org.slug.core.InfrastructureType.*
 import org.slug.core.LayerConnection.*
+import org.slug.factories.Cranks
 import org.slug.factories.Infrastructure
 import org.slug.factories.MicroserviceFactory
 
 
 class MicroserviceGeneratorTest {
 
-    val factory = MicroserviceFactory("dense", "medium", Infrastructure.loadInfrastructureConfig("infrastructure.json"))
+    val factory = MicroserviceFactory(Cranks("dense", "medium"), Infrastructure.loadInfrastructureConfig("infrastructure.json"))
     @Test
     fun shouldAddAllTheComponents() {
 
@@ -79,6 +80,20 @@ class MicroserviceGeneratorTest {
 
         assertEquals(37, graph.nodeCount)
         assertEquals(74, graph.edgeCount)
+
+    }
+
+    @Test
+    fun e2eWithCache() {
+
+        val generator = factory.e2eWithCache()
+        val graph = SingleGraph("First")
+        generator.addSink(graph)
+        generator.begin()
+        generator.end()
+
+        assertEquals(37, graph.nodeCount)
+        assertEquals(154, graph.edgeCount)
 
     }
 }

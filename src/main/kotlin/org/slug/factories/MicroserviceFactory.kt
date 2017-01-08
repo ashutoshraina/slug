@@ -9,13 +9,15 @@ import org.slug.factories.InfrastructureFactory.Companion.create
 import org.slug.util.Left
 import org.slug.util.Right
 
-class MicroserviceFactory(serviceDensity: String, replicationFactor: String, val infrastructure: Infrastructure, private val powerLaw: Boolean = false) {
+data class Cranks(val serviceDensity: String, val replicationFactor: String, val powerLaw: Boolean = false)
+
+class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructure) {
     val defaultDensity = 5
     val defaultReplication = 3
     val densityMap = mapOf("sparse" to 4, "dense" to 10, "hyperdense" to 15)
     val replicationMap = mapOf("minimal" to 3, "medium" to 5, "high" to 7)
-    private val density = densityMap.getOrElse(serviceDensity) { defaultDensity }
-    private val replication = replicationMap.getOrElse(replicationFactor) { defaultReplication }
+    private val density = densityMap.getOrElse(cranks.serviceDensity) { defaultDensity }
+    private val replication = replicationMap.getOrElse(cranks.replicationFactor) { defaultReplication }
 
     val cdn = create<CDN>(infrastructure)
     val firewall = create<Firewall>(infrastructure)
@@ -30,7 +32,7 @@ class MicroserviceFactory(serviceDensity: String, replicationFactor: String, val
     val serviceDiscovery = ServiceRegistry("Eureka")
 
     private val densityFromDistribution: Int
-        get() = if (powerLaw) {
+        get() = if (cranks.powerLaw) {
             PowerLaw().zipf(density)
         } else density
 

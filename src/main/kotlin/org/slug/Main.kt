@@ -5,6 +5,7 @@ import org.graphstream.graph.Graph
 import org.graphstream.graph.implementations.SingleGraph
 import org.slug.core.CrossTalkGenerator
 import org.slug.core.MicroserviceGenerator
+import org.slug.factories.Cranks
 import org.slug.factories.Infrastructure
 import org.slug.factories.Infrastructure.Companion.loadInfrastructureConfig
 import org.slug.factories.MicroserviceFactory
@@ -39,7 +40,7 @@ class Main {
             (1..iterations).forEach { iteration ->
 
                 val dotDirectory = File.separator + "i_" + iteration
-                val graphs = generateArchitectures(css, infrastructure, powerLawDistribution, replicationFactor, serviceDensity, outputDirectory, dotDirectory)
+                val graphs = generateArchitectures(css, Cranks(serviceDensity, replicationFactor, powerLawDistribution), infrastructure, outputDirectory, dotDirectory)
                 futures = futures.plus(CompletableFuture.runAsync {
                     if (shouldPlot) measurements(graphs, outputDirectory, dotDirectory)
                 })
@@ -47,8 +48,8 @@ class Main {
             CompletableFuture.allOf(*futures).get()
         }
 
-        private fun generateArchitectures(css: String, infrastructure: Infrastructure, powerLawDistribution: Boolean, replicationFactor: String, serviceDensity: String, outputDirectory: String, dotDirectory: String): Sequence<Graph> {
-            val factory = MicroserviceFactory(serviceDensity, replicationFactor, infrastructure, powerLawDistribution)
+        private fun generateArchitectures(css: String, crank : Cranks , infrastructure: Infrastructure, outputDirectory: String, dotDirectory: String): Sequence<Graph> {
+            val factory = MicroserviceFactory(crank , infrastructure)
             val simpleGraphs: Sequence<Graph> = emptySequence<SingleGraph>()
                     .plusElement(generator(css, factory.simpleArchitecture()))
                     .plusElement(generator(css, factory.simple3Tier()))
