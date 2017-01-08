@@ -15,14 +15,14 @@ class Metric(val chartData : ChartData, val chartParams : ChartParams, val subPl
     override fun toString(): String {
         val buffer = StringBuilder()
 
-        buffer.appendln("@subplot($subPlot.rows,$subPlot.cols,$subPlot.position)")
+        buffer.appendln("@subplot(${subPlot.rows},${subPlot.cols},${subPlot.position})")
         buffer.appendln(chartData.xValues.joinToString(",", "x = [", "];"))
         buffer.appendln(chartData.yValues.joinToString(",", "y = [", "];"))
         buffer.appendln("plot (x,y);")
-        buffer.appendln("xlabel (\"$chartParams.xLabel\");")
-        buffer.appendln("ylabel (\"$chartParams.yLabel\");")
-        buffer.appendln("legend (\"$chartParams.legend\", \"position\", \"north\");")
-        buffer.appendln("title (\"$chartParams.title\");")
+        buffer.appendln("xlabel (\"${chartParams.xLabel}\");")
+        buffer.appendln("ylabel (\"${chartParams.yLabel}\");")
+        buffer.appendln("legend (\"${chartParams.legend}\", \"position\", \"north\");")
+        buffer.appendln("title (\"${chartParams.title}\");")
 
         return buffer.toString()
     }

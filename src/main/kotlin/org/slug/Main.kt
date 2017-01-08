@@ -55,12 +55,19 @@ class Main {
                     .plusElement(generator(css, factory.multipleLinks()))
                     .plusElement(generator(css, factory.e2e()))
                     .plusElement(generator(css, factory.e2eMultipleApps()))
+                    .plusElement(generator(css, factory.e2eWithCache()))
 
             val architecture = factory.architecture()
+            val moreArchitecture = factory.someMoreArchitectures()
             val serviceGraphs = architecture.generators().map { microservice -> generator(css, microservice) }
+            val moreServiceGraphs = moreArchitecture.generators().map { microservice -> generator(css, microservice) }
 
             val XTalks = architecture.crossTalks()
+            val moreXTalks = moreArchitecture.crossTalks()
+
             val crossTalks = CrossTalkGenerator().addCrossTalk(serviceGraphs, XTalks)
+                    .plus(CrossTalkGenerator().addCrossTalk(moreServiceGraphs, moreXTalks))
+
             simpleGraphs.plus(crossTalks)
                     .forEach { graph ->
                         if (config.getBooleanProperty("display.swing")) display(graph)
@@ -83,12 +90,12 @@ class Main {
             val densityMeasure = Measurement("Density Measure", "Density", Toolkit::density, "Graph Id", "Density")
             val averageDegreeMeasure = Measurement("Average Degree Measure", "Average Degree", Toolkit::averageDegree, "Graph Id", "Average Degree")
             val averageDegreeDeviation = Measurement("Average Degree Deviation Measure", "Average Degree Deviation", Toolkit::degreeAverageDeviation, "Graph Id", "Average Degree Deviation")
-            val nodeCount = Measurement("Node Count", "Node Spread", Toolkit::density, "Graph Id", "Nodes")
-            val edgeCount = Measurement("Edge Count", "Edge Spread", Toolkit::density, "Graph Id", "Edges")
+            val nodeCount = Measurement("Node Count", "Node Spread", { graph: Graph -> nodeCount(graph) }, "Graph Id", "Nodes")
+            val edgeCount = Measurement("Edge Count", "Edge Spread", { graph: Graph -> edgeCount(graph) }, "Graph Id", "Edges")
 
             val measurements = sequenceOf(densityMeasure, averageDegreeMeasure, averageDegreeDeviation, nodeCount, edgeCount)
 
-            writeMetrics(graphs, measurements,outputDirectory,metricDirectory)
+            writeMetrics(graphs, measurements, outputDirectory, metricDirectory)
 
         }
 
@@ -108,6 +115,9 @@ class Main {
 
             return graph
         }
+
+        fun nodeCount(graph: Graph): Double = graph.nodeCount.toDouble()
+        fun edgeCount(graph: Graph): Double = graph.edgeCount.toDouble()
 
     }
 }
