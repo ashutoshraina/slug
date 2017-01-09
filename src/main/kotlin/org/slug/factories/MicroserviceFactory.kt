@@ -12,24 +12,24 @@ import org.slug.util.Right
 data class Cranks(val serviceDensity: String, val replicationFactor: String, val powerLaw: Boolean = false)
 
 class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructure) {
-    val defaultDensity = 5
-    val defaultReplication = 3
+    private val defaultDensity = 5
+    private val defaultReplication = 3
     val densityMap = mapOf("sparse" to 4, "dense" to 10, "hyperdense" to 15)
     val replicationMap = mapOf("minimal" to 3, "medium" to 5, "high" to 7)
     private val density = densityMap.getOrElse(cranks.serviceDensity) { defaultDensity }
     private val replication = replicationMap.getOrElse(cranks.replicationFactor) { defaultReplication }
 
-    val cdn = create<CDN>(infrastructure)
-    val firewall = create<Firewall>(infrastructure)
-    val loadBalancer = create<LoadBalancer>(infrastructure)
-    val proxy = create<Proxy>(infrastructure)
-    val webApplication = create<WebApplication>(infrastructure)
-    val cache = create<Cache>(infrastructure)
-    val aDatabase = create<Database>(infrastructure).withReplication(replication)
-    val anotherDatabase = create<Database>(infrastructure).withReplication(replication)
-    val aDNS = create<ServiceDiscovery>(infrastructure)
-    val anotherDNS = create<ServiceDiscovery>(infrastructure)
-    val serviceDiscovery = ServiceRegistry("Eureka")
+    private val cdn = create<CDN>(infrastructure)
+    private val firewall = create<Firewall>(infrastructure)
+    private val loadBalancer = create<LoadBalancer>(infrastructure)
+    private val proxy = create<Proxy>(infrastructure)
+    private val webApplication = create<WebApplication>(infrastructure)
+    private val cache = create<Cache>(infrastructure)
+    private val aDatabase = create<Database>(infrastructure).withReplication(replication)
+    private val anotherDatabase = create<Database>(infrastructure).withReplication(replication)
+    private val aDNS = create<ServiceDiscovery>(infrastructure)
+    private val anotherDNS = create<ServiceDiscovery>(infrastructure)
+    private val serviceDiscovery = ServiceRegistry("Eureka")
 
     private val densityFromDistribution: Int
         get() = if (cranks.powerLaw) {
