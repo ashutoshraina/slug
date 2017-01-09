@@ -48,8 +48,7 @@ class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructur
         val webLayer = Layer("2", densityFromDistribution, discoverableComponent)
 
         val microservice = Microservice("simple", sequenceOf(proxyLayer, webLayer))
-        val gen = MicroserviceGenerator(microservice)
-        return gen
+        return MicroserviceGenerator(microservice)
     }
 
     fun simple3Tier(): MicroserviceGenerator {
