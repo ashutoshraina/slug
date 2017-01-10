@@ -35,7 +35,7 @@ dot -Tpng samples/input.dot > output.png
 You can also visualise them online at http://www.webgraphviz.com/
 
 
-** Configuration **
+## Configuration
 
 
 Modify the properties file in resources for various configuration options.
@@ -45,36 +45,28 @@ You can control the number of runs for the generators using he ```iterations``` 
 You can specify the output directory where all the generated files will go (we generate dot files as well the plots for that iteration and put them in respective directories)
 
 
-``` yml
-display.swing=false # enables or disables the force directed visualisation (Swing based)
-
-display.dot=true # enables or disables the generation of dot files that can be fed into GraphViz
-
-style=style.css # style file force directed visualisation
-```
+| Config Parameter | Description | Options
+| --- | --- | --- |
+|display.swing |  enables or disables the force directed visualisation (Swing based) | true, false |
+| display.dot | enables or disables the generation of dot files that can be fed into GraphViz| true, false|
+|style|style file force directed visualisation| true, false|
 
 Unless you are very keen on seeing visualisations in a certain way, it is probably wise to leave the above parameters as is.
 
 
+| Config Parameter | Description | Options
+| --- | --- | --- |
+|densityFromDistribution | controls the density of the services i.e. how many instances of a service are there; this applies to web applications | sparse, dense, hyperdense |
+| replication | replication factor of the persistance mechanism | minimal, medium, high|
+|iterations|how many iterations to run the generator for| any integer|
 
-``` yml
-densityFromDistribution=dense # service densityFromDistribution
-#options for densityFromDistribution sparse,dense,hyperdense
-
-replication= medium
-#options for replication minimal, medium, high
-
-```
-
-```yml
-iterations controls the number of iterations for which the generator will run. 
 For each iteration we generate the artifacts in the output folder specifed by the outputDirectory property.
 
 The metrics for the generated artifacts are also put inside the same iteration directory, these are .m files which can be directly rendered in Octave or Matlab.
 
 A Sample is below :
 
-
+``` yml
 @subplot(2,3,1)
 x = [1,2,3,4,5,6,7,8,9];
 y = [0.18,0.18,0.14,0.12,0.09,0.09,0.05,0.05,0.06];
