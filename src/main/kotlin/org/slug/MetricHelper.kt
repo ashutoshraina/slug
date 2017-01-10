@@ -32,7 +32,7 @@ class Metric(val chartData: ChartData, val chartParams: ChartParams, val subPlot
 
 class Measurement(val chartName: String, val plotTitle: String, val function: (Graph) -> Double, val xAxisLabel: String, val yAxisLabel: String)
 
-private fun writeMetrics(graphs: Sequence<Graph>, measurements: Sequence<Measurement>, metricConfig: MetricConfig) {
+private fun calculateMetrics(graphs: Sequence<Graph>, measurements: Sequence<Measurement>, metricConfig: MetricConfig) {
 
     var metrics = emptySequence<Metric>()
     val measurementCount = measurements.count()
@@ -71,7 +71,7 @@ fun measurements(graphs: Sequence<Graph>, metricConfig: MetricConfig) {
 
     val measurements = sequenceOf(densityMeasure, averageDegreeMeasure, averageDegreeDeviation, nodeCount, edgeCount)
 
-    writeMetrics(graphs, measurements, metricConfig)
+    calculateMetrics(graphs, measurements, metricConfig)
 
 }
 
