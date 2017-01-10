@@ -7,6 +7,7 @@ import org.slug.core.Component.DiscoverableComponent
 import org.slug.core.Component.SimpleComponent
 import org.slug.core.InfrastructureType.*
 import org.slug.core.LayerConnection.*
+import org.slug.core.MicroserviceGenerator
 import org.slug.factories.Cranks
 import org.slug.factories.Infrastructure
 import org.slug.factories.MicroserviceFactory
@@ -18,7 +19,7 @@ class MicroserviceGeneratorTest {
     @Test
     fun shouldAddAllTheComponents() {
 
-        val generator = factory.simpleArchitecture()
+        val generator = MicroserviceGenerator(factory.simpleArchitecture())
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
@@ -31,7 +32,7 @@ class MicroserviceGeneratorTest {
 
     @Test
     fun shouldCreateLinksBetweenComponents() {
-        val generator = factory.simple3Tier()
+        val generator = MicroserviceGenerator(factory.simple3Tier())
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
@@ -44,7 +45,7 @@ class MicroserviceGeneratorTest {
     @Test
     fun canCreateMultipleLayerLinksFromAComponent() {
 
-        val generator = factory.multipleLinks()
+        val generator = MicroserviceGenerator(factory.multipleLinks())
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
@@ -58,7 +59,7 @@ class MicroserviceGeneratorTest {
     @Test
     fun e2eArchitecture() {
 
-        val generator = factory.e2e()
+        val generator = MicroserviceGenerator(factory.e2e())
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
@@ -72,7 +73,7 @@ class MicroserviceGeneratorTest {
     @Test
     fun e2eArchitectureWithMultipleApps() {
 
-        val generator = factory.e2eMultipleApps()
+        val generator = MicroserviceGenerator(factory.e2eMultipleApps())
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
@@ -86,7 +87,7 @@ class MicroserviceGeneratorTest {
     @Test
     fun e2eWithCache() {
 
-        val generator = factory.e2eWithCache()
+        val generator = MicroserviceGenerator(factory.e2eWithCache())
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()

@@ -15,7 +15,7 @@ class CrossTalkGeneratorTest {
         val factory = MicroserviceFactory(Cranks("sparse", "minimal"), infrastructure)
 
         val architecture = factory.architecture()
-        val serviceGraphs = architecture.generators().map { microservice -> Main.generator("", microservice) }
+        val serviceGraphs = architecture.generators().map { service -> Main.generator("", service.architecture, MicroserviceGenerator::class.java) }
 
         val XTalks = architecture.crossTalks()
         val crossTalks = CrossTalkGenerator().addCrossTalk(serviceGraphs, XTalks)

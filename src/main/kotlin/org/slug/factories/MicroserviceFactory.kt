@@ -36,7 +36,7 @@ class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructur
             PowerLaw().zipf(density)
         } else density
 
-    fun simpleArchitecture(): MicroserviceGenerator {
+    fun simpleArchitecture(): Microservice {
         val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
         val simpleComponent = SimpleComponent(proxy, proxy2Web)
         val proxyLayer = Layer("1", 2, simpleComponent)
@@ -47,11 +47,10 @@ class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructur
         val discoverableComponent = DiscoverableComponent(webApplication, layerConnection)
         val webLayer = Layer("2", densityFromDistribution, discoverableComponent)
 
-        val microservice = Microservice("simple", sequenceOf(proxyLayer, webLayer))
-        return MicroserviceGenerator(microservice)
+        return Microservice("simple", sequenceOf(proxyLayer, webLayer))
     }
 
-    fun simple3Tier(): MicroserviceGenerator {
+    fun simple3Tier(): Microservice {
         val density = densityFromDistribution
         val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
         val cdnComponent = SimpleComponent(cdn, cdn2Proxy)
@@ -65,11 +64,10 @@ class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructur
         val discoverableComponent = DiscoverableComponent(webApplication, layerConnection)
         val webLayer = Layer("3", density, discoverableComponent)
 
-        val microservice = Microservice("simple3Tier", sequenceOf(cdnLayer, proxyLayer, webLayer))
-        return MicroserviceGenerator(microservice)
+        return Microservice("simple3Tier", sequenceOf(cdnLayer, proxyLayer, webLayer))
     }
 
-    fun multipleLinks(): MicroserviceGenerator {
+    fun multipleLinks(): Microservice {
 
         val density = densityFromDistribution
         val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
@@ -88,12 +86,10 @@ class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructur
         val anotherComponent = DiscoverableComponent(webApplication, anotherIndirection)
         val anotherWebLayer = Layer("4", density, anotherComponent)
 
-        val microservice = Microservice("multipleLinks", sequenceOf(cdnLayer, proxyLayer, aWebLayer, anotherWebLayer))
-        return MicroserviceGenerator(microservice)
-
+        return Microservice("multipleLinks", sequenceOf(cdnLayer, proxyLayer, aWebLayer, anotherWebLayer))
     }
 
-    fun e2eWithCache(): MicroserviceGenerator {
+    fun e2eWithCache(): Microservice {
 
         val density = densityFromDistribution
         val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
@@ -124,11 +120,10 @@ class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructur
         val userComponent = DiscoverableComponent(webApplication, web2cassandra)
         val userLayer = Layer("7", density, userComponent)
 
-        val microservice = Microservice("e2eWithCache", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyLayer, cacheLayer, recommendationLayer, userLayer))
-        return MicroserviceGenerator(microservice)
+        return Microservice("e2eWithCache", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyLayer, cacheLayer, recommendationLayer, userLayer))
     }
 
-    fun e2e(): MicroserviceGenerator {
+    fun e2e(): Microservice {
 
         val density = densityFromDistribution
         val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
@@ -155,11 +150,10 @@ class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructur
         val userComponent = DiscoverableComponent(webApplication, web2cassandra)
         val userLayer = Layer("6", density, userComponent)
 
-        val microservice = Microservice("e2e", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyLayer, recommendationLayer, userLayer))
-        return MicroserviceGenerator(microservice)
+        return Microservice("e2e", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyLayer, recommendationLayer, userLayer))
     }
 
-    fun e2eMultipleApps(): MicroserviceGenerator {
+    fun e2eMultipleApps(): Microservice {
         val density = densityFromDistribution
 
         val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
@@ -191,14 +185,13 @@ class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructur
         val userComponent = DiscoverableComponent(userCreation, web2cassandra)
         val userLayer = Layer("7", density, userComponent)
 
-        val microservice = Microservice("e2eMultipleApps", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyRecommendationLayer, recommendationLayer, proxyUserCreationLayer, userLayer))
-        return MicroserviceGenerator(microservice)
+        return Microservice("e2eMultipleApps", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyRecommendationLayer, recommendationLayer, proxyUserCreationLayer, userLayer))
     }
 
     fun architecture(): Architecture {
-        val from = e2e().architecture
-        val to = e2eMultipleApps().architecture
-        val anotherFrom = multipleLinks().architecture
+        val from = e2e()
+        val to = e2eMultipleApps()
+        val anotherFrom = multipleLinks()
 
         val entry = from.layers.first { l -> l.component.type is InfrastructureType.WebApplication }.component.type
         val exit = to.layers.last { l -> l.component.type is InfrastructureType.WebApplication }.component.type
@@ -218,8 +211,8 @@ class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructur
     }
 
     fun someMoreArchitectures(): Architecture {
-        val from = e2eWithCache().architecture
-        val to = e2eMultipleApps().architecture
+        val from = e2eWithCache()
+        val to = e2eMultipleApps()
 
         val entry = from.layers.first { l -> l.component.type is InfrastructureType.WebApplication }.component.type
         val exit = to.layers.last { l -> l.component.type is InfrastructureType.WebApplication }.component.type
