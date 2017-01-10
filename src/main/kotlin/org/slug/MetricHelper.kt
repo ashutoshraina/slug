@@ -13,7 +13,7 @@ data class SubPlot(val rows: Int, val cols: Int, val position: Int)
 data class ChartParams(val xLabel: String, val yLabel: String, val legend: String, val title: String)
 class ChartData(val xValues: Array<Int>, val yValues: Array<Double>)
 
-class Metric(val chartData: ChartData, val chartParams: ChartParams, val subPlot: SubPlot) {
+data class Metric(val chartData: ChartData, val chartParams: ChartParams, val subPlot: SubPlot) {
     override fun toString(): String {
         val buffer = StringBuilder()
 
@@ -30,7 +30,7 @@ class Metric(val chartData: ChartData, val chartParams: ChartParams, val subPlot
     }
 }
 
-class Measurement(val chartName: String, val plotTitle: String, val function: (Graph) -> Double, val xAxisLabel: String, val yAxisLabel: String)
+data class Measurement(val chartName: String, val plotTitle: String, val function: (Graph) -> Double, val xAxisLabel: String, val yAxisLabel: String)
 
 private fun calculateMetrics(graphs: Sequence<Graph>, measurements: Sequence<Measurement>, metricConfig: MetricConfig) {
 

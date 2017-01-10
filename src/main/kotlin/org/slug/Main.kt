@@ -43,7 +43,6 @@ class Main {
 
             (1..iterations).forEach { iteration ->
 
-                println(Date())
                 val dotDirectory = File.separator + "i_" + iteration
                 val layerDirectory = dotDirectory + "_l"
                 val graphs = generateArchitectures(css, MicroserviceFactory(crank, infrastructure), MicroserviceGenerator::class.java, DotConfiguration(outputDirectory, dotDirectory))
@@ -55,9 +54,7 @@ class Main {
                     }
                 })
             }
-            println(Date())
             CompletableFuture.allOf(*futures).get()
-            println(Date())
 
         }
 
