@@ -36,7 +36,7 @@ class Main {
             val serviceDensity = config.getProperty("densityFromDistribution")
             val replicationFactor = config.getProperty("replication")
             val powerLawDistribution = config.getBooleanProperty("powerlaw")
-            val shouldPlot = config.getBooleanProperty("plots")
+            val calculateMetrics = config.getBooleanProperty("metrics")
             val iterations = config.getIntegerProperty("iterations")
             var futures = emptyArray<CompletableFuture<Void>>()
             val crank = Cranks(serviceDensity, replicationFactor, powerLawDistribution)
@@ -47,15 +47,16 @@ class Main {
                 val layerDirectory = dotDirectory + "_l"
                 val graphs = generateArchitectures(css, MicroserviceFactory(crank, infrastructure), MicroserviceGenerator::class.java, DotConfiguration(outputDirectory, dotDirectory))
                 val layeredGraphs = generateArchitectures(css, MicroserviceFactory(crank, infrastructure), LayerGenerator::class.java, DotConfiguration(outputDirectory, layerDirectory))
-                futures = futures.plus(CompletableFuture.runAsync {
-                    if (shouldPlot) {
+                if (calculateMetrics) {
+                    futures = futures.plus(CompletableFuture.runAsync {
                         measurements(graphs, MetricConfig(outputDirectory, metricsDirectory = dotDirectory))
+                    })
+                    futures = futures.plus(CompletableFuture.runAsync {
                         measurements(layeredGraphs, MetricConfig(outputDirectory, metricsDirectory = layerDirectory))
-                    }
-                })
+                    })
+                }
             }
             CompletableFuture.allOf(*futures).get()
-
         }
 
         private fun <T : MicroserviceGenerator> generateArchitectures(css: String, microserviceFactory: MicroserviceFactory, generator: Class<T>, dotConfiguration: DotConfiguration): Sequence<Graph> {
