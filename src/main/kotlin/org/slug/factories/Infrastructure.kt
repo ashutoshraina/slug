@@ -24,53 +24,71 @@ class Infrastructure {
     @Expose var serviceDiscovery: List<String> = emptyList()
     @SerializedName("webApplication")
     @Expose var webApplication: List<String> = emptyList()
+    @SerializedName("serviceRegistry")
+    @Expose var serviceRegistry: List<String> = emptyList()
 
-    fun moveFirstToLast(list : List<String>) : List<String>{
+
+    fun moveFirstToLast(list: List<String>): List<String> {
         return list.drop(1).plus(list[0])
 
     }
-    fun nextDatabase() : String {
+
+    fun nextDatabase(): String {
         var result = database[0]
         database = moveFirstToLast(database)
         return result
     }
-    fun nextProxy() : String {
+
+    fun nextProxy(): String {
         var result = proxy[0]
         proxy = moveFirstToLast(proxy)
         return result
     }
-    fun nextCDN() : String {
+
+    fun nextCDN(): String {
         var result = cdn[0]
         cdn = moveFirstToLast(cdn)
         return result
     }
-    fun nextWebApplication() : String {
+
+    fun nextWebApplication(): String {
         var result = webApplication[0]
         webApplication = moveFirstToLast(webApplication)
         return result
     }
-    fun nextFirewall() : String {
+
+    fun nextFirewall(): String {
         var result = firewall[0]
         firewall = moveFirstToLast(firewall)
         return result
     }
-    fun nextCache() : String {
+
+    fun nextCache(): String {
         var result = cache[0]
         cache = moveFirstToLast(cache)
         return result
     }
-    fun nextServiceDiscovery() : String {
+
+    fun nextServiceDiscovery(): String {
         var result = serviceDiscovery[0]
         serviceDiscovery = moveFirstToLast(serviceDiscovery)
         return result
     }
-    fun nextLoadBalancer() : String {
+
+    fun nextLoadBalancer(): String {
         var result = loadBalancer[0]
         loadBalancer = moveFirstToLast(loadBalancer)
         return result
     }
+
+    fun nextServiceRegistry(): String {
+        var result = serviceRegistry[0]
+        serviceRegistry = moveFirstToLast(serviceRegistry)
+        return result
+    }
+
     companion object {
-        fun loadInfrastructureConfig(file : String = "infrastructure.json"): Infrastructure {
+        fun loadInfrastructureConfig(file: String = "infrastructure.json"): Infrastructure {
             val content = FileHelper.readFile(file)
             return Gson().fromJson<org.slug.factories.Infrastructure>(content)
         }

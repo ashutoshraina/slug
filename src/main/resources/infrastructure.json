@@ -1,17 +1,15 @@
 {
     "database" :[
-        "cassandra",
-        "redis",
-        "mongo"
+        "cassandra","mongo","postgres","elastic"
     ],
     "cache" : [
-        "memcached"
+        "memcached","redis"
     ],
     "firewall" : [
         "symantec"
     ],
     "cdn" : [
-        "akamai"
+        "akamai","cloudflare"
     ],
     "proxy" : [
         "nginx", "apache"
@@ -22,8 +20,10 @@
     "serviceDiscovery" : [
         "dns", "anotherDNS", "consul"
     ],
-
     "webApplication" : [
             "user", "recommendation", "auth", "account", "videos", "music", "playlist"
+    ],
+    "serviceRegistry" :[
+      "eureka"
     ]
 }

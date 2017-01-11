@@ -16,6 +16,7 @@ abstract class InfrastructureFactory<out T : InfrastructureType> {
             CDN::class  -> CDNFactory(infrastructure).create() as T
             Firewall::class  -> FirewallFactory(infrastructure).create() as T
             ServiceDiscovery::class  -> ServiceDiscoveryFactory(infrastructure).create() as T
+            ServiceRegistry::class -> ServiceRegistryFactory(infrastructure).create() as T
             else               -> throw IllegalArgumentException()
         }
     }
@@ -52,4 +53,7 @@ class FirewallFactory(val infrastructure: Infrastructure) : InfrastructureFactor
 
 class ServiceDiscoveryFactory(val infrastructure: Infrastructure) : InfrastructureFactory<ServiceDiscovery>() {
     override fun create() = ServiceDiscovery(infrastructure.nextServiceDiscovery())
+}
+class ServiceRegistryFactory(val infrastructure: Infrastructure) : InfrastructureFactory<ServiceRegistry>() {
+    override fun create() = ServiceRegistry(infrastructure.nextServiceRegistry())
 }

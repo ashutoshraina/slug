@@ -10,6 +10,7 @@ sealed class InfrastructureType {
     class Firewall(override val identifier: String) : InfrastructureType()
     class Cache(override val identifier: String) : DiscoverableInfrastructureType()
     class ServiceDiscovery(override val identifier: String) : InfrastructureType()
+    class ServiceRegistry(override val identifier: String) : InfrastructureType()
     class WebApplication(override val identifier: String) : DiscoverableInfrastructureType()
     class Database(override val identifier: String, val replicationFactor : Int) : DiscoverableInfrastructureType()
 

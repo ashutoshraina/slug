@@ -29,7 +29,7 @@ class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructur
     private val anotherDatabase = create<Database>(infrastructure).withReplication(replication)
     private val aDNS = create<ServiceDiscovery>(infrastructure)
     private val anotherDNS = create<ServiceDiscovery>(infrastructure)
-    private val serviceDiscovery = ServiceRegistry("Eureka")
+    private val serviceDiscovery = create<ServiceRegistry>(infrastructure)
 
     private val densityFromDistribution: Int
         get() = if (cranks.powerLaw) {

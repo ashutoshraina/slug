@@ -37,11 +37,11 @@ class Main {
 
             val serviceDensity = config.getProperty("densityFromDistribution")
             val replicationFactor = config.getProperty("replication")
-            val powerLawDistribution = config.getBooleanProperty("powerlaw")
+            val powerLaw = config.getBooleanProperty("powerlaw")
             val calculateMetrics = config.getBooleanProperty("metrics")
             val iterations = config.getIntegerProperty("iterations")
             var futures = emptyArray<CompletableFuture<Void>>()
-            val crank = Cranks(serviceDensity, replicationFactor, powerLawDistribution)
+            val crank = Cranks(serviceDensity, replicationFactor, powerLaw)
 
             (1..iterations).forEach { iteration ->
 
