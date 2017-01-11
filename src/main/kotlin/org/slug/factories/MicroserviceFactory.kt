@@ -41,9 +41,7 @@ class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructur
         val simpleComponent = SimpleComponent(proxy, proxy2Web)
         val proxyLayer = Layer("1", 2, simpleComponent)
 
-        val database = Database("Redis", replication)
-        val serviceDiscovery = ServiceDiscovery("DNS_SERVER")
-        val layerConnection = ServiceDiscoveryIndirection(webApplication, serviceDiscovery, database)
+        val layerConnection = ServiceDiscoveryIndirection(webApplication, aDNS, aDatabase)
         val discoverableComponent = DiscoverableComponent(webApplication, layerConnection)
         val webLayer = Layer("2", densityFromDistribution, discoverableComponent)
 
