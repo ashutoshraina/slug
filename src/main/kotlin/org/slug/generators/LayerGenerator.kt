@@ -1,4 +1,9 @@
-package org.slug.core
+package org.slug.generators
+
+import org.slug.core.Component
+import org.slug.core.InfrastructureType
+import org.slug.core.Microservice
+import org.slug.core.validateSize
 
 class LayerGenerator(architecture: Microservice) : MicroserviceGenerator(architecture) {
 
@@ -7,7 +12,6 @@ class LayerGenerator(architecture: Microservice) : MicroserviceGenerator(archite
     }
 
     private fun addLayer() {
-
         if (!architecture.validateSize()) {
             // this isn't a real architecture, it has just one layer.
             return
@@ -23,7 +27,6 @@ class LayerGenerator(architecture: Microservice) : MicroserviceGenerator(archite
     }
 
     private fun createLinkLayers(firstLayerComponent: Component, secondLayerComponent: Component) {
-
         val froms = addComponent(firstLayerComponent)
         val tos = addComponent(secondLayerComponent)
         createLink(firstLayerComponent, froms, tos)

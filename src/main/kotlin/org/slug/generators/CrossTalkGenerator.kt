@@ -1,4 +1,4 @@
-package org.slug.core
+package org.slug.generators
 
 import org.graphstream.graph.Edge
 import org.graphstream.graph.Graph
@@ -6,12 +6,13 @@ import org.graphstream.graph.Node
 import org.graphstream.graph.implementations.Graphs
 import org.graphstream.graph.implementations.SingleGraph
 import org.graphstream.graph.implementations.SingleNode
+import org.slug.core.XTalk
 import org.slug.output.DisplayConstants.LABEL
 import org.slug.output.DisplayConstants.STYLE
 import org.slug.output.GraphConstants.NODE_STYLE
 import org.slug.output.GraphConstants.SEPARATOR
 
-class CrossTalkGenerator {
+object CrossTalkGenerator {
 
     fun addCrossTalk(microservices: Sequence<SingleGraph>, xTalks: Sequence<XTalk>): Sequence<SingleGraph> {
 

@@ -2,13 +2,14 @@ package org.slug
 
 import org.graphstream.graph.Graph
 import org.graphstream.graph.implementations.SingleGraph
-import org.slug.core.CrossTalkGenerator
-import org.slug.core.LayerGenerator
+import org.slug.generators.CrossTalkGenerator
+import org.slug.generators.LayerGenerator
 import org.slug.core.Microservice
-import org.slug.core.MicroserviceGenerator
+import org.slug.generators.MicroserviceGenerator
 import org.slug.factories.Cranks
 import org.slug.factories.Infrastructure.Companion.loadInfrastructureConfig
 import org.slug.factories.MicroserviceFactory
+import org.slug.generators.CrossTalkGenerator.addCrossTalk
 import org.slug.output.DisplayHelper
 import org.slug.output.DotConfiguration
 import org.slug.output.display
@@ -80,8 +81,7 @@ class Main {
             val XTalks = architecture.crossTalks()
             val moreXTalks = moreArchitecture.crossTalks()
 
-            val crossTalks = CrossTalkGenerator().addCrossTalk(serviceGraphs, XTalks)
-                    .plus(CrossTalkGenerator().addCrossTalk(moreServiceGraphs, moreXTalks))
+            val crossTalks = addCrossTalk(serviceGraphs, XTalks).plus(addCrossTalk(moreServiceGraphs, moreXTalks))
 
             simpleGraphs.plus(crossTalks)
                     .forEach { graph ->

@@ -6,6 +6,8 @@ import org.slug.Main
 import org.slug.factories.Cranks
 import org.slug.factories.Infrastructure
 import org.slug.factories.MicroserviceFactory
+import org.slug.generators.CrossTalkGenerator.addCrossTalk
+import org.slug.generators.MicroserviceGenerator
 
 class CrossTalkGeneratorTest {
 
@@ -18,7 +20,7 @@ class CrossTalkGeneratorTest {
         val serviceGraphs = architecture.generators().map { service -> Main.generator("", service.architecture, MicroserviceGenerator::class.java) }
 
         val XTalks = architecture.crossTalks()
-        val crossTalks = CrossTalkGenerator().addCrossTalk(serviceGraphs, XTalks)
+        val crossTalks = addCrossTalk(serviceGraphs, XTalks)
 
         assertEquals(2, crossTalks.count())
         assertEquals(39, crossTalks.first().nodeCount)

@@ -7,7 +7,7 @@ import org.slug.core.Component.DiscoverableComponent
 import org.slug.core.Component.SimpleComponent
 import org.slug.core.InfrastructureType.*
 import org.slug.core.LayerConnection.*
-import org.slug.core.MicroserviceGenerator
+import org.slug.generators.MicroserviceGenerator
 import org.slug.factories.Cranks
 import org.slug.factories.Infrastructure
 import org.slug.factories.MicroserviceFactory

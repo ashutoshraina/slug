@@ -1,9 +1,10 @@
-package org.slug.core
+package org.slug.generators
 
 import org.graphstream.algorithm.generator.Generator
 import org.graphstream.stream.SourceBase
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.slug.core.*
 import org.slug.core.Component.DiscoverableComponent
 import org.slug.core.Component.SimpleComponent
 import org.slug.output.DisplayConstants.LABEL
@@ -29,7 +30,6 @@ open class MicroserviceGenerator(val architecture: Microservice) : SourceBase(),
     }
 
     private fun addLayer() {
-
         if (!architecture.validateSize()) {
             // this isn't a real architecture, it has just one layer.
             return
@@ -45,7 +45,6 @@ open class MicroserviceGenerator(val architecture: Microservice) : SourceBase(),
     }
 
     private fun createLinkLayers(firstLayerComponent: Component, firstLayerRedundancy: Int, secondLayerComponent: Component, secondLayerRedundancy: Int) {
-
         val froms = addComponent(firstLayerComponent, firstLayerRedundancy)
         val tos = addComponent(secondLayerComponent, secondLayerRedundancy)
         createLink(firstLayerComponent, froms, secondLayerRedundancy, tos)
@@ -91,20 +90,21 @@ open class MicroserviceGenerator(val architecture: Microservice) : SourceBase(),
         return nodes
     }
 
-    private fun createLink(firstLayerComponent: Component, froms: Sequence<String>, secondLayerRedundancy: Int, tos: Sequence<String>) = when (firstLayerComponent) {
-        is SimpleComponent -> {
-            logger?.debug("creating link for simple component " + firstLayerComponent)
-            froms.forEach { from ->
-                tos.take(secondLayerRedundancy).forEach { to -> createEdge(from, to) }
+    private fun createLink(firstLayerComponent: Component, froms: Sequence<String>, secondLayerRedundancy: Int, tos: Sequence<String>) =
+            when (firstLayerComponent) {
+                is SimpleComponent -> {
+                    logger?.debug("creating link for simple component " + firstLayerComponent)
+                    froms.forEach { from ->
+                        tos.take(secondLayerRedundancy).forEach { to -> createEdge(from, to) }
+                    }
+                }
+                is DiscoverableComponent -> {
+                    logger?.debug("creating link for discoverable component " + firstLayerComponent)
+                    for ((from, to) in froms.zip(tos)) {
+                        createEdge(from, to)
+                    }
+                }
             }
-        }
-        is DiscoverableComponent -> {
-            logger?.debug("creating link for discoverable component " + firstLayerComponent)
-            for ((from, to) in froms.zip(tos)) {
-                createEdge(from, to)
-            }
-        }
-    }
 
     fun createNode(nodeIdentifier: String) {
         if (!createdNodes.contains(nodeIdentifier)) {
@@ -126,17 +126,17 @@ open class MicroserviceGenerator(val architecture: Microservice) : SourceBase(),
         }
     }
 
-    fun createEdge(component: DiscoverableComponent, nodeIdentifier: String) {
-        createEdge(nodeIdentifier, component.connection.via.identifier)
-    }
+    fun createEdge(component: DiscoverableComponent, nodeIdentifier: String) =
+            createEdge(nodeIdentifier, component.connection.via.identifier)
 
-    fun createEdge(component: DiscoverableComponent) {
-        createEdge(component.connection.via.identifier, component.connection.to.identifier)
-    }
+    fun createEdge(component: DiscoverableComponent) =
+            createEdge(component.connection.via.identifier, component.connection.to.identifier)
 
-    fun createIdentifier(identifier: String, append: Int) = identifier + SEPARATOR + append
+    fun createIdentifier(identifier: String, append: Int) =
+            identifier + SEPARATOR + append
 
-    fun areEqual(first: Layer, second: Layer) = first.component.type.identifier == second.component.type.identifier
+    fun areEqual(first: Layer, second: Layer) =
+            first.component.type.identifier == second.component.type.identifier
 
     fun layerZipper(sequence: Sequence<Layer>) =
             if (sequence.count() == 2) sequenceOf(Pair(sequence.first(), sequence.last()))

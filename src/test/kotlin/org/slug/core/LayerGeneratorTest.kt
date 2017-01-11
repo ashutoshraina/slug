@@ -6,6 +6,7 @@ import org.junit.Test
 import org.slug.factories.Cranks
 import org.slug.factories.Infrastructure
 import org.slug.factories.MicroserviceFactory
+import org.slug.generators.LayerGenerator
 
 class LayerGeneratorTest {
 

@@ -2,6 +2,7 @@ package org.slug.core
 
 import org.slug.util.*
 import org.slug.core.InfrastructureType.ServiceRegistry
+import org.slug.generators.MicroserviceGenerator
 
 data class Architecture(private val services: Sequence<Either<Microservice, XTalk>>) {
     fun generators(): Sequence<MicroserviceGenerator> =
