@@ -68,8 +68,9 @@ fun measurements(graphs: Sequence<Graph>, metricConfig: MetricConfig) {
     val averageDegreeDeviation = Measurement("Average Degree Deviation", "Average Degree Deviation", Toolkit::degreeAverageDeviation, "Graph Id", "Average Degree Deviation")
     val nodeCount = Measurement("Node Count", "Node Spread", ::nodeCount, "Graph Id", "Nodes")
     val edgeCount = Measurement("Edge Count", "Edge Spread", ::edgeCount, "Graph Id", "Edges")
+    val diameter = Measurement("Diameter", "Diameter", Toolkit::diameter, "Graph Id", "Diameter")
 
-    val measurements = sequenceOf(densityMeasure, averageDegreeMeasure, averageDegreeDeviation, nodeCount, edgeCount)
+    val measurements = sequenceOf(densityMeasure, averageDegreeMeasure, averageDegreeDeviation, nodeCount, edgeCount, diameter)
 
     calculateMetrics(graphs, measurements, metricConfig)
 
