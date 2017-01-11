@@ -30,7 +30,9 @@ class Main {
             val file = File(outputDirectory)
             if (!file.exists()) file.mkdirs()
 
-            val css = loadCSSConfig()
+            val styleFile = config.getProperty("style")
+            val css = DisplayHelper.loadCSSConfig(styleFile)
+
             val infrastructure = loadInfrastructureConfig()
 
             val serviceDensity = config.getProperty("densityFromDistribution")
@@ -88,15 +90,6 @@ class Main {
                     }
 
             return simpleGraphs.plus(crossTalks)
-        }
-
-        private fun loadCSSConfig(): String {
-            val styleFile = config.getProperty("style")
-            val css = when {
-                !styleFile.isNullOrEmpty() -> DisplayHelper().loadCSS(styleFile)
-                else -> DisplayHelper().loadDefaultCSS()
-            }
-            return css
         }
 
         @Suppress("UNCHECKED_CAST")
