@@ -1,7 +1,6 @@
 package org.slug.output
 
 import org.graphstream.graph.Graph
-import org.slug.Main
 import org.slug.util.FileHelper
 import java.io.File
 

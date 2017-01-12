@@ -2,22 +2,22 @@ package org.slug
 
 import org.graphstream.graph.Graph
 import org.graphstream.graph.implementations.SingleGraph
-import org.slug.generators.CrossTalkGenerator
-import org.slug.generators.LayerGenerator
 import org.slug.core.Microservice
-import org.slug.generators.MicroserviceGenerator
 import org.slug.factories.Cranks
 import org.slug.factories.Infrastructure.Companion.loadInfrastructureConfig
 import org.slug.factories.MicroserviceFactory
 import org.slug.generators.CrossTalkGenerator.addCrossTalk
+import org.slug.generators.LayerGenerator
+import org.slug.generators.MicroserviceGenerator
+import org.slug.metrics.MetricConfig
+import org.slug.metrics.measurements
 import org.slug.output.DisplayHelper
 import org.slug.output.DotConfiguration
 import org.slug.output.display
 import org.slug.output.generateDotFile
+import org.slug.util.Config
 import java.io.File
-import java.util.*
 import java.util.concurrent.CompletableFuture
-
 
 class Main {
 
@@ -95,7 +95,7 @@ class Main {
         @Suppress("UNCHECKED_CAST")
         fun <T : MicroserviceGenerator> generator(css: String, microservice: Microservice, generatorType: Class<T>): SingleGraph {
             val declaredConstructor = generatorType.constructors.first()
-            var generator: T = declaredConstructor.newInstance(microservice) as T
+            val generator: T = declaredConstructor.newInstance(microservice) as T
 
             val name = generator.architecture.identifier
             val graph = SingleGraph(name)

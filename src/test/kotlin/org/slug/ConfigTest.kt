@@ -2,6 +2,7 @@ package org.slug
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.slug.util.Config
 import java.util.*
 
 class ConfigTest {

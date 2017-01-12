@@ -27,62 +27,58 @@ class Infrastructure {
     @SerializedName("serviceRegistry")
     @Expose var serviceRegistry: List<String> = emptyList()
 
-
-    fun moveFirstToLast(list: List<String>): List<String> {
-        return list.drop(1).plus(list[0])
-
-    }
+    fun moveFirstToLast(list: List<String>): List<String> = list.drop(1).plus(list[0])
 
     fun nextDatabase(): String {
-        var result = database[0]
+        val result = database[0]
         database = moveFirstToLast(database)
         return result
     }
 
     fun nextProxy(): String {
-        var result = proxy[0]
+        val result = proxy[0]
         proxy = moveFirstToLast(proxy)
         return result
     }
 
     fun nextCDN(): String {
-        var result = cdn[0]
+        val result = cdn[0]
         cdn = moveFirstToLast(cdn)
         return result
     }
 
     fun nextWebApplication(): String {
-        var result = webApplication[0]
+        val result = webApplication[0]
         webApplication = moveFirstToLast(webApplication)
         return result
     }
 
     fun nextFirewall(): String {
-        var result = firewall[0]
+        val result = firewall[0]
         firewall = moveFirstToLast(firewall)
         return result
     }
 
     fun nextCache(): String {
-        var result = cache[0]
+        val result = cache[0]
         cache = moveFirstToLast(cache)
         return result
     }
 
     fun nextServiceDiscovery(): String {
-        var result = serviceDiscovery[0]
+        val result = serviceDiscovery[0]
         serviceDiscovery = moveFirstToLast(serviceDiscovery)
         return result
     }
 
     fun nextLoadBalancer(): String {
-        var result = loadBalancer[0]
+        val result = loadBalancer[0]
         loadBalancer = moveFirstToLast(loadBalancer)
         return result
     }
 
     fun nextServiceRegistry(): String {
-        var result = serviceRegistry[0]
+        val result = serviceRegistry[0]
         serviceRegistry = moveFirstToLast(serviceRegistry)
         return result
     }

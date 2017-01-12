@@ -1,4 +1,4 @@
-package org.slug
+package org.slug.util
 
 import java.util.*
 
@@ -26,15 +26,9 @@ object Config {
         return this
     }
 
-    fun fromValues(default : Properties): Config{
-        properties.putAll(default)
-        return this
-    }
-
-    fun fromValues(default : Map<String,Any>): Config{
+    fun fromValues(default : Properties): Config {
         properties.putAll(default)
         return this
     }
 
 }
-
