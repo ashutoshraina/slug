@@ -5,13 +5,9 @@ import org.slug.util.FileHelper
 import java.io.File
 
 object DisplayHelper {
-    private fun loadDefaultCSS(): String {
-        return loadCSS("style.css")
-    }
+    private fun loadDefaultCSS(): String = loadCSS("style.css")
 
-    private fun loadCSS(styleFile: String): String {
-        return FileHelper.readFile(styleFile)
-    }
+    private fun loadCSS(styleFile: String): String = FileHelper.readFile(styleFile)
 
     fun loadCSSConfig(styleFile: String): String {
         val css = when {
