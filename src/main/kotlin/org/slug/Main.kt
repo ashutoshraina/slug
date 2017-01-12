@@ -1,12 +1,12 @@
 package org.slug
 
 import org.graphstream.graph.Graph
-import org.graphstream.graph.implementations.SingleGraph
 import org.slug.core.Microservice
 import org.slug.factories.Cranks
 import org.slug.factories.Infrastructure.Companion.loadInfrastructureConfig
 import org.slug.factories.MicroserviceFactory
 import org.slug.generators.CrossTalkGenerator.addCrossTalk
+import org.slug.generators.GraphGenerator.createServiceGraph
 import org.slug.generators.LayerGenerator
 import org.slug.generators.MicroserviceGenerator
 import org.slug.metrics.MetricConfig
@@ -72,12 +72,12 @@ class Main {
                     .plusElement(microserviceFactory.e2eMultipleApps())
                     .plusElement(microserviceFactory.e2eWithCache())
 
-            val simpleGraphs: Sequence<Graph> = services.map { microservice -> generator(css, microservice, generator) }
+            val simpleGraphs: Sequence<Graph> = services.map { microservice -> createServiceGraph(css, microservice, generator) }
 
             val architecture = microserviceFactory.architecture()
             val moreArchitecture = microserviceFactory.someMoreArchitectures()
-            val serviceGraphs = architecture.microservices().map { microservice -> generator(css, microservice, generator) }
-            val moreServiceGraphs = moreArchitecture.microservices().map { microservice -> generator(css, microservice, generator) }
+            val serviceGraphs = architecture.microservices().map { microservice -> createServiceGraph(css, microservice, generator) }
+            val moreServiceGraphs = moreArchitecture.microservices().map { microservice -> createServiceGraph(css, microservice, generator) }
 
             val XTalks = architecture.crossTalks()
             val moreXTalks = moreArchitecture.crossTalks()
@@ -92,27 +92,5 @@ class Main {
 
             return simpleGraphs.plus(crossTalks)
         }
-
-        @Suppress("UNCHECKED_CAST")
-        fun <T : MicroserviceGenerator> generator(css: String, microservice: Microservice, generatorType: Class<T>): SingleGraph {
-            val declaredConstructor = generatorType.constructors.first()
-            val generator: T = declaredConstructor.newInstance(microservice) as T
-
-            val name = generator.architecture.identifier
-            val graph = SingleGraph(name)
-
-            System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer")
-
-            graph.addAttribute("ui.stylesheet", css)
-            generator.addSink(graph)
-            generator.begin()
-            generator.end()
-
-            graph.addAttribute("ui.antialias")
-            graph.addAttribute("ui.quality")
-
-            return graph
-        }
-
     }
 }
