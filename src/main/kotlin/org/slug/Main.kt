@@ -11,6 +11,7 @@ import org.slug.generators.LayerGenerator
 import org.slug.generators.MicroserviceGenerator
 import org.slug.metrics.MetricConfig
 import org.slug.metrics.measurements
+import org.slug.metrics.printMetrics
 import org.slug.output.DisplayHelper
 import org.slug.output.DotConfiguration
 import org.slug.output.display
@@ -52,10 +53,10 @@ class Main {
                 val layeredGraphs = generateArchitectures(css, MicroserviceFactory(crank, infrastructure), LayerGenerator::class.java, DotConfiguration(outputDirectory, layerDirectory))
                 if (calculateMetrics) {
                     futures = futures.plus(CompletableFuture.runAsync {
-                        measurements(graphs, MetricConfig(outputDirectory, metricsDirectory = dotDirectory))
+                        printMetrics(measurements(graphs), MetricConfig(outputDirectory, metricsDirectory = dotDirectory))
                     })
                     futures = futures.plus(CompletableFuture.runAsync {
-                        measurements(layeredGraphs, MetricConfig(outputDirectory, metricsDirectory = layerDirectory))
+                        printMetrics(measurements(layeredGraphs), MetricConfig(outputDirectory, metricsDirectory = layerDirectory))
                     })
                 }
             }
