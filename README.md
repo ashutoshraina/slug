@@ -57,12 +57,14 @@ Unless you are very keen on seeing visualisations in a certain way, it is probab
 | Config Parameter | Description | Options
 | --- | --- | --- |
 |densityFromDistribution | controls the density of the services i.e. how many instances of a service are there; this applies to web applications | sparse, dense, hyperdense |
-| replication | replication factor of the persistance mechanism | minimal, medium, high|
+| replication | replication factor of the persistence mechanism | minimal, medium, high|
 |iterations|how many iterations to run the generator for| any integer|
 
-For each iteration we generate the artifacts in the output folder specifed by the outputDirectory property.
+For each iteration we generate the artifacts in the output folder specified by the outputDirectory property.
 
 The metrics for the generated artifacts are also put inside the same iteration directory, these are .m files which can be directly rendered in Octave or Matlab.
+
+Metrics for the all the iterations are combined and written to the metrics directory. This can also be directly used on Octave or Matlab.
 
 A Sample is below :
 
