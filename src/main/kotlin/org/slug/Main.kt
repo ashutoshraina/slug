@@ -9,9 +9,7 @@ import org.slug.generators.CrossTalkGenerator.addCrossTalk
 import org.slug.generators.GraphGenerator.createServiceGraph
 import org.slug.generators.LayerGenerator
 import org.slug.generators.MicroserviceGenerator
-import org.slug.metrics.MetricConfig
-import org.slug.metrics.measurements
-import org.slug.metrics.printMetrics
+import org.slug.metrics.*
 import org.slug.output.DisplayHelper
 import org.slug.output.DotConfiguration
 import org.slug.output.display
@@ -44,6 +42,7 @@ class Main {
             val iterations = config.getIntegerProperty("iterations")
             var futures = emptyArray<CompletableFuture<Void>>()
             val crank = Cranks(serviceDensity, replicationFactor, powerLaw)
+            var aggregateMetrics = emptySequence<Metric>()
 
             (1..iterations).forEach { iteration ->
 
@@ -53,14 +52,20 @@ class Main {
                 val layeredGraphs = generateArchitectures(css, MicroserviceFactory(crank, infrastructure), LayerGenerator::class.java, DotConfiguration(outputDirectory, layerDirectory))
                 if (calculateMetrics) {
                     futures = futures.plus(CompletableFuture.runAsync {
-                        printMetrics(measurements(graphs), MetricConfig(outputDirectory, metricsDirectory = dotDirectory))
+                        val metrics = measurements(graphs)
+                        aggregateMetrics = aggregateMetrics.plus(metrics)
+                        printMetrics(metrics, MetricConfig(outputDirectory, dotDirectory))
                     })
                     futures = futures.plus(CompletableFuture.runAsync {
-                        printMetrics(measurements(layeredGraphs), MetricConfig(outputDirectory, metricsDirectory = layerDirectory))
+                        val metrics = measurements(layeredGraphs)
+                        aggregateMetrics = aggregateMetrics.plus(metrics)
+                        printMetrics(metrics, MetricConfig(outputDirectory, layerDirectory))
                     })
                 }
             }
+
             CompletableFuture.allOf(*futures).get()
+            printMetrics(combineMetrics(aggregateMetrics), MetricConfig(outputDirectory,"metrics"))
         }
 
         private fun <T : MicroserviceGenerator> generateArchitectures(css: String, microserviceFactory: MicroserviceFactory, generator: Class<T>, dotConfiguration: DotConfiguration): Sequence<Graph> {

@@ -76,5 +76,26 @@ fun measurements(graphs: Sequence<Graph>): Sequence<Metric> {
 
 }
 
+fun combineMetrics(metrics: Sequence<Metric>): Sequence<Metric> {
+    val groupedByMetric = metrics.groupBy { it -> it.chartParams.title }
+    return groupedByMetric.entries
+            .mapIndexed { i, entry ->
+
+                var yValues = emptyArray<Double>()
+                var xValues = emptyArray<Int>()
+                var count = 0
+                entry.value.forEach {
+                    val chartData = it.chartData
+                    chartData.yValues.forEach { y ->
+                        count += 1
+                        xValues = xValues.plus(count)
+                        yValues = yValues.plus(y)
+                    }
+                }
+
+                Metric(ChartData(xValues, yValues), ChartParams("GraphId", entry.key, entry.key, entry.key), SubPlot(groupedByMetric.count() / 2, groupedByMetric.count() /2 + 1, i + 1))
+            }.asSequence()
+}
+
 fun nodeCount(graph: Graph): Double = graph.nodeCount.toDouble()
 fun edgeCount(graph: Graph): Double = graph.edgeCount.toDouble()
