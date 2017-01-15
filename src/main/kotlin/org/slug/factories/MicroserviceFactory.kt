@@ -1,17 +1,21 @@
 package org.slug.factories
 
-import org.slug.core.*
+import org.graphstream.graph.Graph
 import org.slug.core.Component.DiscoverableComponent
 import org.slug.core.Component.SimpleComponent
 import org.slug.core.InfrastructureType.*
+import org.slug.core.Layer
 import org.slug.core.LayerConnection.*
+import org.slug.core.Microservice
+import org.slug.core.PowerLaw
+import org.slug.core.withReplication
 import org.slug.factories.InfrastructureFactory.Companion.create
-import org.slug.util.Left
-import org.slug.util.Right
+import org.slug.generators.GraphGenerator
+import org.slug.generators.MicroserviceGenerator
 
 data class Cranks(val serviceDensity: String, val replicationFactor: String, val powerLaw: Boolean = false)
 
-class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructure) {
+class MicroserviceFactory(val cranks: Cranks, val infrastructure: Infrastructure) {
     private val defaultDensity = 5
     private val defaultReplication = 3
     val densityMap = mapOf("sparse" to 4, "dense" to 10, "hyperdense" to 15)
@@ -29,14 +33,13 @@ class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructur
     private val anotherDatabase = create<Database>(infrastructure).withReplication(replication)
     private val aDNS = create<ServiceDiscovery>(infrastructure)
     private val anotherDNS = create<ServiceDiscovery>(infrastructure)
-    private val serviceDiscovery = create<ServiceRegistry>(infrastructure)
 
     private val densityFromDistribution: Int
         get() = if (cranks.powerLaw) {
             PowerLaw().zipf(density)
         } else density
 
-    fun simpleArchitecture(): Microservice {
+    fun simple(): Microservice {
         val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
         val simpleComponent = SimpleComponent(proxy, proxy2Web)
         val proxyLayer = Layer("1", 2, simpleComponent)
@@ -106,19 +109,19 @@ class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructur
         val proxyComponent = SimpleComponent(proxy, proxy2Web)
         val proxyLayer = Layer("4", 2, proxyComponent)
 
-        val web2Cache = WebApplication2Cache(webApplication, cache, replication)
-        val cacheComponent = SimpleComponent(webApplication, web2Cache)
-        val cacheLayer = Layer("5", density, cacheComponent)
+        val layerConnection = WebApplication2Cache(webApplication, cache, replication)
+        val component = SimpleComponent(webApplication, layerConnection)
+        val layer = Layer("5", density, component)
 
-        val cache2Redis = ServiceDiscoveryIndirection(cache, aDNS, aDatabase, replication)
-        val recommendationComponent = DiscoverableComponent(cache, cache2Redis)
-        val recommendationLayer = Layer("6", density, recommendationComponent)
+        val anotherLayerConnection = ServiceDiscoveryIndirection(cache, aDNS, aDatabase, replication)
+        val anotherComponent = DiscoverableComponent(cache, anotherLayerConnection)
+        val anotherLayer = Layer("6", density, anotherComponent)
 
         val web2cassandra = ServiceDiscoveryIndirection(webApplication, anotherDNS, anotherDatabase)
         val userComponent = DiscoverableComponent(webApplication, web2cassandra)
         val userLayer = Layer("7", density, userComponent)
 
-        return Microservice("e2eWithCache", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyLayer, cacheLayer, recommendationLayer, userLayer))
+        return Microservice("e2eWithCache", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyLayer, layer, anotherLayer, userLayer))
     }
 
     fun e2e(): Microservice {
@@ -140,15 +143,15 @@ class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructur
         val proxyComponent = SimpleComponent(proxy, proxy2Web)
         val proxyLayer = Layer("4", 2, proxyComponent)
 
-        val web2redis = ServiceDiscoveryIndirection(webApplication, aDNS, aDatabase, replication)
-        val recommendationComponent = DiscoverableComponent(webApplication, web2redis)
-        val recommendationLayer = Layer("5", density, recommendationComponent)
+        val indirection = ServiceDiscoveryIndirection(webApplication, aDNS, aDatabase, replication)
+        val component = DiscoverableComponent(webApplication, indirection)
+        val layer = Layer("5", density, component)
 
-        val web2cassandra = ServiceDiscoveryIndirection(webApplication, anotherDNS, anotherDatabase)
-        val userComponent = DiscoverableComponent(webApplication, web2cassandra)
-        val userLayer = Layer("6", density, userComponent)
+        val anotherIndirection = ServiceDiscoveryIndirection(webApplication, anotherDNS, anotherDatabase)
+        val anotherComponent = DiscoverableComponent(webApplication, anotherIndirection)
+        val anotherLayer = Layer("6", density, anotherComponent)
 
-        return Microservice("e2e", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyLayer, recommendationLayer, userLayer))
+        return Microservice("e2e", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyLayer, layer, anotherLayer))
     }
 
     fun e2eMultipleApps(): Microservice {
@@ -186,40 +189,21 @@ class MicroserviceFactory(val cranks : Cranks, val infrastructure: Infrastructur
         return Microservice("e2eMultipleApps", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyRecommendationLayer, recommendationLayer, proxyUserCreationLayer, userLayer))
     }
 
-    fun architecture(): Architecture {
-        val from = e2e()
-        val to = e2eMultipleApps()
-        val anotherFrom = multipleLinks()
+}
 
-        val entry = from.layers.first { l -> l.component.type is InfrastructureType.WebApplication }.component.type
-        val exit = to.layers.last { l -> l.component.type is InfrastructureType.WebApplication }.component.type
+fun <T : MicroserviceGenerator> buildServiceGraphs(services: Sequence<Microservice>, css: String, generator: Class<T>): Sequence<Graph> {
 
-        val crossTalk = Right(XTalk(from, entry, to, exit, serviceDiscovery))
+    val simpleGraphs = services.map { microservice -> GraphGenerator.createServiceGraph(css, microservice, generator) }
 
-        val e2e = Left(from)
-        val e2eMultipleApps = Left(to)
-        val multiLink = Left(anotherFrom)
+    return simpleGraphs
+}
 
-        val anotherEntry = anotherFrom.layers.first { l -> l.component.type is InfrastructureType.WebApplication }.component.type
-        val anotherExit = to.layers.last { l -> l.component.type is InfrastructureType.WebApplication }.component.type
-
-        val moreCrossTalk = Right(XTalk(anotherFrom, anotherEntry, to, anotherExit, serviceDiscovery))
-
-        return Architecture(sequenceOf(e2e, e2eMultipleApps, multiLink, crossTalk, moreCrossTalk))
-    }
-
-    fun someMoreArchitectures(): Architecture {
-        val from = e2eWithCache()
-        val to = e2eMultipleApps()
-
-        val entry = from.layers.first { l -> l.component.type is InfrastructureType.WebApplication }.component.type
-        val exit = to.layers.last { l -> l.component.type is InfrastructureType.WebApplication }.component.type
-
-        val crossTalk = Right(XTalk(from, entry, to, exit, serviceDiscovery))
-
-        val e2eWithCache = Left(from)
-        val e2eMultipleApps = Left(to)
-
-        return Architecture(sequenceOf(e2eWithCache, e2eMultipleApps, crossTalk))
-    }
+fun buildServices(microserviceFactory: MicroserviceFactory): Sequence<Microservice> {
+    return emptySequence<Microservice>()
+            .plusElement(microserviceFactory.simple())
+            .plusElement(microserviceFactory.simple3Tier())
+            .plusElement(microserviceFactory.multipleLinks())
+            .plusElement(microserviceFactory.e2e())
+            .plusElement(microserviceFactory.e2eMultipleApps())
+            .plusElement(microserviceFactory.e2eWithCache())
 }

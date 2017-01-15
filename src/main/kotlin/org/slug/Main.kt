@@ -1,12 +1,14 @@
 package org.slug
 
 import org.graphstream.graph.Graph
-import org.slug.core.Microservice
+import org.slug.core.InfrastructureType
+import org.slug.factories.ArchitectureFactory.buildArchitectures
+import org.slug.factories.ArchitectureFactory.fromMicroservices
 import org.slug.factories.Cranks
 import org.slug.factories.Infrastructure.Companion.loadInfrastructureConfig
 import org.slug.factories.MicroserviceFactory
-import org.slug.generators.CrossTalkGenerator.addCrossTalk
-import org.slug.generators.GraphGenerator.createServiceGraph
+import org.slug.factories.buildServiceGraphs
+import org.slug.factories.buildServices
 import org.slug.generators.LayerGenerator
 import org.slug.generators.MicroserviceGenerator
 import org.slug.metrics.*
@@ -48,54 +50,43 @@ class Main {
 
                 val dotDirectory = File.separator + "i_" + iteration
                 val layerDirectory = dotDirectory + "_l"
-                val graphs = generateArchitectures(css, MicroserviceFactory(crank, infrastructure), MicroserviceGenerator::class.java, DotConfiguration(outputDirectory, dotDirectory))
-                val layeredGraphs = generateArchitectures(css, MicroserviceFactory(crank, infrastructure), LayerGenerator::class.java, DotConfiguration(outputDirectory, layerDirectory))
+                val services = buildServices(MicroserviceFactory(crank, infrastructure))
+                val graphs = buildServiceGraphs(services, css, MicroserviceGenerator::class.java)
+                val layeredGraphs = buildServiceGraphs(services, css, LayerGenerator::class.java)
+                val architectures = fromMicroservices(services, InfrastructureType.ServiceRegistry("Eureka"))
+                val crossTalks = buildArchitectures(architectures, css, MicroserviceGenerator::class.java)
+
                 if (calculateMetrics) {
                     futures = futures.plus(CompletableFuture.runAsync {
                         val metrics = measurements(graphs)
                         aggregateMetrics = aggregateMetrics.plus(metrics)
-                        printMetrics(metrics, MetricConfig(outputDirectory, dotDirectory))
+                        display(graphs, DotConfiguration(outputDirectory,dotDirectory))
                     })
                     futures = futures.plus(CompletableFuture.runAsync {
                         val metrics = measurements(layeredGraphs)
                         aggregateMetrics = aggregateMetrics.plus(metrics)
-                        printMetrics(metrics, MetricConfig(outputDirectory, layerDirectory))
+                        display(layeredGraphs, DotConfiguration(outputDirectory,layerDirectory))
+
+                    })
+                    futures = futures.plus(CompletableFuture.runAsync {
+                        val metrics = measurements(crossTalks)
+                        aggregateMetrics = aggregateMetrics.plus(metrics)
+                        display(crossTalks, DotConfiguration(outputDirectory,dotDirectory))
                     })
                 }
             }
 
             CompletableFuture.allOf(*futures).get()
-            printMetrics(combineMetrics(aggregateMetrics), MetricConfig(outputDirectory,"metrics"))
+            printMetrics(combineMetrics(aggregateMetrics), MetricConfig(outputDirectory, "metrics"))
         }
 
-        private fun <T : MicroserviceGenerator> generateArchitectures(css: String, microserviceFactory: MicroserviceFactory, generator: Class<T>, dotConfiguration: DotConfiguration): Sequence<Graph> {
-            val services = emptySequence<Microservice>()
-                    .plusElement(microserviceFactory.simpleArchitecture())
-                    .plusElement(microserviceFactory.simple3Tier())
-                    .plusElement(microserviceFactory.multipleLinks())
-                    .plusElement(microserviceFactory.e2e())
-                    .plusElement(microserviceFactory.e2eMultipleApps())
-                    .plusElement(microserviceFactory.e2eWithCache())
-
-            val simpleGraphs: Sequence<Graph> = services.map { microservice -> createServiceGraph(css, microservice, generator) }
-
-            val architecture = microserviceFactory.architecture()
-            val moreArchitecture = microserviceFactory.someMoreArchitectures()
-            val serviceGraphs = architecture.microservices().map { microservice -> createServiceGraph(css, microservice, generator) }
-            val moreServiceGraphs = moreArchitecture.microservices().map { microservice -> createServiceGraph(css, microservice, generator) }
-
-            val XTalks = architecture.crossTalks()
-            val moreXTalks = moreArchitecture.crossTalks()
-
-            val crossTalks = addCrossTalk(serviceGraphs, XTalks).plus(addCrossTalk(moreServiceGraphs, moreXTalks))
-
-            simpleGraphs.plus(crossTalks)
+        private fun display(graphs: Sequence<Graph>, dotConfiguration: DotConfiguration) {
+            graphs
                     .forEach { graph ->
                         if (config.getBooleanProperty("display.swing")) display(graph)
                         if (config.getBooleanProperty("display.dot")) generateDotFile(graph, dotConfiguration)
                     }
-
-            return simpleGraphs.plus(crossTalks)
         }
+
     }
 }

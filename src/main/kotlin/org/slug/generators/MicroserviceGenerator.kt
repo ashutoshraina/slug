@@ -1,7 +1,6 @@
 package org.slug.generators
 
 import org.graphstream.algorithm.generator.Generator
-import org.graphstream.graph.implementations.SingleGraph
 import org.graphstream.stream.SourceBase
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

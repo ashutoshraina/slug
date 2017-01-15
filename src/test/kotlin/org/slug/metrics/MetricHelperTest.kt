@@ -15,7 +15,7 @@ class MetricHelperTest {
     @Test
     fun shouldCalculateMetrics() {
 
-        val generator = MicroserviceGenerator(factory.simpleArchitecture())
+        val generator = MicroserviceGenerator(factory.simple())
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
@@ -30,7 +30,7 @@ class MetricHelperTest {
 
     @Test
     fun shouldAggregateMetrics() {
-        val generator = MicroserviceGenerator(factory.simpleArchitecture())
+        val generator = MicroserviceGenerator(factory.simple())
         val simple = SingleGraph("simple")
         generator.addSink(simple)
         generator.begin()

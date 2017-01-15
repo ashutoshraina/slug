@@ -19,7 +19,7 @@ class MicroserviceGeneratorTest {
     @Test
     fun shouldAddAllTheComponents() {
 
-        val generator = MicroserviceGenerator(factory.simpleArchitecture())
+        val generator = MicroserviceGenerator(factory.simple())
         val graph = SingleGraph("First")
         generator.addSink(graph)
         generator.begin()
