@@ -6,6 +6,7 @@ import org.slug.factories.ArchitectureFactory.buildArchitectures
 import org.slug.factories.ArchitectureFactory.fromMicroservices
 import org.slug.factories.Cranks
 import org.slug.factories.Infrastructure.Companion.loadInfrastructureConfig
+import org.slug.factories.InfrastructureFactory.Companion.create
 import org.slug.factories.MicroserviceFactory
 import org.slug.factories.buildServiceGraphs
 import org.slug.factories.buildServices
@@ -19,6 +20,7 @@ import org.slug.output.generateDotFile
 import org.slug.util.Config
 import java.io.File
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.CompletableFuture.runAsync
 
 class Main {
 
@@ -53,22 +55,22 @@ class Main {
         val services = buildServices(MicroserviceFactory(crank, infrastructure))
         val graphs = buildServiceGraphs(services, css, MicroserviceGenerator::class.java)
         val layeredGraphs = buildServiceGraphs(services, css, LayerGenerator::class.java)
-        val architectures = fromMicroservices(services, InfrastructureType.ServiceRegistry("Eureka"))
+        val architectures = fromMicroservices(services, create<InfrastructureType.ServiceRegistry>(infrastructure))
         val crossTalks = buildArchitectures(architectures, css, MicroserviceGenerator::class.java)
 
         if (calculateMetrics) {
-          futures = futures.plus(CompletableFuture.runAsync {
+          futures = futures.plus(runAsync {
             val metrics = measurements(graphs)
             aggregateMetrics = aggregateMetrics.plus(metrics)
             display(graphs, DotConfiguration(outputDirectory, dotDirectory))
           })
-          futures = futures.plus(CompletableFuture.runAsync {
+          futures = futures.plus(runAsync {
             val metrics = measurements(layeredGraphs)
             aggregateMetrics = aggregateMetrics.plus(metrics)
             display(layeredGraphs, DotConfiguration(outputDirectory, layerDirectory))
 
           })
-          futures = futures.plus(CompletableFuture.runAsync {
+          futures = futures.plus(runAsync {
             val metrics = measurements(crossTalks)
             aggregateMetrics = aggregateMetrics.plus(metrics)
             display(crossTalks, DotConfiguration(outputDirectory, dotDirectory))
