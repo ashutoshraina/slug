@@ -11,18 +11,18 @@ data class DotConfiguration(val outputDirectory: String, val dotDirectory: Strin
 
 fun generateDotFile(graph: Graph, dotConfiguration: DotConfiguration) {
 
-    val outputPath = File(dotConfiguration.outputDirectory + File.separator + dotConfiguration.dotDirectory)
-    if(!outputPath.exists()) outputPath.mkdirs()
-    val printStream = PrintStream(FileOutputStream(outputPath.path + File.separator + "${graph.id}.dot"))
-    generateDotFile(graph, printStream)
+  val outputPath = File(dotConfiguration.outputDirectory + File.separator + dotConfiguration.dotDirectory)
+  if (!outputPath.exists()) outputPath.mkdirs()
+  val printStream = PrintStream(FileOutputStream(outputPath.path + File.separator + "${graph.id}.dot"))
+  generateDotFile(graph, printStream)
 }
 
 fun generateDotFile(graph: Graph, printStream: PrintStream) {
-    val graphName: String = graph.id
-    val builder: StringBuilder = StringBuilder()
-    graph.getEachEdge<Edge>().forEach { edge -> builder.append(edge.getSourceNode<Node>().id + "->" + edge.getTargetNode<Node>().id).appendln() }
-    val dotContent: String =
-            """
+  val graphName: String = graph.id
+  val builder: StringBuilder = StringBuilder()
+  graph.getEachEdge<Edge>().forEach { edge -> builder.append(edge.getSourceNode<Node>().id + "->" + edge.getTargetNode<Node>().id).appendln() }
+  val dotContent: String =
+      """
 digraph $graphName {
         size="15"
         style=filled;
@@ -31,5 +31,5 @@ digraph $graphName {
     $builder
         }"""
 
-    printStream.use({ out -> out.print(dotContent) })
+  printStream.use({ out -> out.print(dotContent) })
 }

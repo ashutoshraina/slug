@@ -1,29 +1,43 @@
 {
-    "database" :[
-        "cassandra","mongo","postgres","elastic"
-    ],
-    "cache" : [
-        "memcached","redis"
-    ],
-    "firewall" : [
-        "symantec"
-    ],
-    "cdn" : [
-        "akamai","cloudflare"
-    ],
-    "proxy" : [
-        "nginx", "apache"
-    ],
-    "loadBalancer" : [
-        "F5"
-    ],
-    "serviceDiscovery" : [
-        "dns", "anotherDNS", "consul"
-    ],
-    "webApplication" : [
-            "user", "recommendation", "auth", "account", "videos", "music", "playlist"
-    ],
-    "serviceRegistry" :[
-      "eureka"
-    ]
+  "database": [
+    "cassandra",
+    "mongo",
+    "postgres",
+    "elastic"
+  ],
+  "cache": [
+    "memcached",
+    "redis"
+  ],
+  "firewall": [
+    "symantec"
+  ],
+  "cdn": [
+    "akamai",
+    "cloudflare"
+  ],
+  "proxy": [
+    "nginx",
+    "apache"
+  ],
+  "loadBalancer": [
+    "F5"
+  ],
+  "serviceDiscovery": [
+    "dns",
+    "anotherDNS",
+    "consul"
+  ],
+  "webApplication": [
+    "user",
+    "recommendation",
+    "auth",
+    "account",
+    "videos",
+    "music",
+    "playlist"
+  ],
+  "serviceRegistry": [
+    "eureka"
+  ]
 }

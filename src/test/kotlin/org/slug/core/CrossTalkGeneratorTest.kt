@@ -12,19 +12,19 @@ import org.slug.generators.MicroserviceGenerator
 
 class CrossTalkGeneratorTest {
 
-    @Test
-    fun addCrossTalk() {
-        val infrastructure = Infrastructure.loadInfrastructureConfig()
-        val factory = MicroserviceFactory(Cranks("sparse", "minimal"), infrastructure)
+  @Test
+  fun addCrossTalk() {
+    val infrastructure = Infrastructure.loadInfrastructureConfig()
+    val factory = MicroserviceFactory(Cranks("sparse", "minimal"), infrastructure)
 
-        val architecture = ArchitectureFactory.fromMicroservices(sequenceOf(factory.e2e(), factory.e2eWithCache()), InfrastructureType.ServiceRegistry("Eureka")).first()
-        val serviceGraphs = architecture.microservices().map { service -> createServiceGraph("", service, MicroserviceGenerator::class.java) }
-        val XTalks = architecture.crossTalks()
-        val crossTalks = addCrossTalk(serviceGraphs, XTalks)
+    val architecture = ArchitectureFactory.fromMicroservices(sequenceOf(factory.e2e(), factory.e2eWithCache()), InfrastructureType.ServiceRegistry("Eureka")).first()
+    val serviceGraphs = architecture.microservices().map { service -> createServiceGraph("", service, MicroserviceGenerator::class.java) }
+    val XTalks = architecture.crossTalks()
+    val crossTalks = addCrossTalk(serviceGraphs, XTalks)
 
-        assertEquals(1, crossTalks.count())
-        assertEquals(39, crossTalks.first().nodeCount)
-        assertEquals(76, crossTalks.first().edgeCount)
+    assertEquals(1, crossTalks.count())
+    assertEquals(39, crossTalks.first().nodeCount)
+    assertEquals(76, crossTalks.first().edgeCount)
 
-    }
+  }
 }

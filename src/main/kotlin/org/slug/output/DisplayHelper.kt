@@ -5,21 +5,21 @@ import org.slug.util.FileHelper
 import java.io.File
 
 object DisplayHelper {
-    private fun loadDefaultCSS(): String = loadCSS("style.css")
+  private fun loadDefaultCSS(): String = loadCSS("style.css")
 
-    private fun loadCSS(styleFile: String): String = FileHelper.readFile(styleFile)
+  private fun loadCSS(styleFile: String): String = FileHelper.readFile(styleFile)
 
-    fun loadCSSConfig(styleFile: String): String {
-        val css = when {
-            !styleFile.isNullOrEmpty() -> loadCSS(styleFile)
-            else -> loadDefaultCSS()
-        }
-        return css
+  fun loadCSSConfig(styleFile: String): String {
+    val css = when {
+      !styleFile.isNullOrEmpty() -> loadCSS(styleFile)
+      else -> loadDefaultCSS()
     }
+    return css
+  }
 }
 
 fun display(graph: Graph) {
-    graph.display()
-    Thread.sleep(1000)
-    graph.addAttribute("ui.screenshot", "samples" + File.separator + graph.id + "_screenshot.png")
+  graph.display()
+  Thread.sleep(1000)
+  graph.addAttribute("ui.screenshot", "samples" + File.separator + graph.id + "_screenshot.png")
 }

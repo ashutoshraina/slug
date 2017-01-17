@@ -10,16 +10,16 @@ import java.io.PrintStream
 
 class DotHelperKtTest {
 
-    @Test
-    fun generateDotFile() {
-        val graph = SingleGraph("test")
-        graph.addNode<Node>("foo")
-        graph.addNode<Node>("bar")
-        graph.addEdge<Edge>("123","foo","bar")
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        org.slug.output.generateDotFile(graph, PrintStream(byteArrayOutputStream))
-        val result = byteArrayOutputStream.toString()
-        assertTrue(result.contains("foo->bar"))
-    }
-	
+  @Test
+  fun generateDotFile() {
+    val graph = SingleGraph("test")
+    graph.addNode<Node>("foo")
+    graph.addNode<Node>("bar")
+    graph.addEdge<Edge>("123", "foo", "bar")
+    val byteArrayOutputStream = ByteArrayOutputStream()
+    org.slug.output.generateDotFile(graph, PrintStream(byteArrayOutputStream))
+    val result = byteArrayOutputStream.toString()
+    assertTrue(result.contains("foo->bar"))
+  }
+
 }
