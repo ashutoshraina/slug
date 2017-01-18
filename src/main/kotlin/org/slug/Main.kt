@@ -38,8 +38,8 @@ class Main {
       val styleFile = config.getProperty("style")
       val css = DisplayHelper.loadCSSConfig(styleFile)
 
-      val replicationMap = ResourceHelper.readResourceAsMap<Int>("replication.properties")
-      val densityMap = ResourceHelper.readResourceAsMap<Int>("density.properties")
+      val replicationMap = ResourceHelper.readResourceAsMap("replication.properties")
+      val densityMap = ResourceHelper.readResourceAsMap("density.properties")
 
       val infrastructure = loadInfrastructureConfig()
 

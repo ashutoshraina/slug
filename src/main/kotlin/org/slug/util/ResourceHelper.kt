@@ -30,11 +30,11 @@ object ResourceHelper {
     }
   }
 
-  fun <U> readResourceAsMap(file: String): Map<String,U> {
+  fun readResourceAsMap(file: String): Map<String,Int> {
     val resource = readResourceFile(file)
     if(!resource.isNullOrEmpty()){
       val split = resource.split("\n")
-      return split.map { it -> it.split("=") }.filter { it -> !it[0].isNullOrEmpty() }.map { it -> it[0] to it[1] as U }.toMap()
+      return split.map { it -> it.split("=") }.filter { it -> !it[0].isNullOrEmpty() }.map { it -> it[0] to  it[1].toInt() }.toMap()
     }
     return emptyMap()
   }
