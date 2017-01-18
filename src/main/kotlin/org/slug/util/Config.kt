@@ -3,7 +3,7 @@ package org.slug.util
 import java.util.*
 
 object Config {
-  val properties = Properties()
+  private val properties = Properties()
 
   fun getBooleanProperty(key: String): Boolean {
     val value = properties[key]
