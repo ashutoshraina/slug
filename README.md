@@ -60,6 +60,8 @@ Unless you are very keen on seeing visualisations in a certain way, it is probab
 | replication | replication factor of the persistence mechanism | minimal, medium, high|
 |iterations|how many iterations to run the generator for| any integer|
 
+You can specify the values for replication and density in respective property files i.e. density.properties, replication.properties.
+
 For each iteration we generate the artifacts in the output folder specified by the outputDirectory property.
 
 The metrics for the generated artifacts are also put inside the same iteration directory, these are .m files which can be directly rendered in Octave or Matlab.
