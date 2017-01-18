@@ -14,8 +14,11 @@ class CrossTalkGeneratorTest {
 
   @Test
   fun addCrossTalk() {
+    val densityMap = mapOf("sparse" to 4, "dense" to 10, "hyperdense" to 15)
+    val replicationMap = mapOf("minimal" to 3, "medium" to 5, "high" to 7)
+
     val infrastructure = Infrastructure.loadInfrastructureConfig()
-    val factory = MicroserviceFactory(Cranks("sparse", "minimal"), infrastructure)
+    val factory = MicroserviceFactory(Cranks("sparse", "minimal"), infrastructure, densityMap, replicationMap)
 
     val architecture = ArchitectureFactory.fromMicroservices(sequenceOf(factory.e2e(), factory.e2eWithCache()), InfrastructureType.ServiceRegistry("Eureka")).first()
     val serviceGraphs = architecture.microservices().map { service -> createServiceGraph("", service, MicroserviceGenerator::class.java) }

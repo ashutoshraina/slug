@@ -4,7 +4,7 @@ import com.github.salomonbrys.kotson.fromJson
 import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import org.slug.util.FileHelper
+import org.slug.util.ResourceHelper
 
 class Infrastructure {
 
@@ -85,7 +85,7 @@ class Infrastructure {
 
   companion object {
     fun loadInfrastructureConfig(file: String = "infrastructure.json"): Infrastructure {
-      val content = FileHelper.readFile(file)
+      val content = ResourceHelper.readResourceFile(file)
       return Gson().fromJson<org.slug.factories.Infrastructure>(content)
     }
 

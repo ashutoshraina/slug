@@ -12,7 +12,10 @@ class LayerGeneratorTest {
 
   @Test
   fun e2eArchitecture() {
-    val factory = MicroserviceFactory(Cranks("dense", "medium"), Infrastructure.loadInfrastructureConfig("infrastructure.json"))
+    val densityMap = mapOf("sparse" to 4, "dense" to 10, "hyperdense" to 15)
+    val replicationMap = mapOf("minimal" to 3, "medium" to 5, "high" to 7)
+
+    val factory = MicroserviceFactory(Cranks("dense", "medium"), Infrastructure.loadInfrastructureConfig("infrastructure.json"), densityMap, replicationMap)
 
     val generator = LayerGenerator(factory.e2e())
     val graph = SingleGraph("First")

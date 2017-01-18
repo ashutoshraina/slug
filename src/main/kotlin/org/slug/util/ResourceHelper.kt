@@ -7,10 +7,10 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.io.UnsupportedEncodingException
 
-object FileHelper {
+object ResourceHelper {
   private val logger: Logger? = LoggerFactory.getLogger(javaClass)
-  fun readFile(file: String): String {
-    val EMPTY = ""
+  private val EMPTY = ""
+  fun readResourceFile(file: String): String {
     try {
       val classLoader = javaClass.classLoader
       val inputReader = classLoader.getResourceAsStream(file)
@@ -28,5 +28,14 @@ object FileHelper {
       logger?.warn("unable to load the file.")
       return EMPTY
     }
+  }
+
+  fun <U> readResourceAsMap(file: String): Map<String,U> {
+    val resource = readResourceFile(file)
+    if(!resource.isNullOrEmpty()){
+      val split = resource.split("\n")
+      return split.map { it -> it.split("=") }.filter { it -> !it[0].isNullOrEmpty() }.map { it -> it[0] to it[1] as U }.toMap()
+    }
+    return emptyMap()
   }
 }

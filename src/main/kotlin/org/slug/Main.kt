@@ -18,6 +18,7 @@ import org.slug.output.DotConfiguration
 import org.slug.output.display
 import org.slug.output.generateDotFile
 import org.slug.util.Config
+import org.slug.util.ResourceHelper
 import java.io.File
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletableFuture.runAsync
@@ -37,6 +38,9 @@ class Main {
       val styleFile = config.getProperty("style")
       val css = DisplayHelper.loadCSSConfig(styleFile)
 
+      val replicationMap = ResourceHelper.readResourceAsMap<Int>("replication.properties")
+      val densityMap = ResourceHelper.readResourceAsMap<Int>("density.properties")
+
       val infrastructure = loadInfrastructureConfig()
 
       val serviceDensity = config.getProperty("densityFromDistribution")
@@ -52,7 +56,7 @@ class Main {
 
         val dotDirectory = File.separator + "i_" + iteration
         val layerDirectory = dotDirectory + "_l"
-        val services = buildServices(MicroserviceFactory(crank, infrastructure))
+        val services = buildServices(MicroserviceFactory(crank, infrastructure, densityMap, replicationMap))
         val graphs = buildServiceGraphs(services, css, MicroserviceGenerator::class.java)
         val layeredGraphs = buildServiceGraphs(services, css, LayerGenerator::class.java)
         val architectures = fromMicroservices(services, create<InfrastructureType.ServiceRegistry>(infrastructure))

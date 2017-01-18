@@ -15,11 +15,9 @@ import org.slug.generators.MicroserviceGenerator
 
 data class Cranks(val serviceDensity: String, val replicationFactor: String, val powerLaw: Boolean = false)
 
-class MicroserviceFactory(val cranks: Cranks, val infrastructure: Infrastructure) {
+class MicroserviceFactory(val cranks: Cranks, val infrastructure: Infrastructure, densityMap : Map<String, Int>, replicationMap: Map<String,Int>) {
   private val defaultDensity = 5
   private val defaultReplication = 3
-  val densityMap = mapOf("sparse" to 4, "dense" to 10, "hyperdense" to 15)
-  val replicationMap = mapOf("minimal" to 3, "medium" to 5, "high" to 7)
   private val density = densityMap.getOrElse(cranks.serviceDensity) { defaultDensity }
   private val replication = replicationMap.getOrElse(cranks.replicationFactor) { defaultReplication }
 

@@ -1,13 +1,13 @@
 package org.slug.output
 
 import org.graphstream.graph.Graph
-import org.slug.util.FileHelper
+import org.slug.util.ResourceHelper
 import java.io.File
 
 object DisplayHelper {
   private fun loadDefaultCSS(): String = loadCSS("style.css")
 
-  private fun loadCSS(styleFile: String): String = FileHelper.readFile(styleFile)
+  private fun loadCSS(styleFile: String): String = ResourceHelper.readResourceFile(styleFile)
 
   fun loadCSSConfig(styleFile: String): String {
     val css = when {
