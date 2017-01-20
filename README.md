@@ -16,7 +16,7 @@ git clone git@github.com:ashutoshraina/slug.git
 ```
 
 ```
-./gradlew clean built test run
+./gradlew clean build test run
 ```
 
 Output
@@ -27,13 +27,16 @@ In the samples directory :
 * There will dot files which can be used to render the architectures in grpahviz.
 * If you have installed graphviz and it is in your path, then you can do 
 
-``` bash
-dot -Tpng samples/input.dot > output.png
 
+``` bash
+dot -Tpng samples/i_1/e2e.dot > output.png
 ```
 
-You can also visualise them online at http://www.webgraphviz.com/
+samples is the output directory you specify in the configuration, it defaults to samples
+i_1 is the iteration number, it will go to the number of iterations you specify i_n
+There are srveral dot files in each directory, pick the one you want to visualise.
 
+You can also visualise them online at http://www.webgraphviz.com/
 
 ## Configuration
 
