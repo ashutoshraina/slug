@@ -1,8 +1,8 @@
-# slug
+## slug
 
 Slug is a microservice architecture generator, primarily used for generating architecutres that enable fast simulation for Lineage Driven Fault Injection.
 
-# Build Status
+## Build Status
 
 [![CircleCI](https://circleci.com/gh/ashutoshraina/slug/tree/master.svg?style=svg)](https://circleci.com/gh/ashutoshraina/slug/tree/master)
 
@@ -19,7 +19,7 @@ git clone git@github.com:ashutoshraina/slug.git
 ./gradlew clean build test run
 ```
 
-Output
+## Output
 
 In the output directory : 
 
@@ -78,6 +78,7 @@ Metrics for the all the iterations are combined and written to the metrics direc
 A Sample is below :
 
 ``` yml
+
 @subplot(2,3,1)
 x = [1,2,3,4,5,6,7,8,9];
 y = [0.18,0.18,0.14,0.12,0.09,0.09,0.05,0.05,0.06];
@@ -86,6 +87,10 @@ xlabel ("Graph Id");
 ylabel ("Density");
 legend ("Density", "position", "north");
 title ("Density");
+
+```
+
+```yml
 
 @subplot(2,3,2)
 x = [1,2,3,4,5,6,7,8,9];
@@ -100,8 +105,10 @@ title ("Average Degree");
 ```
 
 
-Development
+### Development
 
-### You can use intellij for development with the kotlin plugin.
+#### You can use intellij for development with the kotlin plugin.
 
-### To add a new feature, open a pull request.
+#### To add a new feature, please send a pull request.
+
+#### If there is feature request please create an issue.
