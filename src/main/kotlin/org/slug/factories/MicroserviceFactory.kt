@@ -40,11 +40,11 @@ class MicroserviceFactory(val cranks: Cranks, val infrastructure: Infrastructure
   fun simple(): Microservice {
     val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
     val simpleComponent = SimpleComponent(proxy, proxy2Web)
-    val proxyLayer = Layer("1", 2, simpleComponent)
+    val proxyLayer = Layer(2, simpleComponent)
 
     val layerConnection = ServiceDiscoveryIndirection(webApplication, aDNS, aDatabase)
     val discoverableComponent = DiscoverableComponent(webApplication, layerConnection)
-    val webLayer = Layer("2", densityFromDistribution, discoverableComponent)
+    val webLayer = Layer(densityFromDistribution, discoverableComponent)
 
     return Microservice("simple", sequenceOf(proxyLayer, webLayer))
   }
@@ -52,7 +52,7 @@ class MicroserviceFactory(val cranks: Cranks, val infrastructure: Infrastructure
   fun simple3Tier(): Microservice {
     val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
     val cdnComponent = SimpleComponent(cdn, cdn2Proxy)
-    val cdnLayer = Layer("1", 1, cdnComponent)
+    val cdnLayer = Layer(1, cdnComponent)
 
     val microservice = simple()
 
@@ -65,7 +65,7 @@ class MicroserviceFactory(val cranks: Cranks, val infrastructure: Infrastructure
 
     val anotherIndirection = ServiceDiscoveryIndirection(webApplication, anotherDNS, anotherDatabase)
     val anotherComponent = DiscoverableComponent(webApplication, anotherIndirection)
-    val anotherWebLayer = Layer("4", density, anotherComponent)
+    val anotherWebLayer = Layer(density, anotherComponent)
 
     return microservice.copy(identifier = "multipleLinks", layers = microservice.layers.plus(anotherWebLayer))
   }
@@ -75,31 +75,31 @@ class MicroserviceFactory(val cranks: Cranks, val infrastructure: Infrastructure
     val density = densityFromDistribution
     val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
     val cdnComponent = SimpleComponent(cdn, cdn2Proxy)
-    val cdnLayer = Layer("1", 1, cdnComponent)
+    val cdnLayer = Layer(1, cdnComponent)
 
     val firewall2LoadBalancer = Firewall2LoadBalancer(firewall, loadBalancer, 1)
     val firewallComponent = SimpleComponent(firewall, firewall2LoadBalancer)
-    val firewallLayer = Layer("2", 1, firewallComponent)
+    val firewallLayer = Layer(1, firewallComponent)
 
     val loadBalancer2Proxy = LoadBalancer2Proxy(loadBalancer, proxy, 1)
     val loadBalancerComponent = SimpleComponent(loadBalancer, loadBalancer2Proxy)
-    val loadBalancerLayer = Layer("3", 1, loadBalancerComponent)
+    val loadBalancerLayer = Layer(1, loadBalancerComponent)
 
     val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
     val proxyComponent = SimpleComponent(proxy, proxy2Web)
-    val proxyLayer = Layer("4", 2, proxyComponent)
+    val proxyLayer = Layer(2, proxyComponent)
 
     val layerConnection = WebApplication2Cache(webApplication, cache, replication)
     val component = SimpleComponent(webApplication, layerConnection)
-    val layer = Layer("5", density, component)
+    val layer = Layer(density, component)
 
     val anotherLayerConnection = ServiceDiscoveryIndirection(cache, aDNS, aDatabase, replication)
     val anotherComponent = DiscoverableComponent(cache, anotherLayerConnection)
-    val anotherLayer = Layer("6", density, anotherComponent)
+    val anotherLayer = Layer(density, anotherComponent)
 
     val web2cassandra = ServiceDiscoveryIndirection(webApplication, anotherDNS, anotherDatabase)
     val userComponent = DiscoverableComponent(webApplication, web2cassandra)
-    val userLayer = Layer("7", density, userComponent)
+    val userLayer = Layer(density, userComponent)
 
     return Microservice("e2eWithCache", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyLayer, layer, anotherLayer, userLayer))
   }
@@ -109,27 +109,27 @@ class MicroserviceFactory(val cranks: Cranks, val infrastructure: Infrastructure
     val density = densityFromDistribution
     val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
     val cdnComponent = SimpleComponent(cdn, cdn2Proxy)
-    val cdnLayer = Layer("1", 1, cdnComponent)
+    val cdnLayer = Layer(1, cdnComponent)
 
     val firewall2LoadBalancer = Firewall2LoadBalancer(firewall, loadBalancer, 1)
     val firewallComponent = SimpleComponent(firewall, firewall2LoadBalancer)
-    val firewallLayer = Layer("2", 1, firewallComponent)
+    val firewallLayer = Layer(1, firewallComponent)
 
     val loadBalancer2Proxy = LoadBalancer2Proxy(loadBalancer, proxy, 1)
     val loadBalancerComponent = SimpleComponent(loadBalancer, loadBalancer2Proxy)
-    val loadBalancerLayer = Layer("3", 1, loadBalancerComponent)
+    val loadBalancerLayer = Layer(1, loadBalancerComponent)
 
     val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
     val proxyComponent = SimpleComponent(proxy, proxy2Web)
-    val proxyLayer = Layer("4", 2, proxyComponent)
+    val proxyLayer = Layer(2, proxyComponent)
 
     val indirection = ServiceDiscoveryIndirection(webApplication, aDNS, aDatabase, replication)
     val component = DiscoverableComponent(webApplication, indirection)
-    val layer = Layer("5", density, component)
+    val layer = Layer(density, component)
 
     val anotherIndirection = ServiceDiscoveryIndirection(webApplication, anotherDNS, anotherDatabase)
     val anotherComponent = DiscoverableComponent(webApplication, anotherIndirection)
-    val anotherLayer = Layer("6", density, anotherComponent)
+    val anotherLayer = Layer(density, anotherComponent)
 
     return Microservice("e2e", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyLayer, layer, anotherLayer))
   }
@@ -139,32 +139,32 @@ class MicroserviceFactory(val cranks: Cranks, val infrastructure: Infrastructure
 
     val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
     val cdnComponent = SimpleComponent(cdn, cdn2Proxy)
-    val cdnLayer = Layer("1", 1, cdnComponent)
+    val cdnLayer = Layer(1, cdnComponent)
 
     val firewall2LoadBalancer = Firewall2LoadBalancer(firewall, loadBalancer, 1)
     val firewallComponent = SimpleComponent(firewall, firewall2LoadBalancer)
-    val firewallLayer = Layer("2", 1, firewallComponent)
+    val firewallLayer = Layer(1, firewallComponent)
 
     val loadBalancer2Proxy = LoadBalancer2Proxy(loadBalancer, proxy, 1)
     val loadBalancerComponent = SimpleComponent(loadBalancer, loadBalancer2Proxy)
-    val loadBalancerLayer = Layer("3", 1, loadBalancerComponent)
+    val loadBalancerLayer = Layer(1, loadBalancerComponent)
 
     val proxy2Recommendation = Proxy2WebApplication(proxy, webApplication, 1)
     val proxyRecommendationComponent = SimpleComponent(proxy, proxy2Recommendation)
-    val proxyRecommendationLayer = Layer("4", 2, proxyRecommendationComponent)
+    val proxyRecommendationLayer = Layer(2, proxyRecommendationComponent)
 
     val userCreation = create<WebApplication>(infrastructure)
     val proxy2UserCreation = Proxy2WebApplication(proxy, userCreation, 1)
     val proxyUserCreationComponent = SimpleComponent(proxy, proxy2UserCreation)
-    val proxyUserCreationLayer = Layer("5", 2, proxyUserCreationComponent)
+    val proxyUserCreationLayer = Layer(2, proxyUserCreationComponent)
 
     val web2redis = ServiceDiscoveryIndirection(webApplication, aDNS, aDatabase)
     val recommendationComponent = DiscoverableComponent(webApplication, web2redis)
-    val recommendationLayer = Layer("6", density, recommendationComponent)
+    val recommendationLayer = Layer(density, recommendationComponent)
 
     val web2cassandra = ServiceDiscoveryIndirection(userCreation, anotherDNS, anotherDatabase)
     val userComponent = DiscoverableComponent(userCreation, web2cassandra)
-    val userLayer = Layer("7", density, userComponent)
+    val userLayer = Layer(density, userComponent)
 
     return Microservice("e2eMultipleApps", sequenceOf(cdnLayer, firewallLayer, loadBalancerLayer, proxyRecommendationLayer, recommendationLayer, proxyUserCreationLayer, userLayer))
   }

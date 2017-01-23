@@ -17,7 +17,7 @@ data class Architecture(private val services: Sequence<Either<Microservice, XTal
 
 data class Microservice(val identifier: String, val layers: Sequence<Layer>)
 
-data class Layer(val layerId: String, val spatialRedundancy: Int, val component: Component)
+data class Layer(val spatialRedundancy: Int, val component: Component)
 
 data class XTalk(val from: Microservice, val entryPoint: InfrastructureType, val to: Microservice, val destinationPoint: InfrastructureType, val using: ServiceRegistry)
 

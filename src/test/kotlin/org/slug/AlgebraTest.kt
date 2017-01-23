@@ -20,12 +20,12 @@ class AlgebraTest {
     val serviceDiscovery = ServiceDiscovery("DNS_SERVER")
     val layerConnection = ServiceDiscoveryIndirection(webApplication, serviceDiscovery, database, 1)
     val discoverableComponent = DiscoverableComponent(webApplication, layerConnection)
-    val webLayer = Layer("2", 5, discoverableComponent)
+    val webLayer = Layer(5, discoverableComponent)
 
     val proxy = Proxy("NGINX")
     val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
     val simpleComponent = SimpleComponent(proxy, proxy2Web)
-    val proxyLayer = Layer("1", 5, simpleComponent)
+    val proxyLayer = Layer(5, simpleComponent)
 
     val microservice = Microservice("2Layer", sequenceOf(proxyLayer, webLayer))
 
