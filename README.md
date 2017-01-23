@@ -21,10 +21,10 @@ git clone git@github.com:ashutoshraina/slug.git
 
 Output
 
-In the samples directory : 
+In the output directory : 
 
-* There will be png images of the generated architecture as force-directed graphs.
-* There will dot files which can be used to render the architectures in grpahviz.
+* There will be png images of the generated architecture as force-directed graphs (if display.swing is set to true).
+* There will dot files which can be used to render the architectures in graphviz.
 * If you have installed graphviz and it is in your path, then you can do 
 
 
@@ -36,11 +36,13 @@ samples is the output directory you specify in the configuration, it defaults to
 
 "i_1" is the iteration number, it will go to the number of iterations you specify i_n
 
-There are srveral dot files in each directory, pick the one you want to visualise.
+There are several dot files in each directory, pick the one you want to visualise.
+
+The png images may not be of the highest quality.
 
 You can also visualise them online at http://www.webgraphviz.com/
 
-## Configuration
+### Configuration
 
 
 Modify the properties file in resources for various configuration options.
@@ -96,3 +98,10 @@ title ("Average Degree");
 
 ... more plots
 ```
+
+
+Development
+
+### You can use intellij for development with the kotlin plugin.
+
+### To add a new feature, open a pull request.
