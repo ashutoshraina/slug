@@ -32,24 +32,24 @@ In the output directory :
 dot -Tpng samples/i_1/e2e.dot > output.png
 ```
 
-samples is the output directory you specify in the configuration, it defaults to "samples"
+* samples is the output directory you specify in the configuration, it defaults to "samples"
 
-"i_1" is the iteration number, it will go to the number of iterations you specify i_n
+* "i_1" is the iteration number, it will go to the number of iterations you specify i_n
 
-There are several dot files in each directory, pick the one you want to visualise.
+* There are several dot files in each directory, pick the one you want to visualise.
 
-The png images may not be of the highest quality.
+* The png images may not be of the highest quality.
 
-You can also visualise them online at http://www.webgraphviz.com/
+* You can also visualise them online at http://www.webgraphviz.com/
 
 ### Configuration
 
 
 Modify the properties file in resources for various configuration options.
 
-You can control the number of runs for the generators using he ```iterations``` config parameter.
+* You can control the number of runs for the generators using he ```iterations``` config parameter.
 
-You can specify the output directory where all the generated files will go (we generate dot files as well the plots for that iteration and put them in respective directories)
+* You can specify the output directory where all the generated files will go (we generate dot files as well the plots for that iteration and put them in respective directories)
 
 
 | Config Parameter | Description | Options
@@ -67,13 +67,13 @@ Unless you are very keen on seeing visualisations in a certain way, it is probab
 | replication | replication factor of the persistence mechanism | minimal, medium, high|
 |iterations|how many iterations to run the generator for| any integer|
 
-You can specify the values for replication and density in respective property files i.e. density.properties, replication.properties.
+* You can specify the values for replication and density in respective property files i.e. density.properties, replication.properties.
 
-For each iteration we generate the artifacts in the output folder specified by the outputDirectory property.
+* For each iteration we generate the artifacts in the output folder specified by the outputDirectory property.
 
-The metrics for the generated artifacts are also put inside the same iteration directory, these are .m files which can be directly rendered in Octave or Matlab.
+* The metrics for the generated artifacts are also put inside the same iteration directory, these are .m files which can be directly rendered in Octave or Matlab.
 
-Metrics for the all the iterations are combined and written to the metrics directory. This can also be directly used on Octave or Matlab.
+* Metrics for the all the iterations are combined and written to the metrics directory. This can also be directly used on Octave or Matlab.
 
 A Sample is below :
 
@@ -107,8 +107,8 @@ title ("Average Degree");
 
 ### Development
 
-#### You can use intellij for development with the kotlin plugin.
+* You can use intellij for development with the kotlin plugin.
 
-#### To add a new feature, please send a pull request.
+* To add a new feature, please send a pull request.
 
-#### If there is feature request please create an issue.
+* If there is feature request please create an issue.
