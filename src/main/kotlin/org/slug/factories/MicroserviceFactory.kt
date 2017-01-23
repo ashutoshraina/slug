@@ -50,42 +50,24 @@ class MicroserviceFactory(val cranks: Cranks, val infrastructure: Infrastructure
   }
 
   fun simple3Tier(): Microservice {
-    val density = densityFromDistribution
     val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
     val cdnComponent = SimpleComponent(cdn, cdn2Proxy)
     val cdnLayer = Layer("1", 1, cdnComponent)
 
-    val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
-    val proxyComponent = SimpleComponent(proxy, proxy2Web)
-    val proxyLayer = Layer("2", 2, proxyComponent)
+    val microservice = simple()
 
-    val layerConnection = ServiceDiscoveryIndirection(webApplication, aDNS, aDatabase)
-    val discoverableComponent = DiscoverableComponent(webApplication, layerConnection)
-    val webLayer = Layer("3", density, discoverableComponent)
-
-    return Microservice("simple3Tier", sequenceOf(cdnLayer, proxyLayer, webLayer))
+    return microservice.copy("simple3Tier", sequenceOf(cdnLayer).plus(microservice.layers))
   }
 
   fun multipleLinks(): Microservice {
 
-    val density = densityFromDistribution
-    val cdn2Proxy = CDN2Firewall(cdn, firewall, 2)
-    val cdnComponent = SimpleComponent(cdn, cdn2Proxy)
-    val cdnLayer = Layer("1", 1, cdnComponent)
-
-    val proxy2Web = Proxy2WebApplication(proxy, webApplication, 1)
-    val proxyComponent = SimpleComponent(proxy, proxy2Web)
-    val proxyLayer = Layer("2", 2, proxyComponent)
-
-    val indirection = ServiceDiscoveryIndirection(webApplication, aDNS, aDatabase)
-    val aComponent = DiscoverableComponent(webApplication, indirection)
-    val aWebLayer = Layer("3", density, aComponent)
+    val microservice = simple3Tier()
 
     val anotherIndirection = ServiceDiscoveryIndirection(webApplication, anotherDNS, anotherDatabase)
     val anotherComponent = DiscoverableComponent(webApplication, anotherIndirection)
     val anotherWebLayer = Layer("4", density, anotherComponent)
 
-    return Microservice("multipleLinks", sequenceOf(cdnLayer, proxyLayer, aWebLayer, anotherWebLayer))
+    return microservice.copy(identifier = "multipleLinks", layers = microservice.layers.plus(anotherWebLayer))
   }
 
   fun e2eWithCache(): Microservice {
