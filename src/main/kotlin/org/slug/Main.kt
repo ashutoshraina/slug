@@ -43,13 +43,10 @@ class Main {
 
       val infrastructure = loadInfrastructureConfig()
 
-      val serviceDensity = config.getProperty("densityFromDistribution")
-      val replicationFactor = config.getProperty("replication")
-      val powerLaw = config.getBooleanProperty("powerlaw")
+      val crank = getCranks()
       val calculateMetrics = config.getBooleanProperty("metrics")
       val iterations = config.getIntegerProperty("iterations")
       var futures = emptyArray<CompletableFuture<Void>>()
-      val crank = Cranks(serviceDensity, replicationFactor, powerLaw)
       var aggregateMetrics = emptySequence<Metric>()
 
       (1..iterations).forEach { iteration ->
@@ -84,6 +81,13 @@ class Main {
 
       CompletableFuture.allOf(*futures).get()
       printMetrics(combineMetrics(aggregateMetrics), MetricConfig(outputDirectory, "metrics"))
+    }
+
+    private fun getCranks(): Cranks {
+      val serviceDensity = config.getProperty("densityFromDistribution")
+      val replicationFactor = config.getProperty("replication")
+      val powerLaw = config.getBooleanProperty("powerlaw")
+      return Cranks(serviceDensity, replicationFactor, powerLaw)
     }
 
     private fun display(graphs: Sequence<Graph>, dotConfiguration: DotConfiguration) {
