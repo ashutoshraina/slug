@@ -29,9 +29,7 @@ class LogGeneratorTest {
     Assert.assertEquals(18, graph.nodeCount)
     Assert.assertEquals(35, graph.edgeCount)
 
-    val templates = Templates()
-    val template = ResourceHelper.readResourceFile("templates/redis.template")
-    templates.add("proxy", template)
+    val templates = ResourceHelper.readTemplates()
 
     val logGenerator = LogGenerator(templates)
     val seed = graph.getNode<Node>(0)
