@@ -1,0 +1,3 @@
+KEY,f7283a71-32a2-43cf-888a-0c1d3328548d | app_start_time,1328894454774 | level,INFO |
+log_timestamp,1328894455064 | logger_class_name,org.apache.log4j.Category | message,
+This is info message  #489 | thread_name,main |

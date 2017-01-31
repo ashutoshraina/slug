@@ -1,0 +1,1 @@
+[2007-09-27 11:02:51.611 ADT] 192.168.2.10:ossecdb LOG:  statement: INSERT INTO alert(id,server_id,rule_id,timestamp,location_id,src_ip) VALUES ('3577', '1', '50503','1190916566', '140', '0')

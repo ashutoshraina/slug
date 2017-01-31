@@ -25,7 +25,6 @@
   ],
   "serviceDiscovery": [
     "dns",
-    "anotherDNS",
     "consul"
   ],
   "webApplication": [

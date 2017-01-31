@@ -1,5 +1,8 @@
 package org.slug.core
 
+import org.slug.log.Event
+import org.slug.log.LogEvent
+
 sealed class InfrastructureType {
   abstract val identifier: String
 

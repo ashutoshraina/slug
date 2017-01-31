@@ -1,0 +1,1 @@
+[2016-02-24 10:45:49,124][WARN ][index.search.slowlog.query] took[2.9ms], took_millis[2], types[config], stats[], search_type[QUERY_AND_FETCH], total_shards[1], source[{"size":1000,"sort":[{"timestamp":{"order":"desc","ignore_unmapped":true}}]}], extra_source[],

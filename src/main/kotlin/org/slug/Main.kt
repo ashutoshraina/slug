@@ -12,6 +12,7 @@ import org.slug.factories.buildServiceGraphs
 import org.slug.factories.buildServices
 import org.slug.generators.LayerGenerator
 import org.slug.generators.MicroserviceGenerator
+import org.slug.log.LogGenerator
 import org.slug.metrics.*
 import org.slug.output.DisplayHelper
 import org.slug.output.DotConfiguration
@@ -22,6 +23,7 @@ import org.slug.util.ResourceHelper
 import java.io.File
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletableFuture.runAsync
+
 
 class Main {
 
@@ -77,10 +79,20 @@ class Main {
             display(crossTalks, DotConfiguration(outputDirectory, dotDirectory))
           })
         }
+        graphs.forEach { g -> LogGenerator(ResourceHelper.readTemplates()).tracePath(g) }
+
       }
 
       CompletableFuture.allOf(*futures).get()
       printMetrics(combineMetrics(aggregateMetrics), MetricConfig(outputDirectory, "metrics"))
+    }
+
+    private fun display(graphs: Sequence<Graph>, dotConfiguration: DotConfiguration) {
+      graphs
+        .forEach { graph ->
+          if (config.getBooleanProperty("display.swing")) display(graph)
+          if (config.getBooleanProperty("display.dot")) generateDotFile(graph, dotConfiguration)
+        }
     }
 
     private fun getCranks(): Cranks {
@@ -88,14 +100,6 @@ class Main {
       val replicationFactor = config.getProperty("replication")
       val powerLaw = config.getBooleanProperty("powerlaw")
       return Cranks(serviceDensity, replicationFactor, powerLaw)
-    }
-
-    private fun display(graphs: Sequence<Graph>, dotConfiguration: DotConfiguration) {
-      graphs
-          .forEach { graph ->
-            if (config.getBooleanProperty("display.swing")) display(graph)
-            if (config.getBooleanProperty("display.dot")) generateDotFile(graph, dotConfiguration)
-          }
     }
 
   }

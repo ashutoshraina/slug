@@ -1,11 +1,11 @@
 package org.slug.util
 
+import org.apache.commons.io.IOUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
-import java.io.UnsupportedEncodingException
+import org.slug.log.Templates
+import java.io.*
+
 
 object ResourceHelper {
   private val logger: Logger? = LoggerFactory.getLogger(javaClass)
@@ -30,12 +30,25 @@ object ResourceHelper {
     }
   }
 
-  fun readResourceAsMap(file: String): Map<String,Int> {
+  fun readResourceAsMap(file: String): Map<String, Int> {
     val resource = readResourceFile(file)
-    if(!resource.isNullOrEmpty()){
+    if (!resource.isNullOrEmpty()) {
       val split = resource.split("\n")
-      return split.map { it -> it.split("=") }.filter { it -> !it[0].isNullOrEmpty() }.map { it -> it[0] to  it[1].toInt() }.toMap()
+      return split.map { it -> it.split("=") }.filter { it -> !it[0].isNullOrEmpty() }.map { it -> it[0] to it[1].toInt() }.toMap()
     }
     return emptyMap()
+  }
+
+  fun readTemplates(): Templates {
+    val resourceDir = "templates"
+    val templates = Templates()
+
+    val readLines = IOUtils.readLines(javaClass.classLoader.getResourceAsStream(resourceDir), Charsets.UTF_8)
+
+    for (file in readLines) {
+      val data = IOUtils.toString(javaClass.classLoader.getResourceAsStream(resourceDir + File.separator + file))
+      templates.add(file.split('.')[0], data)
+    }
+    return templates
   }
 }
