@@ -1,5 +1,6 @@
 package org.slug.log
 
+import org.graphstream.graph.Edge
 import org.graphstream.graph.Graph
 import org.graphstream.graph.Node
 import org.graphstream.graph.implementations.SingleGraph
@@ -8,9 +9,11 @@ import org.slug.output.GraphConstants
 import java.util.*
 
 class LogGenerator(val templates: Templates) {
+  private val randomGenerator: Random = Random()
 
-  private fun traceRoute(seed: Node): HashSet<Node> {
-    val visited = HashSet<Node>()
+  fun traceRoute(seed: Node): HashSet<Node> {
+
+    val visited = LinkedHashSet<Node>()
     val toProcess = LinkedList<Node>()
     toProcess.add(seed)
 
@@ -18,12 +21,14 @@ class LogGenerator(val templates: Templates) {
       val next = toProcess.pop()
       visited.add(next)
 
-      val children = next.getNeighborNodeIterator<Node>()
+      val children = next.getEachLeavingEdge<Edge>()
 
-      while (children.hasNext()) {
-        val child = children.next()
-        if (!visited.contains(child)) {
-          toProcess.add(child)
+      val grouped = children.groupBy { e -> e.getTargetNode<Node>().id.substringBefore('_') }
+      for ((key, value) in grouped){
+        val random = randomGenerator.nextInt(value.size)
+        val edge: Edge = value[random]
+        if(!visited.contains(edge.getTargetNode())){
+          toProcess.addLast(edge.getTargetNode())
         }
       }
     }

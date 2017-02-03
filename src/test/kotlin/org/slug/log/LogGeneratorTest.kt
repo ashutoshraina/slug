@@ -8,6 +8,7 @@ import org.junit.Test
 import org.slug.factories.Cranks
 import org.slug.factories.Infrastructure
 import org.slug.factories.MicroserviceFactory
+import org.slug.generators.LayerGenerator
 import org.slug.generators.MicroserviceGenerator
 import org.slug.util.ResourceHelper
 
@@ -18,7 +19,7 @@ class LogGeneratorTest {
   val factory = MicroserviceFactory(Cranks("dense", "medium"), Infrastructure.loadInfrastructureConfig("infrastructure.json"), densityMap, replicationMap)
 
   @Test
-  fun shouldBeAbleToTraceARoute() {
+  fun shouldBeAbleToTraceAPath() {
 
     val generator = MicroserviceGenerator(factory.simple())
     val graph = SingleGraph("First")
@@ -35,6 +36,52 @@ class LogGeneratorTest {
     val seed = graph.getNode<Node>(0)
 
     logGenerator.tracePath(seed)
+  }
+
+  @Test
+  fun shouldBeAbleToTraceASimpleRoute() {
+
+    val generator = LayerGenerator(factory.simple())
+    val graph = SingleGraph("First")
+    generator.addSink(graph)
+    generator.begin()
+    generator.end()
+
+    Assert.assertEquals(4, graph.nodeCount)
+    Assert.assertEquals(3, graph.edgeCount)
+
+    val templates = ResourceHelper.readTemplates()
+
+    val logGenerator = LogGenerator(templates)
+    val seed = graph.getNode<Node>(0)
+
+    println(seed)
+    val traceRoute = logGenerator.traceRoute(seed)
+    assertEquals(4, traceRoute.count())
+    println(traceRoute)
+  }
+
+  @Test
+  fun shouldBeAbleToTraceARoute() {
+
+    val generator = MicroserviceGenerator(factory.e2eWithCache())
+    val graph = SingleGraph("First")
+    generator.addSink(graph)
+    generator.begin()
+    generator.end()
+
+    Assert.assertEquals(37, graph.nodeCount)
+    Assert.assertEquals(154, graph.edgeCount)
+
+    val templates = ResourceHelper.readTemplates()
+
+    val logGenerator = LogGenerator(templates)
+    val seed = graph.getNode<Node>(0)
+
+    println(seed)
+    val traceRoute = logGenerator.traceRoute(seed)
+    assertEquals(10, traceRoute.count())
+    println(traceRoute)
   }
 
   @Test
