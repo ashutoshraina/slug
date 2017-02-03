@@ -3,9 +3,7 @@ package org.slug.log
 import org.graphstream.graph.Edge
 import org.graphstream.graph.Graph
 import org.graphstream.graph.Node
-import org.graphstream.graph.implementations.SingleGraph
 import org.slug.output.DisplayConstants
-import org.slug.output.GraphConstants
 import java.util.*
 
 class LogGenerator(val templates: Templates) {
@@ -21,13 +19,11 @@ class LogGenerator(val templates: Templates) {
       val next = toProcess.pop()
       visited.add(next)
 
-      val children = next.getEachLeavingEdge<Edge>()
-
-      val grouped = children.groupBy { e -> e.getTargetNode<Node>().id.substringBefore('_') }
-      for ((key, value) in grouped){
+      val grouped = next.getEachLeavingEdge<Edge>().groupBy { e -> e.getTargetNode<Node>().id.substringBefore('_') }
+      for ((key, value) in grouped) {
         val random = randomGenerator.nextInt(value.size)
         val edge: Edge = value[random]
-        if(!visited.contains(edge.getTargetNode())){
+        if (!visited.contains(edge.getTargetNode())) {
           toProcess.addLast(edge.getTargetNode())
         }
       }
@@ -35,18 +31,18 @@ class LogGenerator(val templates: Templates) {
     return visited
   }
 
-  fun tracePath(seed: Node) {
+  fun tracePath(seed: Node): List<String> {
 
-    traceRoute(seed)
+    return traceRoute(seed)
       .map { it.getAttribute<String>(DisplayConstants.LABEL) }
       .map { templates.getTemplate(it) }
-      .forEach { template -> LogEventWriter.log(template, { println(it) }) }
+      .map { template -> LogEventWriter.logMessage(template) }
   }
 
-  fun tracePath(graph : Graph) {
+  fun tracePath(graph: Graph): List<String> {
 
     val seed = graph.getNode<Node>(0)
-    tracePath(seed)
+    return tracePath(seed)
   }
 }
 
