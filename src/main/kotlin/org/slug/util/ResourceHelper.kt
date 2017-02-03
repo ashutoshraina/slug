@@ -46,7 +46,7 @@ object ResourceHelper {
     val readLines = IOUtils.readLines(javaClass.classLoader.getResourceAsStream(resourceDir), Charsets.UTF_8)
 
     for (file in readLines) {
-      val data = IOUtils.toString(javaClass.classLoader.getResourceAsStream(resourceDir + File.separator + file))
+      val data = IOUtils.toString(javaClass.classLoader.getResourceAsStream(resourceDir + File.separator + file), Charsets.UTF_8)
       templates.add(file.split('.')[0], data)
     }
     return templates
