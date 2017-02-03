@@ -86,7 +86,7 @@ class Main {
           })
         }
 
-        writeTrace(graphs, traceDirectory)
+        writeTrace(graphs, traceDirectory + File.separator + "i_" + iteration)
 
       }
 
