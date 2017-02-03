@@ -46,7 +46,6 @@ class LogGenerator(val templates: Templates) {
   fun tracePath(graph : Graph) {
 
     val seed = graph.getNode<Node>(0)
-    println(seed)
     tracePath(seed)
   }
 }

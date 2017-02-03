@@ -10,9 +10,6 @@ class Templates {
 
   fun getTemplate(of: String): String {
     val lookUp = templates.keys.firstOrNull { element -> of.toLowerCase().startsWith(element.toLowerCase()) }
-    if(lookUp == null){
-      println("lookup failed for " + of)
-    }
-    return if(lookUp == null) templates["default"]!! else templates[lookUp]!!
+    return if (lookUp == null) templates["default"]!! else templates[lookUp]!!
   }
 }

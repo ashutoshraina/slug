@@ -55,10 +55,8 @@ class LogGeneratorTest {
     val logGenerator = LogGenerator(templates)
     val seed = graph.getNode<Node>(0)
 
-    println(seed)
     val traceRoute = logGenerator.traceRoute(seed)
     assertEquals(4, traceRoute.count())
-    println(traceRoute)
   }
 
   @Test
