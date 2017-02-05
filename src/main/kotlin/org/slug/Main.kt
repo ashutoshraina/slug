@@ -2,14 +2,11 @@ package org.slug
 
 import org.graphstream.graph.Graph
 import org.slug.core.InfrastructureType
+import org.slug.factories.*
 import org.slug.factories.ArchitectureFactory.buildArchitectures
 import org.slug.factories.ArchitectureFactory.fromMicroservices
-import org.slug.factories.Cranks
 import org.slug.factories.Infrastructure.Companion.loadInfrastructureConfig
 import org.slug.factories.InfrastructureFactory.Companion.create
-import org.slug.factories.MicroserviceFactory
-import org.slug.factories.buildServiceGraphs
-import org.slug.factories.buildServices
 import org.slug.generators.LayerGenerator
 import org.slug.generators.MicroserviceGenerator
 import org.slug.log.LogGenerator

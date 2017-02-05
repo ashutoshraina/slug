@@ -25,7 +25,7 @@
   ],
   "serviceDiscovery": [
     "dns",
-    "consul"
+    "otherdns"
   ],
   "webApplication": [
     "user",
@@ -37,6 +37,7 @@
     "playlist"
   ],
   "serviceRegistry": [
-    "eureka"
+    "eureka",
+    "consul"
   ]
 }
