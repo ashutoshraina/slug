@@ -2,11 +2,14 @@ package org.slug
 
 import org.graphstream.graph.Graph
 import org.slug.core.InfrastructureType
-import org.slug.factories.*
 import org.slug.factories.ArchitectureFactory.buildArchitectures
 import org.slug.factories.ArchitectureFactory.fromMicroservices
+import org.slug.factories.Cranks
 import org.slug.factories.Infrastructure.Companion.loadInfrastructureConfig
 import org.slug.factories.InfrastructureFactory.Companion.create
+import org.slug.factories.MicroserviceFactory
+import org.slug.factories.buildServiceGraphs
+import org.slug.factories.buildServices
 import org.slug.generators.LayerGenerator
 import org.slug.generators.MicroserviceGenerator
 import org.slug.log.LogGenerator
@@ -16,7 +19,7 @@ import org.slug.output.DotConfiguration
 import org.slug.output.display
 import org.slug.output.generateDotFile
 import org.slug.util.Config
-import org.slug.util.ResourceHelper
+import org.slug.util.ResourceHelper.readResourceAsMap
 import org.slug.util.ResourceHelper.readTemplates
 import java.io.File
 import java.nio.file.Files
@@ -43,8 +46,8 @@ class Main {
       val styleFile = config.getProperty("style")
       val css = DisplayHelper.loadCSSConfig(styleFile)
 
-      val replicationMap = ResourceHelper.readResourceAsMap("replication.properties")
-      val densityMap = ResourceHelper.readResourceAsMap("density.properties")
+      val replicationMap = readResourceAsMap("replication.properties")
+      val densityMap = readResourceAsMap("density.properties")
 
       val infrastructure = loadInfrastructureConfig()
 
