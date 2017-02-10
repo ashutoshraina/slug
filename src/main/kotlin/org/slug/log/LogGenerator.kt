@@ -36,7 +36,7 @@ class LogGenerator(val templates: Templates) {
     return traceRoute(seed)
       .map { it.getAttribute<String>(DisplayConstants.LABEL) }
       .map { templates.getTemplate(it) }
-      .map { template -> LogEventWriter.logMessage(template) }
+      .map { template -> LogEventWriter.logMessage(template, Date().toString()) }
   }
 
   fun tracePath(graph: Graph): List<String> {
