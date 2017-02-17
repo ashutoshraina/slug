@@ -1,1 +1,1 @@
-[$0] [INFO] consul: adding server server1.dc1 (Addr: 10.0.0.162:9300) (DC: dc1)
+[ $0] [INFO] consul: adding server server1.dc1 (Addr: 10.0.0.162:9300) (DC: dc1)
