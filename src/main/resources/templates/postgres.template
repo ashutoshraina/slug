@@ -1,1 +1,1 @@
-[$0] 192.168.2.10:ossecdb LOG:  statement: INSERT INTO alert(id,server_id,rule_id,timestamp,location_id,src_ip) VALUES ('3577', '1', '50503','1190916566', '140', '0')
+[$0] [$1] 192.168.2.10:ossecdb LOG:  statement: INSERT INTO alert(id,server_id,rule_id,timestamp,location_id,src_ip) VALUES ('3577', '1', '50503','1190916566', '140', '0')

@@ -1,1 +1,1 @@
-[$0] 108.162.222.163 - -  "GET /abc.png HTTP/1.1" 404 287 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36
+[$0] [$1]  108.162.222.163 - -  "GET /abc.png HTTP/1.1" 404 287 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36

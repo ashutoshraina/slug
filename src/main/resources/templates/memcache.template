@@ -1,1 +1,1 @@
-[$0] STAT items:3:evicted_nonzero 0
+[$0] [$1]  STAT items:3:evicted_nonzero 0

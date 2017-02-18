@@ -1,1 +1,1 @@
-[$0] sccp bcm56xxd [ 226 ] : 012c0012 : (Product=BIGIP Subset=BCM565XXD) : 6: 4.1 rx [ OK 171009 Bad 0 ] tx [ OK 171014 Bad 0 ]
+[$0] [$1] sccp bcm56xxd [ 226 ] : 012c0012 : (Product=BIGIP Subset=BCM565XXD) : 6: 4.1 rx [ OK 171009 Bad 0 ] tx [ OK 171014 Bad 0 ]
