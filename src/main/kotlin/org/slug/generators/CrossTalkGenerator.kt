@@ -54,7 +54,9 @@ object CrossTalkGenerator {
     destinationNodes.forEach {
       node ->
       val edgeId = gatewayIdentifier + SEPARATOR + node.id
+      if (mergedGraph.getEdge<Edge>(edgeId) == null) {
         mergedGraph.addEdge<Edge>(edgeId, gatewayIdentifier, node.id, true)
+      }
     }
 
     return mergedGraph
