@@ -58,7 +58,7 @@ class Main {
       var aggregateMetrics = emptySequence<Metric>()
 
       (1..iterations).forEach { iteration ->
-
+/*
         val dotDirectory = File.separator + "i_" + iteration
         val layerDirectory = dotDirectory + "_l"
         val services = buildServices(MicroserviceFactory(crank, infrastructure, densityMap, replicationMap))
@@ -66,6 +66,34 @@ class Main {
         val layeredGraphs = buildServiceGraphs(services, css, LayerGenerator::class.java)
         val architectures = fromMicroservices(services, create<InfrastructureType.ServiceRegistry>(infrastructure))
         val crossTalks = buildArchitectures(architectures, css, MicroserviceGenerator::class.java)
+*/
+        val services = DSLbuildServices{
+          setFactory{
+            MicroserviceFactory.create{
+              setCranks{crank}
+              setInfrastructure{infrastructure}
+              setDensityMap{densityMap}
+              setReplicationMap{replicationMap}
+            }}}
+        val graphs = DSLbuildServiceGraphs {
+          setServices{services}
+          setCss{css}
+        }
+        val layeredGraphs = DSLbuildLayeredGraphs{
+          setCss{css}
+          setServices{services}
+        }
+        val architectures = ArchitectureFactory.DSLBuildArch{
+          setSeq{services}
+          setInfrastructure{infrastructure}
+        }
+        val crossTalks = ArchitectureFactory.DSLBuildXTalk{
+          setCss{css}
+          setSeq{architectures}
+        }
+
+
+
 
         if (calculateMetrics) {
           futures = futures.plus(runAsync {

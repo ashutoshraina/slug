@@ -36,4 +36,31 @@ object ArchitectureFactory {
 
     return crossTalks
   }
+
+  fun DSLBuildArch(init: DSLArchBuilder.() -> Unit) = DSLArchBuilder(init).build()
+  fun DSLBuildXTalk(init: DSLXTalkBuilder.() -> Unit) = DSLXTalkBuilder(init).build()
+
+  class DSLArchBuilder private constructor() {
+    constructor(init: DSLArchBuilder.() -> Unit) : this() {
+      init()
+    }
+    lateinit var microSeq: Sequence<Microservice>
+    lateinit var someInfra: Infrastructure
+
+    fun setSeq(init: DSLArchBuilder.() -> Sequence<Microservice>) {microSeq = init()}
+    fun setInfrastructure(init: DSLArchBuilder.() -> Infrastructure) {someInfra = init()}
+    fun build() = fromMicroservices(microSeq, InfrastructureFactory.create<ServiceRegistry>(someInfra))
+  }
+
+  class DSLXTalkBuilder private constructor(){
+    constructor(init: DSLXTalkBuilder.() -> Unit) : this() {
+      init()
+    }
+    lateinit var archSeq: Sequence<Architecture>
+    lateinit var css: String
+
+    fun setSeq(init: DSLXTalkBuilder.() -> Sequence<Architecture>) {archSeq = init()}
+    fun setCss(init: DSLXTalkBuilder.() -> String) {css = init()}
+    fun build() = buildArchitectures(archSeq, css, MicroserviceGenerator::class.java)
+  }
 }
