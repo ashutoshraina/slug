@@ -5,7 +5,7 @@ import org.slug.core.Architecture
 import org.slug.core.InfrastructureType
 import org.slug.core.InfrastructureType.ServiceRegistry
 import org.slug.core.Microservice
-import org.slug.core.XTalk
+import org.slug.core.CrossTalk
 import org.slug.generators.CrossTalkGenerator
 import org.slug.generators.GraphGenerator
 import org.slug.generators.MicroserviceGenerator
@@ -18,7 +18,7 @@ object ArchitectureFactory {
     val entry = from.layers.first { l -> l.component.type is InfrastructureType.WebApplication }.component.type
     val exit = to.layers.last { l -> l.component.type is InfrastructureType.WebApplication }.component.type
 
-    val crossTalk = Right(XTalk(from, entry, to, exit, serviceRegistry))
+    val crossTalk = Right(CrossTalk(from, entry, to, exit, serviceRegistry))
 
     return Architecture(sequenceOf(Left(from), Left(to), crossTalk))
   }
@@ -29,7 +29,7 @@ object ArchitectureFactory {
   }
 
 
-  fun <T : MicroserviceGenerator> buildArchitectures(architectures: Sequence<Architecture>, css: String, generator: Class<T>): Sequence<Graph> {
+  fun <T : MicroserviceGenerator> buildCrossTalk(architectures: Sequence<Architecture>, css: String, generator: Class<T>): Sequence<Graph> {
 
     val crossTalks = architectures.map { it -> CrossTalkGenerator.addCrossTalk(it.microservices().map { microservice -> GraphGenerator.createServiceGraph(css, microservice, generator) }, it.crossTalks()) }
         .flatMap { it.asSequence() }
@@ -37,30 +37,33 @@ object ArchitectureFactory {
     return crossTalks
   }
 
-  fun DSLBuildArch(init: DSLArchBuilder.() -> Unit) = DSLArchBuilder(init).build()
-  fun DSLBuildXTalk(init: DSLXTalkBuilder.() -> Unit) = DSLXTalkBuilder(init).build()
+  fun DSLBuildArch(init: ArchitectureBuilder.() -> Unit) = ArchitectureBuilder(init).build()
+  fun DSLBuildXTalk(init: CrossTalkBuilder.() -> Unit) = CrossTalkBuilder(init).build()
 
-  class DSLArchBuilder private constructor() {
-    constructor(init: DSLArchBuilder.() -> Unit) : this() {
+  class ArchitectureBuilder private constructor() {
+    constructor(init: ArchitectureBuilder.() -> Unit) : this() {
       init()
     }
-    lateinit var microSeq: Sequence<Microservice>
-    lateinit var someInfra: Infrastructure
+    lateinit var microservices: Sequence<Microservice>
+    lateinit var infrastructure: Infrastructure
 
-    fun setSeq(init: DSLArchBuilder.() -> Sequence<Microservice>) {microSeq = init()}
-    fun setInfrastructure(init: DSLArchBuilder.() -> Infrastructure) {someInfra = init()}
-    fun build() = fromMicroservices(microSeq, InfrastructureFactory.create<ServiceRegistry>(someInfra))
+    fun setSeq(init: ArchitectureBuilder.() -> Sequence<Microservice>) {
+      microservices = init()}
+    fun setInfrastructure(init: ArchitectureBuilder.() -> Infrastructure) {
+      infrastructure = init()}
+    fun build() = fromMicroservices(microservices, InfrastructureFactory.create<ServiceRegistry>(infrastructure))
   }
 
-  class DSLXTalkBuilder private constructor(){
-    constructor(init: DSLXTalkBuilder.() -> Unit) : this() {
+  class CrossTalkBuilder private constructor(){
+    constructor(init: CrossTalkBuilder.() -> Unit) : this() {
       init()
     }
-    lateinit var archSeq: Sequence<Architecture>
+    lateinit var architectures: Sequence<Architecture>
     lateinit var css: String
 
-    fun setSeq(init: DSLXTalkBuilder.() -> Sequence<Architecture>) {archSeq = init()}
-    fun setCss(init: DSLXTalkBuilder.() -> String) {css = init()}
-    fun build() = buildArchitectures(archSeq, css, MicroserviceGenerator::class.java)
+    fun setSeq(init: CrossTalkBuilder.() -> Sequence<Architecture>) {
+      architectures = init()}
+    fun setCss(init: CrossTalkBuilder.() -> String) {css = init()}
+    fun build() = buildCrossTalk(architectures, css, MicroserviceGenerator::class.java)
   }
 }

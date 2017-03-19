@@ -1,7 +1,5 @@
 package org.slug.log
 
-import java.util.*
-
 object LogEventWriter {
   fun log(message: String, logFunc: Event<String>.(String) -> Unit): String {
     val logEvent = LogEvent()

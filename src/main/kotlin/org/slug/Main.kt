@@ -1,15 +1,8 @@
 package org.slug
 
-import org.apache.logging.log4j.LogManager.setFactory
 import org.graphstream.graph.Graph
-import org.slug.core.InfrastructureType
 import org.slug.factories.*
-import org.slug.factories.ArchitectureFactory.buildArchitectures
-import org.slug.factories.ArchitectureFactory.fromMicroservices
 import org.slug.factories.Infrastructure.Companion.loadInfrastructureConfig
-import org.slug.factories.InfrastructureFactory.Companion.create
-import org.slug.generators.LayerGenerator
-import org.slug.generators.MicroserviceGenerator
 import org.slug.log.LogGenerator
 import org.slug.metrics.*
 import org.slug.output.DisplayHelper

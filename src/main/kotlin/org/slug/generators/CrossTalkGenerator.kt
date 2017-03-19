@@ -8,7 +8,7 @@ import org.graphstream.graph.implementations.SingleGraph
 import org.graphstream.graph.implementations.SingleNode
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.slug.core.XTalk
+import org.slug.core.CrossTalk
 import org.slug.output.DisplayConstants.LABEL
 import org.slug.output.DisplayConstants.STYLE
 import org.slug.output.GraphConstants.NODE_STYLE
@@ -17,10 +17,10 @@ import org.slug.output.GraphConstants.SEPARATOR
 object CrossTalkGenerator {
   val logger: Logger? = LoggerFactory.getLogger(javaClass)
 
-  fun addCrossTalk(microservices: Sequence<SingleGraph>, xTalks: Sequence<XTalk>): Sequence<SingleGraph> {
+  fun addCrossTalk(microservices: Sequence<SingleGraph>, crossTalks: Sequence<CrossTalk>): Sequence<SingleGraph> {
 
     var graphs = emptySequence<SingleGraph>()
-    for (crossTalk in xTalks) {
+    for (crossTalk in crossTalks) {
       val first = microservices.first { m -> m.id.contentEquals(crossTalk.from.identifier) }
       val second = microservices.first { m -> m.id.contentEquals(crossTalk.to.identifier) }
       graphs = graphs.plus(element = mergeWithNodePreservation(first, second, crossTalk))
@@ -28,7 +28,7 @@ object CrossTalkGenerator {
     return graphs
   }
 
-  private fun mergeWithNodePreservation(from: Graph, to: Graph, crossTalk: XTalk): SingleGraph {
+  private fun mergeWithNodePreservation(from: Graph, to: Graph, crossTalk: CrossTalk): SingleGraph {
 
     logger?.debug("Generating cross talk for " + from.id + " and " + to.id)
     val first = Graphs.clone(from)
