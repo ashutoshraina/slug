@@ -11,7 +11,6 @@ import org.slug.core.PowerLaw
 import org.slug.core.withReplication
 import org.slug.factories.InfrastructureFactory.Companion.create
 import org.slug.generators.GraphGenerator
-import org.slug.generators.LayerGenerator
 import org.slug.generators.MicroserviceGenerator
 
 data class Cranks(val serviceDensity: String, val replicationFactor: String, val powerLaw: Boolean = false)
@@ -187,34 +186,4 @@ fun buildServices(microserviceFactory: MicroserviceFactory): Sequence<Microservi
       .plusElement(microserviceFactory.e2e())
       .plusElement(microserviceFactory.e2eMultipleApps())
       .plusElement(microserviceFactory.e2eWithCache())
-}
-
-fun DSLbuildServiceGraphs(init: serviceGraphBuilder.() -> Unit) = serviceGraphBuilder(init).buildMicros()
-fun DSLbuildLayeredGraphs(init: serviceGraphBuilder.() -> Unit) = serviceGraphBuilder(init).buildLayeredMicros()
-fun DSLbuildServices(init: serviceBuilder.() -> Unit) = serviceBuilder(init).buildFromMicro()
-
-
-class serviceBuilder constructor(){
-  constructor(init: serviceBuilder.() -> Unit) : this() {
-    init()
-  }
-  lateinit var factory: MicroserviceFactory
-
-  fun setFactory(init: serviceBuilder.() -> MicroserviceFactory){factory = init()}
-
-  fun buildFromMicro() = buildServices(factory)
-}
-
-class serviceGraphBuilder constructor(){
-  constructor(init: serviceGraphBuilder.() -> Unit) : this() {
-    init()
-  }
-  lateinit var services: Sequence<Microservice>
-  lateinit var css: String
-
-  fun setServices(init: serviceGraphBuilder.() -> Sequence<Microservice>){services = init()}
-  fun setCss(init: serviceGraphBuilder.() -> String) {css = init()}
-
-  fun buildMicros() = buildServiceGraphs(services, css, MicroserviceGenerator::class.java)
-  fun buildLayeredMicros() = buildServiceGraphs(services, css, LayerGenerator::class.java)
 }

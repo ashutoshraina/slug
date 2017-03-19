@@ -1,15 +1,13 @@
 package org.slug
 
+import org.apache.logging.log4j.LogManager.setFactory
 import org.graphstream.graph.Graph
 import org.slug.core.InfrastructureType
+import org.slug.factories.*
 import org.slug.factories.ArchitectureFactory.buildArchitectures
 import org.slug.factories.ArchitectureFactory.fromMicroservices
-import org.slug.factories.Cranks
 import org.slug.factories.Infrastructure.Companion.loadInfrastructureConfig
 import org.slug.factories.InfrastructureFactory.Companion.create
-import org.slug.factories.MicroserviceFactory
-import org.slug.factories.buildServiceGraphs
-import org.slug.factories.buildServices
 import org.slug.generators.LayerGenerator
 import org.slug.generators.MicroserviceGenerator
 import org.slug.log.LogGenerator
@@ -58,31 +56,24 @@ class Main {
       var aggregateMetrics = emptySequence<Metric>()
 
       (1..iterations).forEach { iteration ->
-/*
         val dotDirectory = File.separator + "i_" + iteration
         val layerDirectory = dotDirectory + "_l"
-        val services = buildServices(MicroserviceFactory(crank, infrastructure, densityMap, replicationMap))
-        val graphs = buildServiceGraphs(services, css, MicroserviceGenerator::class.java)
-        val layeredGraphs = buildServiceGraphs(services, css, LayerGenerator::class.java)
-        val architectures = fromMicroservices(services, create<InfrastructureType.ServiceRegistry>(infrastructure))
-        val crossTalks = buildArchitectures(architectures, css, MicroserviceGenerator::class.java)
-*/
-        val services = DSLbuildServices{
+
+        val services = buildServices{
           setFactory{
-            MicroserviceFactory.create{
-              setCranks{crank}
-              setInfrastructure{infrastructure}
-              setDensityMap{densityMap}
-              setReplicationMap{replicationMap}
-            }}}
-        val graphs = DSLbuildServiceGraphs {
+              MicroserviceFactory (crank, infrastructure, densityMap, replicationMap)
+          }}
+
+        val graphs = buildServiceGraphs {
           setServices{services}
           setCss{css}
         }
-        val layeredGraphs = DSLbuildLayeredGraphs{
+
+        val layeredGraphs = buildLayeredGraphs{
           setCss{css}
           setServices{services}
         }
+
         val architectures = ArchitectureFactory.DSLBuildArch{
           setSeq{services}
           setInfrastructure{infrastructure}
@@ -91,9 +82,6 @@ class Main {
           setCss{css}
           setSeq{architectures}
         }
-
-
-
 
         if (calculateMetrics) {
           futures = futures.plus(runAsync {
